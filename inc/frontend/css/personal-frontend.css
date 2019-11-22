@@ -1,0 +1,41 @@
+.barra_redes ul li {
+    float: left;
+    padding: 5px;
+    margin: 0px !important;
+    list-style-type: none !important;
+}
+.list-categoria a:link{
+    text-decoration: none ;
+}
+
+.barra_redes {
+    clear: left;
+    margin: 0px;
+}
+
+.barra_redes ul {
+    margin: 0px;
+}
+
+.foto {
+    float: left;
+    margin: 0 auto;
+    padding: 10px
+}
+
+#conicet, #cic, #sedici {
+    clear: both
+}
+
+.views-label {
+    font-weight: 900;
+}
+
+.list-categoria ul {
+    list-style-type: none;
+    margin: 0px;
+}
+
+.list-categoria ul li {
+    margin: 0px;
+}
