@@ -80,8 +80,7 @@ class Init
     {
         $plugin_admin = new Admin\Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
 
-        // Registra el hook para la vista del template personal
-        $this->loader->add_filter('the_content', $plugin_admin, 'single_personal_template');
+
         // Permite cargar un archivo desde un formulario (Carga el cv del personal)
         $this->loader->add_action( 'post_edit_form_tag', $plugin_admin, 'update_edit_form' );
         $this->loader->add_filter( 'post_thumbnail_html', $plugin_admin,'wordpress_hide_feature_image', 10, 3 );
@@ -113,7 +112,8 @@ class Init
     {
 
         $plugin_public = new Frontend\Frontend($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
-
+        // Registra el hook para la vista del template personal
+        $this->loader->add_filter('the_content', $plugin_public, 'single_personal_template');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
 
