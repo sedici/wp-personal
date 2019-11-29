@@ -88,4 +88,13 @@ class Frontend {
         return $content;
 
     }
+
+    public function register_shortcodes(){
+
+        add_shortcode('list-personal', array($this, 'list_personal'));
+
+    }
+    public function list_personal(){
+        include_once('views/list-personal.php');
+    }
 }

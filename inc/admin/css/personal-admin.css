@@ -1,0 +1,9 @@
+.inptuts-personal input {
+    width: 100%;
+    margin-bottom: 5%;
+}
+.inptuts-personal textarea {
+    display: block;
+    width: 100%;
+    margin-bottom: 5%;
+}

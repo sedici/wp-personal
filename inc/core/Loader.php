@@ -27,6 +27,7 @@ class Loader {
 	protected $filters;
 
 
+
 	public function __construct() {
 
 		$this->actions = array();
