@@ -39,3 +39,17 @@
 .list-categoria ul li {
     margin: 0px;
 }
+.footer-redes {
+    display: flex;
+    justify-content: space-around;
+}
+.card-button{
+    display: flex;
+    justify-content: flex-end;
+}
+.card-img-top {
+    height: 180px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
