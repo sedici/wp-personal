@@ -379,7 +379,7 @@ class Admin
                 'key' => 'field_59dd25596cb02',
                 'label' => '<img src="' . plugins_url() . '/personal/assets/images/biography.png" height="32">	Biografía',
                 'name' => 'biografia',
-                'type' => 'textarea',
+                'type' => 'wp_editor',
                 /*'size'=>'15',
                 'maxlength' =>'30',*/
                 'default_value' => '',
