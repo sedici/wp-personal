@@ -39,17 +39,100 @@
 .list-categoria ul li {
     margin: 0px;
 }
+.list-categoria{
+    margin-top: 20px;
+    text-align: right;
+}
 .footer-redes {
     display: flex;
     justify-content: space-around;
+}
+.barra-redes {
+    display: flex;
+    justify-content: space-evenly;
 }
 .card-button{
     display: flex;
     justify-content: flex-end;
 }
-.card-img-top {
+.card-img-top  {
     height: 180px;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
+}
+.foto {
+    text-align: center;
+    height: 170px;
+    width: 170px;
+    border: 4px #27a9e1 solid;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.card-body{
+    min-height: 125px;
+}
+.card-footer{
+    min-height: 37px;
+}
+.sidebar_mail, .sidebar_foto, .sidebar_telefono{
+    padding: 0px;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+#nombre_personal{
+    font-size: 22px;
+    font-family: Roboto;
+    font-weight: bold;
+    color: #27a9e1;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+.field-grado_alcanzado, .field-unidad_de_investigacion{
+    font-family: Roboto;
+    color: #808284;
+    font-size: 12px;
+    margin-top: 0px;
+    padding-top: 0px;
+
+}
+.field-grado_alcanzado span, .field-unidad_de_investigacion span{
+    font-weight: bold;
+    color: #404041;
+
+}
+.field-biografia h2, .titulo-repo{
+    font-size: 18px !important;
+    font-family: Roboto !important;
+    font-weight: bold !important;
+    color: #27a9e1 !important;
+}
+.field-content-biografia{
+    font-size: 12px !important;
+    color: #404041;
+    text-align: justify;
+    font-family: Roboto !important;
+}
+h2.titulo-repo {
+    margin: 5px !important;
+}
+.contacto-personal{
+    margin-top: 0px;
+    padding-left: 0px !important;
+
+}
+.contacto-personal a, .list-categoria{
+    font-family: Roboto !important;
+    color: #808284 !important;
+    font-size: 12px;
+    margin-right: 5px;
+}
+.hr-contacto{
+    margin: 0px;
+}
+.list-publicaciones{
+    margin-top: 20px;
 }

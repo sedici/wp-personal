@@ -1,22 +1,30 @@
-<?php $loop = new WP_Query(array('post_type' => 'personal')); ?>
+<?php
+
+$args = array('post_type' => 'personal');
+if (!empty($atts['category_id'])) {
+    $args['tax_query'] =
+        array(
+            array(
+                'terms' => $atts['category_id'],
+                'taxonomy' => 'categorias'
+            ));
+}
+
+$loop = new WP_Query($args);
+?>
+<h3> <?php echo $atts['title'] ?></h3>
 <div class=row">
     <div class="card-columns col-md-10 offset-2  " style="column-count: 3">
         <?php while ($loop->have_posts()) :
             $loop->the_post(); ?>
             <?php
-            $reserchgate = $this->the_personal_field('reserchgate');
+            $reserchgate = $this->the_personal_field('researchgate');
             $google_scholar = $this->the_personal_field('google_scholar');
             $orcid = $this->the_personal_field('orcid');
             $email = $this->the_personal_field('email');
-            $curriculum_vitae = $this->the_personal_meta('curriculum_vitae');
-            $email = $this->the_personal_field('email');
-            $telefono = $this->the_personal_field('telefono');
             $unidad_de_investigacion = $this->the_personal_field('unidad_de_investigacion');
             $grado_alcanzado = $this->the_personal_field('grado_alcanzado');
             $biografia = $this->the_personal_field('biografia');
-            $sedici = $this->the_personal_field('sedici');
-            $cic = $this->the_personal_field('cic');
-            $conicet = $this->the_personal_field('conicet');
             $categorias = wp_get_post_terms($post->ID, 'categorias', array("personal"));
             ?>
             <?php
@@ -31,15 +39,8 @@
 
                 <div class="card-body">
                     <h5 class="card-title">    <?php the_title('<a href="' . get_permalink() . '" title="' . the_title_attribute('echo=0') . '" rel="bookmark">', '</a>'); ?></h5>
-                    <div class="card-subtitle mb-2"></div>
-                    <p class="card-text small font-weight-bold	"><?php echo $unidad_de_investigacion ?></p>
-                    <!--                    <p class="card-text small font-weight-bold	">-->
-                    <?php //echo $grado_alcanzado
-                    ?><!--</p>-->
-                    <!--<div class="card-button">
-                        <a href="<?php /*get_post_permalink() */
-                    ?>" class="btn btn-primary">Ver más</a>
-                    </div>-->
+                    <div class="card-subtitle small mb-2"><?php echo $grado_alcanzado ?></div>
+                    <p class="card-text small"><?php echo $unidad_de_investigacion ?></p>
                 </div>
                 <div class="card-footer">
                     <div class="footer-redes">
@@ -74,3 +75,6 @@
         <?php endwhile; ?>
     </div>
 </div>
+
+
+

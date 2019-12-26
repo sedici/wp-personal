@@ -18,7 +18,7 @@ function register_field_group($args)
             ob_start();
             wp_editor($value['default_value'],$value['name']);
             $_edit_form_advanced_output = ob_get_clean();
-            $input.= '<div class="prueba">'.$_edit_form_advanced_output . '</div>';
+            $input.= '<div >'.$_edit_form_advanced_output . '</div>';
 //            $input .= "<div class=''><textarea type= text  rows='10' name=" . $value['name'] . "' value='" . $value['default_value'] . "'>".$value['default_value'] ."</textarea></div>";
         }
     }
