@@ -14,7 +14,7 @@ $loop = new WP_Query($args);
 ?>
 <h3> <?php echo $atts['title'] ?></h3>
 <div class=row">
-    <div class="card-columns col-md-10 offset-2  " style="column-count: 3">
+    <div class="card-columns col-md-10 offset-2  " style="column-count: <?php echo $atts['columns'] ?>">
         <?php while ($loop->have_posts()) :
             $loop->the_post(); ?>
             <?php

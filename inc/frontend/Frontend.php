@@ -105,7 +105,8 @@ class Frontend
     {
         $atts = shortcode_atts(array(
             'category_id' => '',
-            'title' => ''
+            'title' => '',
+            'columns' => 3,
         ), $atts);
         ob_start();
         include('views/list-personal.php');
