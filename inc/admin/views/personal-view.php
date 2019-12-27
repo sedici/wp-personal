@@ -4,9 +4,9 @@ foreach ($this->getInputsPersonal() as $item) {
     $item['default_value'] = get_post_meta($post->ID, $item['name'], true);
     $args[] = $item;
 }
-echo register_field_group($args);
+echo register_personal_field_group($args);
 
-function register_field_group($args)
+function register_personal_field_group($args)
 {
     $input = '<div class="inptuts-personal">';
     wp_nonce_field('mi_meta_box_nonce', 'meta_box_nonce');
