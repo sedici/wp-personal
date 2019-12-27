@@ -179,6 +179,8 @@ class Admin
         // FIXME Evaluar si agregar un rol personal.
         $admins = get_role('administrator');
         $admins->add_cap('create_personal');
+        $admins->add_cap('delete_private_personales');
+        $admins->add_cap('delete_others_personales');
         $admins->add_cap('delete_published_personales');
         $admins->add_cap('edit_published_personales');
         $admins->add_cap('edit_personal');
@@ -186,6 +188,10 @@ class Admin
         $admins->add_cap('publish_personales');
         $admins->add_cap('read_personal');
         $admins->add_cap('delete_personal');
+        $admins->add_cap('edit_private_personales');
+        $admins->add_cap('edit_other_personales');
+        $admins->add_cap('read_private_personales');
+
     }
     /**
      * Agrega los campos personalizados para el custom post.
