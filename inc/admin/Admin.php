@@ -24,13 +24,18 @@ class Admin
      */
     private $inputs_personal;
 
+    /**
+     * Son las configuraciones del repositorio obtenidas del plugin wp-dspace
+     * @var array() $repositories
+     */
+    private $repositories;
+
     public function __construct($plugin_name, $version, $plugin_text_domain)
     {
-
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->plugin_text_domain = $plugin_text_domain;
-        $this->initializeInputsPersonal();
+//        $this->initializeInputsPersonal();
     }
 
     /**
@@ -56,8 +61,32 @@ class Admin
     public function add_plugin_admin_menu()
     {
         //usar add_menu_page(), add_submenu_page(), etc.
+
     }
 
+
+    public function get_repositories_wpdspace($value){
+        $this->repositories= $value;
+        $this->initializeInputsPersonal();
+        return $value;
+    }
+
+
+
+    /**
+     * Redirect
+     *
+     * @since    1.0.0
+     */
+    public function custom_redirect( $admin_notice, $response, $path = "" ) {
+        wp_redirect( esc_url_raw( add_query_arg( array(
+            'personal_admin_add_notice' => $admin_notice,
+            'personal_response' => $response,
+        ),
+            admin_url('admin.php?page='. $this->plugin_name . $path )  //Fixme agregar url para redirigir.
+        ) ) );
+
+    }
 
     /**
      * Registra el Post Type Personal
@@ -68,6 +97,7 @@ class Admin
         /**
          * Post Type: Personal.
          */
+
 
         $labels = array(
             "name" => __("Personal", ""),
@@ -215,10 +245,17 @@ class Admin
         $personal = get_post($idpersonal);
 
         if ($personal->post_type == 'personal') {
+            $inputs= $this->getInputsPersonal();
+            foreach ( $inputs as $input) {
 
-            foreach ($this->getInputsPersonal() as $input) {
                 if (isset($_POST[$input['name']]))
                     update_post_meta($idpersonal, $input['name'], $_POST[$input['name']]);
+                if(isset($input['repositories'])){
+                    foreach ($input['repositories'] as $repository) {
+                        if (isset($_POST[$repository['name']]))
+                            update_post_meta($idpersonal, $repository['name'], $_POST[$repository['name']]);
+                    }
+                }
             }
             if(!empty($_FILES['curriculum_vitae']['name'])) {
                 $supported_types = array('application/pdf');
@@ -239,6 +276,7 @@ class Admin
             }
         }
     }
+
 
     public function getInputsPersonal()
     {
@@ -261,6 +299,59 @@ class Admin
     }
     private function initializeInputsPersonal()
     {
+//        add_filter('get_repositorios',$this,'get_repositories_wpdspace',1);
+        $repositories = array(array(
+            'key' => 'field_59dd247f52528',
+            'label' => '<img src="' . plugins_url() . '/personal/assets/images/sedici.png"	height="32"> SEDICI',
+            'name' => 'sedici',
+            'type' => 'text',
+            'default_value' => '',
+            'placeholder' => '',
+            'prepend' => '',
+            'append' => '',
+            'formatting' => 'none',
+            'maxlength' => '',
+        ),
+            array(
+                'key' => 'field_59dd24ac52529',
+                'label' => '<img src="' . plugins_url() . '/personal/assets/images/cic_digital.png" height="32"> CIC',
+                'name' => 'cic',
+                'type' => 'text',
+                'default_value' => '',
+                'placeholder' => '',
+                'prepend' => '',
+                'append' => '',
+                'formatting' => 'none',
+                'maxlength' => '',
+            ),
+            array(
+                'key' => 'field_59dd24b65252a',
+                'label' => '<img src="' . plugins_url() . '/personal/assets/images/conicet-digital.png" height="40"> CONICET',
+                'name' => 'conicet',
+                'type' => 'text',
+                'default_value' => '',
+                'placeholder' => '',
+                'prepend' => '',
+                'append' => '',
+                'formatting' => 'none',
+                'maxlength' => '',
+            ));
+        $repositories_custom = $this->getRepositories();
+        foreach ( $repositories_custom as $r) {
+            $repo = array(
+                'key' => $r['id'],
+                'label' => strtoupper($r['name']),
+                'name' => $r['name'],
+                'type' => 'text',
+                'default_value' => '',
+                'placeholder' => '',
+                'prepend' => '',
+                'append' => '',
+                'formatting' => 'none',
+                'maxlength' => '',
+            );
+            array_push($repositories,$repo);
+        }
         $this->inputs_personal = array(
             array(
                 'class' => '',
@@ -345,42 +436,7 @@ class Admin
                 'formatting' => 'html',
                 'maxlength' => '',
             ),
-            array(
-                'key' => 'field_59dd247f52528',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/sedici.png"	height="32"> SEDICI',
-                'name' => 'sedici',
-                'type' => 'text',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'none',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd24ac52529',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/cic_digital.png" height="32"> CIC',
-                'name' => 'cic',
-                'type' => 'text',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'none',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd24b65252a',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/conicet-digital.png" height="40"> CONICET',
-                'name' => 'conicet',
-                'type' => 'text',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'none',
-                'maxlength' => '',
-            ),
+            array('repositories' => $repositories),
             array(
                 'key' => 'field_59dd25596cb02',
                 'label' => '<img src="' . plugins_url() . '/personal/assets/images/biography.png" height="32">	Biografía',
@@ -401,6 +457,17 @@ class Admin
                 'library' => 'all',
             )
         );
+    }
+
+    private function getRepositories()
+    {
+       return array_filter(
+            $this->repositories,
+            function ($repo)  {
+                return !(strtolower($repo['name']) == 'sedici' or strtolower($repo['name']) == 'conicet' or strtolower($repo['name']) == 'cic'  );
+            }
+        );
+
     }
 
 }

@@ -15,12 +15,12 @@ use Personal\Inc\Frontend as Frontend;
 class Init
 {
     /**
-     * @var     string  $plugin_name  nombre del plugin
+     * @var     string $plugin_name nombre del plugin
      */
     private $plugin_name;
 
     /**
-     * @var     Loader  $loader  registra y ejecuta los  hooks del plugin.
+     * @var     Loader $loader registra y ejecuta los  hooks del plugin.
      */
     private $loader;
 
@@ -82,9 +82,10 @@ class Init
 
 
         // Permite cargar un archivo desde un formulario (Carga el cv del personal)
-        $this->loader->add_action( 'post_edit_form_tag', $plugin_admin, 'update_edit_form' );
-        $this->loader->add_filter( 'post_thumbnail_html', $plugin_admin,'wordpress_hide_feature_image', 10, 3 );
-
+        $this->loader->add_action('post_edit_form_tag', $plugin_admin, 'update_edit_form');
+        $this->loader->add_filter('post_thumbnail_html', $plugin_admin, 'wordpress_hide_feature_image', 10, 3);
+        // obtengo los repositorios del plugin wp-dspace
+        $this->loader->add_filter('get_repositorios', $plugin_admin, 'get_repositories_wpdspace');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 
@@ -92,16 +93,18 @@ class Init
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_plugin_admin_menu');
 
         // Registra el custom post personal
-        $this->loader->add_action('init', $plugin_admin, 'cptui_register_my_cpts_personal');
+        $this->loader->add_action('init', $plugin_admin, 'cptui_register_my_cpts_personal', 20);
         // Registra las taxonomias del custom post personal
-        $this->loader->add_action('init', $plugin_admin, 'cptui_register_my_taxes_categorias');
+        $this->loader->add_action('init', $plugin_admin, 'cptui_register_my_taxes_categorias', 20);
         // Registra roles y capabilities
-        $this->loader->add_action('admin_init', $plugin_admin, 'add_personal_caps');
+        $this->loader->add_action('admin_init', $plugin_admin, 'add_personal_caps', 20);
 
         // Agrega los campos meta al custom post personal
         $this->loader->add_action('add_meta_boxes', $plugin_admin, 'personal_custom_metabox');
         // Guarda los campos meta
         $this->loader->add_action('save_post', $plugin_admin, 'personal_save_metas');
+
+
     }
 
     /**
@@ -114,12 +117,12 @@ class Init
         $plugin_public = new Frontend\Frontend($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
         // Registra el hook para la vista del template personal
         $this->loader->add_filter('the_content', $plugin_public, 'single_personal_template');
-        $this->loader->add_action( 'init', $plugin_public, 'register_shortcodes');
+        $this->loader->add_action('init', $plugin_public, 'register_shortcodes');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
-
-        $this->loader-> add_filter( 'the_title', $plugin_public,'remove_personal_title', 10, 2 );
-
+        // obtengo los repositorios del plugin wp-dspace
+        $this->loader->add_filter('get_repositorios', $plugin_public, 'get_repositories_wpdspace');
+        $this->loader->add_filter('the_title', $plugin_public, 'remove_personal_title', 10, 2);
 
 
     }

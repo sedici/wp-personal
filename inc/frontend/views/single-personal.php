@@ -19,6 +19,10 @@ $sedici = $this->the_personal_field('sedici');
 $cic = $this->the_personal_field('cic');
 $conicet = $this->the_personal_field('conicet');
 $categorias = wp_get_post_terms($post->ID, 'categorias', array("personal"));
+
+$other_repositories = $this->getRepositories();
+
+
 ?>
 <div class="content-area">
     <div id="content" class="site-content" role="main">
@@ -134,30 +138,54 @@ $categorias = wp_get_post_terms($post->ID, 'categorias', array("personal"));
                                 </div>
                                 <div id="collapseTwo" class="collapse" data-parent="#accordion">
                                     <div class="card-body">
-                                        <?php echo do_shortcode('[get_publications  config="cic"  author="' . $cic . '"  share=true show_subtype=false  date=true  max_results="1000" "]'); ?>
+                                        <?php echo do_shortcode('[get_publications  config="cic"  author="' . $cic . '"  show_subtype=false  date=true  max_results="1000" "]'); ?>
                                     </div>
                                 </div>
                             </div>
                         <?php endif; ?>
                         <?php if (!empty($conicet)): ?>
 
-                        <div class="card">
-                            <div class="card-header">
-                                <a class="collapsed card-link" data-toggle="collapse" href="#collapseThree">
-                                    <h2 class="titulo-repo">Producción científica en CONICET</h2>
-                                </a>
-                            </div>
-                            <div id="collapseThree" class="collapse" data-parent="#accordion">
-                                <div class="card-body">
-                                    <?php echo do_shortcode('[get_publications  config="conicet"  author="' . $conicet . '"  share=true show_subtype=false show_author=true date=true  max_results="1000""]'); ?>
+                            <div class="card">
+                                <div class="card-header">
+                                    <a class="collapsed card-link" data-toggle="collapse" href="#collapseThree">
+                                        <h2 class="titulo-repo">Producción científica en CONICET</h2>
+                                    </a>
+                                </div>
+                                <div id="collapseThree" class="collapse" data-parent="#accordion">
+                                    <div class="card-body">
+                                        <?php echo do_shortcode('[get_publications  config="conicet"  author="' . $conicet . '"   show_subtype=false show_author=true date=true  max_results="1000""]'); ?>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php endif; ?>
+
+                        <?php
+                        foreach ($other_repositories as $r) {
+                            ?>
+                            <div class="card">
+
+                                <div class="card-header">
+                                    <a class="collapsed card-link" data-toggle="collapse"
+                                       href="#collapse<?php echo $r['name']; ?>">
+                                        <h2 class="titulo-repo">Publicaciones en <?php echo strtoupper($r['name']); ?></h2>
+                                    </a>
+                                </div>
+                                <div id="collapse<?php echo $r['name']; ?>" class="collapse" data-parent="#accordion">
+                                    <div class="card-body">
+                                        <?php echo do_shortcode('[get_publications  config="' . $r['name'] . '"  author="' . $this->the_personal_field($r['name']) . '"   show_subtype=false show_author=true date=true  max_results="1000""]'); ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <?php
+
+                        }
+                        ?>
+
 
                     </div>
                 </div>
 
-                <?php endif; ?>
 
                 <?php if (!empty($categorias)): ?>
                     <div class="list-categoria col-md-12">

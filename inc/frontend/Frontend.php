@@ -20,10 +20,10 @@ class Frontend
 
     private $plugin_text_domain;
 
-
+    public  $repositories;
     public function __construct($plugin_name, $version, $plugin_text_domain)
     {
-
+        $this->repositories = array();
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->plugin_text_domain = $plugin_text_domain;
@@ -54,6 +54,16 @@ class Frontend
         if ((!wp_script_is($script, 'queue')) && (!wp_script_is($script, 'done'))) {
             wp_enqueue_script($script, plugin_dir_url(__FILE__) . 'js/bootstrap.min.js', array(), $this->version, 'all');
         }
+    }
+    private function getRepositories()
+    {
+        return array_filter(
+            $this->repositories,
+            function ($repo)  {
+                return !(strtolower($repo['name']) == 'sedici' or strtolower($repo['name']) == 'conicet' or strtolower($repo['name']) == 'cic'  );
+            }
+        );
+
     }
 
     /**
@@ -93,6 +103,10 @@ class Frontend
 
         return $content;
 
+    }
+    public function get_repositories_wpdspace($value){
+        $this->repositories= $value;
+        return $value;
     }
 
     public function register_shortcodes()
