@@ -27,7 +27,7 @@ class Activator
             $image = get_post_meta(get_the_ID(), 'foto', true);
             if (!empty($image)) {
                 set_post_thumbnail(get_the_ID(), $image);
-                delete_post_meta(get_the_ID(), 'foto');
+//                delete_post_meta(get_the_ID(), 'foto');
             }
         endwhile;
     }
