@@ -1,12 +1,13 @@
 <?php
 
-$args = array('post_type' => 'personal');
+$args = array('post_type' => 'personal','posts_per_page' => 50);
 if (!empty($atts['category_id'])) {
     $args['tax_query'] =
         array(
             array(
                 'terms' => $atts['category_id'],
-                'taxonomy' => 'categorias'
+                'taxonomy' => 'categorias',
+
             ));
 }
 
