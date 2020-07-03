@@ -9,6 +9,8 @@
 $reserchgate = $this->the_personal_field('researchgate');
 $google_scholar = $this->the_personal_field('google_scholar');
 $orcid = $this->the_personal_field('orcid');
+$facebook = $this->the_personal_field('facebook');
+$twitter = $this->the_personal_field('twitter');
 $email = $this->the_personal_field('email');
 $curriculum_vitae = $this->the_personal_meta('curriculum_vitae');
 $telefono = $this->the_personal_field('telefono');
@@ -58,6 +60,16 @@ $other_repositories = $this->getRepositories();
                                             class=" wp-image-19"
                                             src="<?php echo plugins_url() . "/personal/assets/images/orcid.gif" ?>"
                                             alt="orcid" width="20" height="20" scale="0"> </a>
+                                <?php endif; ?>
+                                <?php if (!empty($facebook)): ?><a href="<?php echo $facebook; ?>" target="_blank"><img
+                                            class=" wp-image-19"
+                                            src="<?php echo plugins_url() . "/personal/assets/images/facebook.jpg" ?>"
+                                            alt="facebook" width="20" height="20" scale="0"> </a>
+                                <?php endif; ?>
+                                <?php if (!empty($twitter)): ?><a href="<?php echo $twitter; ?>" target="_blank"><img
+                                            class=" wp-image-19"
+                                            src="<?php echo plugins_url() . "/personal/assets/images/twitter.png" ?>"
+                                            alt="twitter" width="20" height="20" scale="0"> </a>
                                 <?php endif; ?>
 
                                 <?php if (!empty($curriculum_vitae)): ?><a

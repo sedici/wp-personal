@@ -22,6 +22,8 @@ $loop = new WP_Query($args);
             $reserchgate = $this->the_personal_field('researchgate');
             $google_scholar = $this->the_personal_field('google_scholar');
             $orcid = $this->the_personal_field('orcid');
+            $facebook = $this->the_personal_field('facebook');
+            $twitter = $this->the_personal_field('twitter');
             $email = $this->the_personal_field('email');
             $unidad_de_investigacion = $this->the_personal_field('unidad_de_investigacion');
             $grado_alcanzado = $this->the_personal_field('grado_alcanzado');
@@ -60,6 +62,16 @@ $loop = new WP_Query($args);
                                     class=" wp-image-19"
                                     src="<?php echo plugins_url() . "/personal/assets/images/orcid.gif" ?>"
                                     alt="orcid" width="20" height="20" scale="0"> </a>
+                        <?php endif; ?>
+                        <?php if (!empty($facebook)): ?><a href="<?php echo $facebook; ?>" target="_blank"><img
+                                    class=" wp-image-19"
+                                    src="<?php echo plugins_url() . "/personal/assets/images/facebook.jpg" ?>"
+                                    alt="facebook" width="20" height="20" scale="0"> </a>
+                        <?php endif; ?>
+                        <?php if (!empty($twitter)): ?><a href="<?php echo $twitter; ?>" target="_blank"><img
+                                    class=" wp-image-19"
+                                    src="<?php echo plugins_url() . "/personal/assets/images/twitter.png" ?>"
+                                    alt="twitter" width="20" height="20" scale="0"> </a>
                         <?php endif; ?>
                         <?php if (!empty($email)): ?><a href="mailto:<?php echo $email; ?>" target="_blank"><img
                                     src="<?php echo plugins_url() . "/personal/assets/images/mailto.gif" ?>"
