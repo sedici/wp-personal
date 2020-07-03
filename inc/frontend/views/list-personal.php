@@ -22,6 +22,7 @@ $loop = new WP_Query($args);
             $reserchgate = $this->the_personal_field('researchgate');
             $google_scholar = $this->the_personal_field('google_scholar');
             $orcid = $this->the_personal_field('orcid');
+            $linkedin = $this->the_personal_field('linkedin');
             $facebook = $this->the_personal_field('facebook');
             $twitter = $this->the_personal_field('twitter');
             $email = $this->the_personal_field('email');
@@ -61,6 +62,11 @@ $loop = new WP_Query($args);
                         <?php if (!empty($orcid)): ?><a href="<?php echo $orcid; ?>" target="_blank"><img
                                     class=" wp-image-19"
                                     src="<?php echo plugins_url() . "/personal/assets/images/orcid.gif" ?>"
+                                    alt="orcid" width="20" height="20" scale="0"> </a>
+                        <?php endif; ?>
+                        <?php if (!empty($linkedin)): ?><a href="<?php echo $linkedin; ?>" target="_blank"><img
+                                    class=" wp-image-19"
+                                    src="<?php echo plugins_url() . "/personal/assets/images/linkedin.png" ?>"
                                     alt="orcid" width="20" height="20" scale="0"> </a>
                         <?php endif; ?>
                         <?php if (!empty($facebook)): ?><a href="<?php echo $facebook; ?>" target="_blank"><img
