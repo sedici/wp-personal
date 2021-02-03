@@ -22,6 +22,8 @@ $sedici = $this->the_personal_field('sedici');
 $cic = $this->the_personal_field('cic');
 $conicet = $this->the_personal_field('conicet');
 $categorias = wp_get_post_terms($post->ID, 'categorias', array("personal"));
+$rol = $this->the_personal_field('rol_unidad_de_investigacion');
+
 
 $other_repositories = $this->getRepositories();
 
@@ -112,6 +114,13 @@ $other_repositories = $this->getRepositories();
                                     </p>
                                 </div>
                             <?php endif; ?>
+                            <?php if (!empty($rol)): ?>
+                                <div class="field-rol">
+                                    <p>
+                                        <span class="views-label views-label-rol">Rol dentro de la unidad de investigación: </span><?php echo $rol; ?>
+                                    </p>
+                                </div>
+                            <?php endif; ?>
                             <?php if (!empty($grado_alcanzado)): ?>
                                 <div class="field-grado_alcanzado">
                                     <p>
@@ -119,6 +128,7 @@ $other_repositories = $this->getRepositories();
                                     </p>
                                 </div>
                             <?php endif; ?>
+
                         </div>
                         <?php if (!empty($biografia)): ?>
                             <div class="field-biografia">

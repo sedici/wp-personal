@@ -27,6 +27,7 @@ $loop = new WP_Query($args);
             $twitter = $this->the_personal_field('twitter');
             $email = $this->the_personal_field('email');
             $unidad_de_investigacion = $this->the_personal_field('unidad_de_investigacion');
+            $rol = $this->the_personal_field('rol_unidad_de_investigacion');
             $grado_alcanzado = $this->the_personal_field('grado_alcanzado');
             $biografia = $this->the_personal_field('biografia');
             $categorias = wp_get_post_terms($post->ID, 'categorias', array("personal"));
@@ -44,6 +45,7 @@ $loop = new WP_Query($args);
                 <div class="card-body">
                     <h5 class="card-title">    <?php the_title('<a href="' . get_permalink() . '" title="' . the_title_attribute('echo=0') . '" rel="bookmark">', '</a>'); ?></h5>
                     <div class="card-subtitle small mb-2"><?php echo $grado_alcanzado ?></div>
+                    <div class="card-subtitle small mb-2"><?php echo $rol ?></div>
                     <p class="card-text small"><?php echo $unidad_de_investigacion ?></p>
                 </div>
                 <div class="card-footer">
