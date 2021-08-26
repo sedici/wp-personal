@@ -91,20 +91,21 @@
     margin-top: 0px;
     margin-bottom: 0px;
 }
-.field-grado_alcanzado, .field-unidad_de_investigacion{
+.field-grado_alcanzado p, .field-unidad_de_investigacion p, .field-rol p{
     font-family: Roboto;
     color: #808284;
     font-size: 12px;
     margin-top: 0px;
+    margin-bottom: 0px;
     padding-top: 0px;
 
 }
-.field-grado_alcanzado span, .field-unidad_de_investigacion span{
+.field-grado_alcanzado span, .field-unidad_de_investigacion span, .field-rol span{
     font-weight: bold;
     color: #404041;
 
 }
-.field-biografia h2, .titulo-repo{
+.field-biografia h2, .titulo-repo button, .titulo-repo{
     font-size: 18px !important;
     font-family: Roboto !important;
     font-weight: bold !important;
@@ -116,9 +117,7 @@
     text-align: justify;
     font-family: Roboto !important;
 }
-h2.titulo-repo {
-    margin: 5px !important;
-}
+
 .contacto-personal{
     margin-top: 0px;
     padding-left: 0px !important;
@@ -135,4 +134,19 @@ h2.titulo-repo {
 }
 .list-publicaciones{
     margin-top: 20px;
+}
+
+.card-header .card-link{
+    background-color: transparent ;
+    border: transparent ;
+    box-shadow: none;
+}
+
+
+.accordion .card{
+    border: none;
+}
+.titulo-repo button, .titulo-repo {
+    
+    background: rgba(0,0,0,.03);
 }

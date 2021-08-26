@@ -14,8 +14,8 @@ $loop = new WP_Query($args);
 ?>
 
 <h3> <?php echo $atts['title'] ?></h3>
-<div class="row">
-    <div class="card-columns col-md-10 offset-2  " style="column-count: <?php echo $atts['columns'] ?>">
+<div class=" ">
+    <div class="row row-cols-1 row-cols-md-<?php echo $atts['columns'] ?> g-4" >
         <?php while ($loop->have_posts()) :
             $loop->the_post(); ?>
             <?php
@@ -36,16 +36,18 @@ $loop = new WP_Query($args);
             $image = get_the_post_thumbnail_url();
             $path_image_top = !empty($image) ? $image : plugins_url() . "/personal/assets/images/blank-profile.png";
             ?>
+            <div class="col">
             <div class="card">
                 <a href="<?php echo get_permalink($post->ID) ?>">
                     <div class="card-img-top" style="background-image: url('<?php echo $path_image_top ?>'); ">
                     </div>
+                   
                 </a>
 
                 <div class="card-body">
                     <h5 class="card-title">    <?php the_title('<a href="' . get_permalink() . '" title="' . the_title_attribute('echo=0') . '" rel="bookmark">', '</a>'); ?></h5>
-                    <div class="card-subtitle small mb-2"><?php echo $grado_alcanzado ?></div>
-                    <div class="card-subtitle small mb-2"><?php echo $rol ?></div>
+                    <div class="card-text small mb-2"><?php echo $grado_alcanzado ?></div>
+                    <div class="card-text small mb-2"><?php echo $rol ?></div>
                     <p class="card-text small"><?php echo $unidad_de_investigacion ?></p>
                 </div>
                 <div class="card-footer">
@@ -93,11 +95,10 @@ $loop = new WP_Query($args);
                     </div>
                 </div>
             </div>
+            </div>
         <?php endwhile; 
         wp_reset_postdata();
         ?>
     </div>
 </div>
-
-
 

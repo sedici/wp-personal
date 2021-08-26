@@ -139,82 +139,76 @@ $other_repositories = $this->getRepositories();
 
                     </div>
                 </div>
+                
+
                 <div class="list-publicaciones col-md-12 ">
 
-                    <div id="accordion">
-                        <?php if (!empty($sedici)): ?>
-                            <div class="card">
-                                <div class="card-header">
-                                    <a class="card-link" data-toggle="collapse" href="#collapseOne">
-                                        <h2 class="titulo-repo">Producción científica en SEDICI</h2>
-                                    </a>
-                                </div>
-                                <div id="collapseOne" class="collapse" data-parent="#accordion">
-                                    <div class="card-body">
+
+                    <div class="accordion" id="accordion_publicaciones">
+                        <?php if (!empty($sedici)): ?>  
+                            <div class="accordion-item card ">
+                                <h2 class="accordion-header titulo-repo card-header" id="headingOne">
+                                    <button class="accordion-button card-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Producción científica en SEDICI
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordion_publicaciones">
+                                    <div class="accordion-body card-body">
                                         <?php echo do_shortcode('[get_publications  config="sedici"  author="' . $sedici . '" show_subtype=false show_author=true date=true max_results="1000" ]'); ?>
                                     </div>
                                 </div>
                             </div>
                         <?php endif; ?>
-                        <?php if (!empty($cic)): ?>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <a class="collapsed card-link" data-toggle="collapse" href="#collapseTwo">
-                                        <h2 class="titulo-repo">Producción científica en CIC</h2>
-                                    </a>
-                                </div>
-                                <div id="collapseTwo" class="collapse" data-parent="#accordion">
-                                    <div class="card-body">
-                                        <?php echo do_shortcode('[get_publications  config="cic"  author="' . $cic . '"  show_subtype=false  date=true  max_results="1000" "]'); ?>
+                        <?php if (!empty($cic)): ?>  
+                            <div class="accordion-item card ">
+                                <h2 class="accordion-header titulo-repo card-header" id="headingTwo">
+                                    <button class="accordion-button card-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                        Producción científica en CIC
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordion_publicaciones">
+                                    <div class="accordion-body card-body">
+                                        <?php echo do_shortcode('[get_publications  config="cic"  author="' . $sedici . '" show_subtype=false show_author=true date=true max_results="1000" ]'); ?>
                                     </div>
                                 </div>
                             </div>
                         <?php endif; ?>
-                        <?php if (!empty($conicet)): ?>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <a class="collapsed card-link" data-toggle="collapse" href="#collapseThree">
-                                        <h2 class="titulo-repo">Producción científica en CONICET</h2>
-                                    </a>
-                                </div>
-                                <div id="collapseThree" class="collapse" data-parent="#accordion">
-                                    <div class="card-body">
-                                        <?php echo do_shortcode('[get_publications  config="conicet"  author="' . $conicet . '"   show_subtype=false show_author=true date=true  max_results="1000""]'); ?>
+                        <?php if (!empty($conicet)): ?>  
+                            <div class="accordion-item card ">
+                                <h2 class="accordion-header titulo-repo card-header" id="headingThree">
+                                    <button class="accordion-button card-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                                        Producción científica en CONICET
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse " aria-labelledby="headingThree" data-bs-parent="#accordion_publicaciones">
+                                    <div class="accordion-body card-body ">
+                                        <?php echo do_shortcode('[get_publications  config="sedici"  author="' . $conicet . '" show_subtype=false show_author=true date=true max_results="1000" ]'); ?>
                                     </div>
                                 </div>
                             </div>
-                        <?php endif; ?>
 
+                        <?php endif; ?>
                         <?php
-                        foreach ($other_repositories as $r) {
-                            ?>
-                            <div class="card">
-
-                                <div class="card-header">
-                                    <a class="collapsed card-link" data-toggle="collapse"
-                                       href="#collapse<?php echo $r['name']; ?>">
-                                        <h2 class="titulo-repo">Publicaciones en <?php echo strtoupper($r['name']); ?></h2>
-                                    </a>
-                                </div>
-                                <div id="collapse<?php echo $r['name']; ?>" class="collapse" data-parent="#accordion">
-                                    <div class="card-body">
-                                        <?php echo do_shortcode('[get_publications  config="' . $r['name'] . '"  author="' . $this->the_personal_field($r['name']) . '"   show_subtype=false show_author=true date=true  max_results="1000""]'); ?>
+                            foreach ($other_repositories as $r) {
+                                ?>
+                                <div class="accordion-item card ">
+                                <h2 class="accordion-header titulo-repo card-header" id="heading<?php echo $r['name']; ?>">
+                                    <button class="accordion-button card-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?php echo $r['name']; ?>" aria-expanded="true" aria-controls="collapse<?php echo $r['name']; ?>">
+                                        Producción científica en <?php echo strtoupper($r['name']); ?>
+                                    </button>
+                                </h2>
+                                <div id="collapse<?php echo $r['name']; ?>" class="accordion-collapse collapse" aria-labelledby="heading<?php echo $r['name']; ?>" data-bs-parent="#accordion_publicaciones">
+                                    <div class="accordion-body card-body">
+                                    <?php echo do_shortcode('[get_publications  config="' . $r['name'] . '"  author="' . $this->the_personal_field($r['name']) . '"   show_subtype=false show_author=true date=true  max_results="1000""]'); ?>
                                     </div>
                                 </div>
                             </div>
+                                <?php
 
-                            <?php
-
-                        }
+                            }
                         ?>
-
-
                     </div>
-                </div>
-
-
+                </div>            
                 <?php if (!empty($categorias)): ?>
                     <div class="list-categoria col-md-12">
                         <?php foreach ($categorias as $categoria): ?>
@@ -230,7 +224,7 @@ $other_repositories = $this->getRepositories();
         </article>
 
 
+
+
     </div><!-- #content .site-content -->
 </div><!-- #primary .content-area -->
-
-
