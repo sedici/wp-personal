@@ -8,9 +8,11 @@
  */
 $reserchgate = $this->the_personal_field('researchgate');
 $google_scholar = $this->the_personal_field('google_scholar');
+$scopus = $this->the_personal_field('scopus');
 $orcid = $this->the_personal_field('orcid');
 $linkedin = $this->the_personal_field('linkedin');
 $facebook = $this->the_personal_field('facebook');
+$instagram = $this->the_personal_field('instagram');
 $twitter = $this->the_personal_field('twitter');
 $email = $this->the_personal_field('email');
 $curriculum_vitae = $this->the_personal_meta('curriculum_vitae');
@@ -46,7 +48,7 @@ $other_repositories = $this->getRepositories();
                         </div>
 
                         <div class="col-md-8 offset-2">
-                            <div class="barra-redes">
+                            <div class="barra-redes" id="barra-academica">
                                 <?php if (!empty($google_scholar)): ?>
                                     <a href="<?php echo $google_scholar; ?>" target="_blank"><img
                                                 class=" wp-image-16"
@@ -64,15 +66,27 @@ $other_repositories = $this->getRepositories();
                                             src="<?php echo plugins_url() . "/personal/assets/images/orcid.gif" ?>"
                                             alt="orcid" width="20" height="20" scale="0"> </a>
                                 <?php endif; ?>
+                                <?php if (!empty($scopus)): ?><a href="<?php echo $scopus; ?>" target="_blank"><img
+                                            class=" wp-image-19"
+                                            src="<?php echo plugins_url() . "/personal/assets/images/scopus.png" ?>"
+                                            alt="scopus" width="20" height="20" scale="0"> </a>
+                                <?php endif; ?>
                                 <?php if (!empty($linkedin)): ?><a href="<?php echo $linkedin; ?>" target="_blank"><img
                                             class=" wp-image-19"
                                             src="<?php echo plugins_url() . "/personal/assets/images/linkedin.png" ?>"
                                             alt="$linkedinid" width="20" height="20" scale="0"> </a>
-                                <?php endif; ?>
+                                <?php endif; ?> 
+                                </div>
+                                <div class="barra-redes" id="barra-social">
                                 <?php if (!empty($facebook)): ?><a href="<?php echo $facebook; ?>" target="_blank"><img
                                             class=" wp-image-19"
                                             src="<?php echo plugins_url() . "/personal/assets/images/facebook.jpg" ?>"
                                             alt="facebook" width="20" height="20" scale="0"> </a>
+                                <?php endif; ?>
+                                <?php if (!empty($instagram)): ?><a href="<?php echo $instagram; ?>" target="_blank"><img
+                                            class=" wp-image-19"
+                                            src="<?php echo plugins_url() . "/personal/assets/images/instagram.jpg" ?>"
+                                            alt="instagram" width="20" height="20" scale="0"> </a>
                                 <?php endif; ?>
                                 <?php if (!empty($twitter)): ?><a href="<?php echo $twitter; ?>" target="_blank"><img
                                             class=" wp-image-19"
