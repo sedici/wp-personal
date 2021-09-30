@@ -22,6 +22,7 @@ $loop = new WP_Query($args);
             $reserchgate = $this->the_personal_field('researchgate');
             $google_scholar = $this->the_personal_field('google_scholar');
             $scopus = $this->the_personal_field('scopus');
+            $publons = $this->the_personal_field('publons');
             $orcid = $this->the_personal_field('orcid');
             $linkedin = $this->the_personal_field('linkedin');
             $email = $this->the_personal_field('email');
@@ -66,6 +67,11 @@ $loop = new WP_Query($args);
                                     class=" wp-image-19"
                                     src="<?php echo plugins_url() . "/personal/assets/images/scopus.png" ?>"
                                     alt="scopus" width="20" height="20"></a>
+                        <?php endif; ?>
+                        <?php if (!empty($publons)): ?><a href="<?php echo $publons; ?>" target="_blank"><img
+                                    class=" wp-image-19"
+                                    src="<?php echo plugins_url() . "/personal/assets/images/publons.png" ?>"
+                                    alt="publons" width="20" height="20"></a>
                         <?php endif; ?>
                         <?php if (!empty($orcid)): ?><a href="<?php echo $orcid; ?>" target="_blank"><img
                                     class=" wp-image-19"

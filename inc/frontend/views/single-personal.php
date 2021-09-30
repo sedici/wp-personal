@@ -8,6 +8,7 @@
  */
 $reserchgate = $this->the_personal_field('researchgate');
 $google_scholar = $this->the_personal_field('google_scholar');
+$publons = $this->the_personal_field('publons');
 $scopus = $this->the_personal_field('scopus');
 $orcid = $this->the_personal_field('orcid');
 $linkedin = $this->the_personal_field('linkedin');
@@ -70,6 +71,11 @@ $other_repositories = $this->getRepositories();
                                             class=" wp-image-19"
                                             src="<?php echo plugins_url() . "/personal/assets/images/scopus.png" ?>"
                                             alt="scopus" width="20" height="20" scale="0"> </a>
+                                <?php endif; ?>
+                                <?php if (!empty($publons)): ?><a href="<?php echo $publons; ?>" target="_blank"><img
+                                            class=" wp-image-19"
+                                            src="<?php echo plugins_url() . "/personal/assets/images/publons.png" ?>"
+                                            alt="publons" width="20" height="20" scale="0"> </a>
                                 <?php endif; ?>
                                 <?php if (!empty($linkedin)): ?><a href="<?php echo $linkedin; ?>" target="_blank"><img
                                             class=" wp-image-19"
