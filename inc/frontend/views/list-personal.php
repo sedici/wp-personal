@@ -30,7 +30,13 @@ $loop = new WP_Query($args);
             $rol = $this->the_personal_field('rol_unidad_de_investigacion');
             $grado_alcanzado = $this->the_personal_field('grado_alcanzado');
             $biografia = $this->the_personal_field('biografia');
+            if(isset($post->ID)){
             $categorias = wp_get_post_terms($post->ID, 'categorias', array("personal"));
+            }
+            else{
+                $categorias = wp_get_post_terms('categorias', array("personal"));
+            }
+            
             ?>
             <?php
             $image = get_the_post_thumbnail_url();
@@ -38,10 +44,15 @@ $loop = new WP_Query($args);
             ?>
             <div class="col">
             <div class="card">
-                <a href="<?php echo get_permalink($post->ID) ?>">
+            <?php
+                if(isset($post->ID)){ ?>
+                  <a href="<?php echo get_permalink($post->ID) ?>">
+               <?php }
+                else{ ?>
+                    <a>
+               <?php } ?>
                     <div class="card-img-top" style="background-image: url('<?php echo $path_image_top ?>'); ">
                     </div>
-                   
                 </a>
 
                 <div class="card-body">
