@@ -1,7 +1,6 @@
 <?php
 
 namespace Personal\Inc\Frontend;
-
 /**
  *
  * Carga la vista pública del complemento
@@ -10,13 +9,9 @@ namespace Personal\Inc\Frontend;
  */
 class Frontend
 {
-
-
     private $plugin_name;
 
-
     private $version;
-
 
     private $plugin_text_domain;
 
