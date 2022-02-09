@@ -168,7 +168,7 @@ $other_repositories = $this->getRepositories();
                                 </h2>
                                 <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordion_publicaciones">
                                     <div class="accordion-body card-body">
-                                        <?php echo do_shortcode('[get_publications  config="cic"  author="' . $sedici . '" show_subtype=false show_author=true date=true max_results="1000" ]'); ?>
+                                        <?php echo do_shortcode('[get_publications  config="cic"  author="' . $cic . '" show_subtype=false show_author=true date=true max_results="1000" ]'); ?>
                                     </div>
                                 </div>
                             </div>
