@@ -182,7 +182,7 @@ $other_repositories = $this->getRepositories();
                                 </h2>
                                 <div id="collapseThree" class="accordion-collapse collapse " aria-labelledby="headingThree" data-bs-parent="#accordion_publicaciones">
                                     <div class="accordion-body card-body ">
-                                        <?php echo do_shortcode('[get_publications  config="sedici"  author="' . $conicet . '" show_subtype=false show_author=true date=true max_results="1000" ]'); ?>
+                                        <?php echo do_shortcode('[get_publications  config="conicet"  author="' . $conicet . '" show_subtype=false show_author=true date=true max_results="1000" ]'); ?>
                                     </div>
                                 </div>
                             </div>
