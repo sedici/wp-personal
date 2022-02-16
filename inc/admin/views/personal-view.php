@@ -26,6 +26,9 @@ function register_personal_field_group($args)
     $input = '<div class="inptuts-personal">';
     wp_nonce_field('mi_meta_box_nonce', 'meta_box_nonce');
     foreach ($args as $value) {
+        if(!isset($value['type'])){
+            $value['type']="";
+        }
         if ($value['type'] != 'wp_editor') {
             if (isset($value['repositories'])) {
                 foreach ($value['repositories'] as $r) {
@@ -48,8 +51,15 @@ function register_personal_field_group($args)
 
 function print_input($value)
 {
-
+    if(!isSet($value['instructions'])){
+        $value['instructions']="";
+    }
     $input = "<div class='personal-label'> <label for='" . $value['name'] . "'>" . $value['label'] . "</label><p class='description'>" . $value['instructions'] . " </p></div>";
+    
+    if(!isSet($value['placeholder'])){
+        $value['placeholder']="";
+    }
+
     $input .= "<div class=''><input type=" . $value['type'] . "  name=" . $value['name'] . " placeholder='" . $value['placeholder'] . "' value='" . $value['default_value'] . "'></div>";
     return $input;
 }
