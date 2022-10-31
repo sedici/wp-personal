@@ -1,6 +1,11 @@
 <?php
 $args = array('post_type' => 'personal','posts_per_page' => 50);
-if (!empty($atts['category_id'])) {
+
+if(!empty($atts['name'])) {
+    $args['title'] = $atts['name'];
+}
+
+else if (!empty($atts['category_id'])) {
     $args['tax_query'] =
         array(
             array(
@@ -10,7 +15,10 @@ if (!empty($atts['category_id'])) {
             ));
 }
 
+
 $loop = new WP_Query($args);
+
+
 ?>
 
 <h3> <?php echo $atts['title'] ?></h3>
@@ -45,7 +53,7 @@ $loop = new WP_Query($args);
                 </a>
 
                 <div class="card-body">
-                    <h5 class="card-title">    <?php the_title('<a href="' . get_permalink() . '" title="' . the_title_attribute('echo=0') . '" rel="bookmark">', '</a>'); ?></h5>
+                    <h5 class="card-title">    <?php the_title('<a href="' . get_permalink() . '" title="' . the_title_attribute('echo=0') . '" rel="bookmark">', '</a>'); ?></h5> 
                     <div class="card-text small mb-2"><?php echo $grado_alcanzado ?></div>
                     <div class="card-text small mb-2"><?php echo $rol ?></div>
                     <p class="card-text small"><?php echo $unidad_de_investigacion ?></p>
