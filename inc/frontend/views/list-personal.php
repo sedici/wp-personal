@@ -46,7 +46,7 @@ $loop = new WP_Query($args);
             $rol = $this->the_personal_field('rol_unidad_de_investigacion');
             $grado_alcanzado = $this->the_personal_field('grado_alcanzado');
             $biografia = $this->the_personal_field('biografia');
-            $categorias = wp_get_post_terms($loop->the_ID(), 'categorias', array("personal"));
+            $categorias = wp_get_post_terms($post->ID, 'categorias', array("personal"));
             ?>
             <?php
             $image = get_the_post_thumbnail_url();
