@@ -1,9 +1,16 @@
 <?php
 $args = array('post_type' => 'personal','posts_per_page' => 50);
 
-if(!empty($atts['name'])) {
-    $args['title'] = $atts['name'];
+if(!empty($atts['name_id'])) {
+    $args['p'] = $atts['name_id'];
 }
+
+else if(!empty($atts['names'])) {
+    $arr = array();
+    $arr = explode(',',$atts['names']);
+    $args['post__in'] = $arr;
+}
+
 
 else if (!empty($atts['category_id'])) {
     $args['tax_query'] =
@@ -17,6 +24,7 @@ else if (!empty($atts['category_id'])) {
 
 
 $loop = new WP_Query($args);
+
 
 
 ?>
@@ -38,7 +46,7 @@ $loop = new WP_Query($args);
             $rol = $this->the_personal_field('rol_unidad_de_investigacion');
             $grado_alcanzado = $this->the_personal_field('grado_alcanzado');
             $biografia = $this->the_personal_field('biografia');
-            $categorias = wp_get_post_terms($post->ID, 'categorias', array("personal"));
+            $categorias = wp_get_post_terms($loop->the_ID(), 'categorias', array("personal"));
             ?>
             <?php
             $image = get_the_post_thumbnail_url();
