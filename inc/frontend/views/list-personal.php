@@ -11,8 +11,7 @@ else if(!empty($atts['names'])) {
     $args['post__in'] = $arr;
 }
 
-
-else if (!empty($atts['category_id'])) {
+if (!empty($atts['category_id'])) {
     $args['tax_query'] =
         array(
             array(
@@ -46,7 +45,7 @@ $loop = new WP_Query($args);
             $rol = $this->the_personal_field('rol_unidad_de_investigacion');
             $grado_alcanzado = $this->the_personal_field('grado_alcanzado');
             $biografia = $this->the_personal_field('biografia');
-            $categorias = wp_get_post_terms($post->ID, 'categorias', array("personal"));
+            $categorias = wp_get_post_terms(get_the_ID(), 'categorias', array("personal"));
             ?>
             <?php
             $image = get_the_post_thumbnail_url();
@@ -54,7 +53,7 @@ $loop = new WP_Query($args);
             ?>
             <div class="col">
             <div class="card">
-                <a href="<?php echo get_permalink($post->ID) ?>">
+                <a href="<?php echo get_permalink(get_the_ID()) ?>">
                     <div class="card-img-top" style="background-image: url('<?php echo $path_image_top ?>'); ">
                     </div>
                    
