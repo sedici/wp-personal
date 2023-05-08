@@ -230,7 +230,7 @@ class Admin
     {
         add_meta_box('personal_meta', __('Información del personal', 'personal'), array($this, 'personal_display_callback'), 'personal');
     }
-    /**
+    /*
      * Formulario custom post
      */
     public function personal_display_callback($post)
