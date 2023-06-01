@@ -1,16 +1,5 @@
 <?php
 $args = array('post_type' => 'personal','posts_per_page' => 50);
-
-if(!empty($atts['name_id'])) {
-    $args['p'] = $atts['name_id'];
-}
-
-else if(!empty($atts['names'])) {
-    $arr = array();
-    $arr = explode(',',$atts['names']);
-    $args['post__in'] = $arr;
-}
-
 if (!empty($atts['category_id'])) {
     $args['tax_query'] =
         array(
@@ -21,11 +10,7 @@ if (!empty($atts['category_id'])) {
             ));
 }
 
-
 $loop = new WP_Query($args);
-
-
-
 ?>
 
 <h3> <?php echo $atts['title'] ?></h3>
@@ -45,7 +30,7 @@ $loop = new WP_Query($args);
             $rol = $this->the_personal_field('rol_unidad_de_investigacion');
             $grado_alcanzado = $this->the_personal_field('grado_alcanzado');
             $biografia = $this->the_personal_field('biografia');
-            $categorias = wp_get_post_terms(get_the_ID(), 'categorias', array("personal"));
+            $categorias = wp_get_post_terms($post->ID, 'categorias', array("personal"));
             ?>
             <?php
             $image = get_the_post_thumbnail_url();
@@ -53,14 +38,14 @@ $loop = new WP_Query($args);
             ?>
             <div class="col">
             <div class="card">
-                <a href="<?php echo get_permalink(get_the_ID()) ?>">
+                <a href="<?php echo get_permalink($post->ID) ?>">
                     <div class="card-img-top" style="background-image: url('<?php echo $path_image_top ?>'); ">
                     </div>
                    
                 </a>
 
                 <div class="card-body">
-                    <h5 class="card-title">    <?php the_title('<a href="' . get_permalink() . '" title="' . the_title_attribute('echo=0') . '" rel="bookmark">', '</a>'); ?></h5> 
+                    <h5 class="card-title">    <?php the_title('<a href="' . get_permalink() . '" title="' . the_title_attribute('echo=0') . '" rel="bookmark">', '</a>'); ?></h5>
                     <div class="card-text small mb-2"><?php echo $grado_alcanzado ?></div>
                     <div class="card-text small mb-2"><?php echo $rol ?></div>
                     <p class="card-text small"><?php echo $unidad_de_investigacion ?></p>

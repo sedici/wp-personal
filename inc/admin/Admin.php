@@ -230,7 +230,7 @@ class Admin
     {
         add_meta_box('personal_meta', __('Información del personal', 'personal'), array($this, 'personal_display_callback'), 'personal');
     }
-    /*
+    /**
      * Formulario custom post
      */
     public function personal_display_callback($post)
@@ -247,7 +247,8 @@ class Admin
         if ($personal->post_type == 'personal') {
             $inputs= $this->getInputsPersonal();
             foreach ( $inputs as $input) {
-                if ( isset($input['name']) and isset($_POST[$input['name']]))
+
+                if (isset($_POST[$input['name']]))
                     update_post_meta($idpersonal, $input['name'], $_POST[$input['name']]);
                 if(isset($input['repositories'])){
                     foreach ($input['repositories'] as $repository) {
@@ -255,7 +256,6 @@ class Admin
                             update_post_meta($idpersonal, $repository['name'], $_POST[$repository['name']]);
                     }
                 }
-            
             }
             if(!empty($_FILES['curriculum_vitae']['name'])) {
                 $supported_types = array('application/pdf');

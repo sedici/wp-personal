@@ -117,8 +117,6 @@ class Frontend
             'category_id' => '',
             'title' => '',
             'columns' => 3,
-            'name_id' => '',
-            'names' => array(),
         ), $atts);
         ob_start();
         include('views/list-personal.php');
