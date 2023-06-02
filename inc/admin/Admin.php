@@ -248,7 +248,7 @@ class Admin
             $inputs= $this->getInputsPersonal();
             foreach ( $inputs as $input) {
 
-                if (isset($_POST[$input['name']]))
+                if ( isset($input['name'])  and isset($_POST[$input['name']]) )
                     update_post_meta($idpersonal, $input['name'], $_POST[$input['name']]);
                 if(isset($input['repositories'])){
                     foreach ($input['repositories'] as $repository) {

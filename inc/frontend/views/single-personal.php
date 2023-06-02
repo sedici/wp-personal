@@ -154,7 +154,7 @@ $other_repositories = $this->getRepositories();
                                 </h2>
                                 <div id="collapseOne" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordion_publicaciones">
                                     <div class="accordion-body card-body">
-                                        <?php echo do_shortcode('[get_publications  config="sedici"  author="' . $sedici . '" show_subtype=false show_author=true date=true max_results="1000" ]'); ?>
+                                        <?php echo do_shortcode('[get_publications  config="sedici"  author="' . $sedici . '" show_subtype=false show_author=true group_date=true date=true max_results="1000" ]'); ?>
                                     </div>
                                 </div>
                             </div>
@@ -168,7 +168,7 @@ $other_repositories = $this->getRepositories();
                                 </h2>
                                 <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordion_publicaciones">
                                     <div class="accordion-body card-body">
-                                        <?php echo do_shortcode('[get_publications  config="cic"  author="' . $cic . '" show_subtype=false show_author=true date=true max_results="1000" ]'); ?>
+                                        <?php echo do_shortcode('[get_publications  config="cic"  author="' . $cic . '" show_subtype=false show_author=true  group_date=true date=true max_results="1000" ]'); ?>
                                     </div>
                                 </div>
                             </div>
@@ -182,7 +182,7 @@ $other_repositories = $this->getRepositories();
                                 </h2>
                                 <div id="collapseThree" class="accordion-collapse collapse " aria-labelledby="headingThree" data-bs-parent="#accordion_publicaciones">
                                     <div class="accordion-body card-body ">
-                                        <?php echo do_shortcode('[get_publications  config="sedici"  author="' . $conicet . '" show_subtype=false show_author=true date=true max_results="1000" ]'); ?>
+                                        <?php echo do_shortcode('[get_publications  config="sedici"  author="' . $conicet . '" show_subtype=false show_author=true group_date=true date=true max_results="1000" ]'); ?>
                                     </div>
                                 </div>
                             </div>
@@ -199,7 +199,7 @@ $other_repositories = $this->getRepositories();
                                 </h2>
                                 <div id="collapse<?php echo $r['name']; ?>" class="accordion-collapse collapse" aria-labelledby="heading<?php echo $r['name']; ?>" data-bs-parent="#accordion_publicaciones">
                                     <div class="accordion-body card-body">
-                                    <?php echo do_shortcode('[get_publications  config="' . $r['name'] . '"  author="' . $this->the_personal_field($r['name']) . '"   show_subtype=false show_author=true date=true  max_results="1000""]'); ?>
+                                    <?php echo do_shortcode('[get_publications  config="' . $r['name'] . '"  author="' . $this->the_personal_field($r['name']) . '"  group_date=true  show_subtype=false show_author=true date=true  group_date=true max_results="1000""]'); ?>
                                     </div>
                                 </div>
                             </div>

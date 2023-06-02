@@ -26,7 +26,7 @@ function register_personal_field_group($args)
     $input = '<div class="inptuts-personal">';
     wp_nonce_field('mi_meta_box_nonce', 'meta_box_nonce');
     foreach ($args as $value) {
-        if ($value['type'] != 'wp_editor') {
+        if (isset($value['type']) or $value['type'] != 'wp_editor') {
             if (isset($value['repositories'])) {
                 foreach ($value['repositories'] as $r) {
                     $input .= print_input($r);
