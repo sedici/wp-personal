@@ -60,8 +60,27 @@ class Admin
      */
     public function add_plugin_admin_menu()
     {
+        
         //usar add_menu_page(), add_submenu_page(), etc.
 
+        ## Agregar subpágina Obtener Tag id
+		$ajax_form_page_hook = add_submenu_page(
+            'edit.php?post_type=personal',
+            __('Obtener Tag ID', $this->plugin_text_domain), //page title
+            __('Obtener Tag ID', $this->plugin_text_domain), //menu title
+            'manage_options', //capability
+            'get-personal-tag-id', //menu_slug
+            array($this, 'gettag_submenu_page')// página que va a manejar la sección
+        );
+
+        
+        ## Agregar subpágina Generar shortcode
+    }
+
+    public function gettag_submenu_page () {
+
+        include_once dirname(__DIR__) . '/admin/views/shortocde-generator-view.php';
+        
     }
 
 
