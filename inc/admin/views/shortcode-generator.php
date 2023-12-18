@@ -9,6 +9,7 @@ $args = array(
 
 $query = new WP_Query($args);
 
+// Guardo en $terms_array los terminos/categorias de los posts de personal (no guardo categorias repetidas)
 if ($query->have_posts()) {
 
     $terms_array = array();
@@ -30,8 +31,12 @@ if ($query->have_posts()) {
         }
     }
 
+    // Es posible obtener el WP_Term usando get_term_by()
     if($terms_array) {
-       
+        
+        // Aca podria meter en variables o algo todo lo que quiero mostrar para enviarlo al template
+
+        include_once dirname(__DIR__) . '/views/get-shortcode-view.php';
     }
     else {
         echo 'No posee categorias creadas para personas!';
@@ -41,20 +46,6 @@ if ($query->have_posts()) {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-   
-
-   
 
 
 

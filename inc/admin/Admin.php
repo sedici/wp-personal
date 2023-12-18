@@ -79,7 +79,7 @@ class Admin
 
     public function gettag_submenu_page () {
 
-        include_once dirname(__DIR__) . '/admin/views/shortcode-generator-view.php';
+        include_once dirname(__DIR__) . '/admin/views/shortcode-generator.php';
         
     }
 
