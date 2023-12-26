@@ -63,25 +63,44 @@ class Admin
         
         //usar add_menu_page(), add_submenu_page(), etc.
 
-        ## Agregar subpágina Obtener Tag id
+        ## Agregar subpágina Generar shortcode
 		$ajax_form_page_hook = add_submenu_page(
             'edit.php?post_type=personal',
-            __('Obtener Tag ID', $this->plugin_text_domain), //page title
-            __('Obtener Tag ID', $this->plugin_text_domain), //menu title
+            __('Generar shortcode', $this->plugin_text_domain), //page title
+            __('Generar shortcode', $this->plugin_text_domain), //menu title
             'manage_options', //capability
             'get-personal-tag-id', //menu_slug
             array($this, 'gettag_submenu_page')// página que va a manejar la sección
         );
 
-        
-        ## Agregar subpágina Generar shortcode
     }
 
     public function gettag_submenu_page () {
 
-        include_once dirname(__DIR__) . '/admin/views/shortcode-generator.php';
+        include_once dirname(__DIR__) . '/admin/views/get-tag-id.php';
         
     }
+
+
+    public function generate_shortcode () {
+        
+        $shortcode = "";
+
+        $term_id_selected = $_POST['term_id'];
+
+        $columns = $_POST['number_columns'];
+
+        //Verificar que term_id y columns sea valido
+
+        if( !empty($term_id_selected) && !empty($columns) && ($columns >=1 || $columns <= 4) ) {
+            
+            $shortcode = "[list-personal category_id=" . $term_id_selected . " columns=" . $columns . "]" ;
+
+            var_dump($shortcode);
+        }
+
+    }
+
 
 
     public function get_repositories_wpdspace($value){
