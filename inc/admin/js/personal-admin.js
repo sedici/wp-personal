@@ -1,7 +1,5 @@
 function procesar_formulario_personal(form) {
 
-    alert('llego');
-
     var formData = jQuery(form).serialize();
 
     // Realizar la solicitud AJAX
@@ -15,16 +13,30 @@ function procesar_formulario_personal(form) {
         },
 
         beforeSend: function(){
-            alert('Se esta por enviar');
+            
         },
         
         success: function(response) {
-            alert(response);
-            console.log('Exito!');
+            //alert(response);
+
+            if(response != 1) {
+                document.getElementById("shortcode-resultante").innerHTML = 
+                "<div class='wrapper-resultado-shortcode-personal'> <p class='texto-resultado-shortcode-personal'> " + response + " </p> </div>";
+
+                console.log('Se genero el shortcode con extio');
+            }
+            else {
+                document.getElementById("shortcode-resultante").innerHTML = 
+                "<div class='wrapper-resultado-shortcode-personal'> <p class='texto-resultado-shortcode-personal'> Ocurrio un error! </p> </div>";
+                console.log(reseponse);
+            }
+
+            
+
         },
 
         error: function(jqXHR, textStatus, errorThrown) {
-            console.error('Error en la solicitud AJAX:', textStatus, errorThrown);
+            console.error('Error en la solicitud AJAX de personal:', textStatus, errorThrown);
         },
     });
 };

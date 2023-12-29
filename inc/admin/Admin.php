@@ -87,28 +87,38 @@ class Admin
 
     public function generate_shortcode_personal() {
 
-        
-        //form_data = $_POST['formulario_data'];
-
-        echo 'hola';
-
-        die();
-        
         $shortcode = "";
+        
+        $form_data = $_POST['formulario_data'];
 
-        $term_id_selected = "";
+        // Guardo los input del formulario en un array
+        $form_data_array = explode("&",$form_data);
 
-        $columns = "";
+
+        //Usando expresiones regulares obtengo los valores numericos de los campos del formulario
+        $diccionario_shortcode = array(
+            "term_id_selected" => preg_replace('/[^0-9]/', '', $form_data_array[0]),
+            "columns" => preg_replace('/[^0-9]/', '', $form_data_array[1]),
+        );
 
         //Verifica que term_id y columns sea valido
 
-        if( !empty($term_id_selected) && !empty($columns) && ($columns >=1 || $columns <= 4) ) {
+        if( !empty($diccionario_shortcode['term_id_selected']) && 
+            !empty($diccionario_shortcode['columns']) && 
+            ($diccionario_shortcode['term_id_selected'] >=1 || $diccionario_shortcode['term_id_selected'] <= 4) ) {
             
-            $shortcode = "[list-personal category_id=" . $term_id_selected . " columns=" . $columns . "]" ;
+            $shortcode = "[list-personal category_id=" . $diccionario_shortcode['term_id_selected'] . " columns=" . $diccionario_shortcode['columns'] . "]" ;
  
-            echo $shortcode;
+        }
+        else {
+            echo 1;
         }
 
+        echo $shortcode;
+
+        wp_die();
+        
+        
     }
 
 
