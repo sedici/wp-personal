@@ -105,16 +105,16 @@ class Admin
 
         if( !empty($diccionario_shortcode['term_id_selected']) && 
             !empty($diccionario_shortcode['columns']) && 
-            ($diccionario_shortcode['term_id_selected'] >=1 || $diccionario_shortcode['term_id_selected'] <= 4) ) {
+            ($diccionario_shortcode['columns'] >=1 && $diccionario_shortcode['columns'] <= 4) ) {
             
             $shortcode = "[list-personal category_id=" . $diccionario_shortcode['term_id_selected'] . " columns=" . $diccionario_shortcode['columns'] . "]" ;
- 
+            
+            echo $shortcode;
+             
         }
         else {
             echo 1;
         }
-
-        echo $shortcode;
 
         wp_die();
         
