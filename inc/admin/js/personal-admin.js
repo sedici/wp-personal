@@ -11,10 +11,6 @@ function procesar_formulario_personal(form) {
             dataType : "json",
             formulario_data: formData
         },
-
-        beforeSend: function(){
-            
-        },
         
         success: function(response) {
             
