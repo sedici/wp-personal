@@ -51,8 +51,10 @@ class Admin
      */
     public function enqueue_scripts()
     {
-        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/personal-admin.js', $this->version, false);
-
+        //wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/personal-admin.js', $this->version, false);
+        wp_register_script('personal-admin-js', plugin_dir_url(__FILE__) . 'js/personal-admin.js', array('jquery'), '1', false );
+        wp_enqueue_script('personal-admin-js');
+        wp_localize_script('personal-admin-js','personal_ajax_object', array('url' => admin_url( 'admin-ajax.php' ) ));
     }
 
     /**
@@ -81,22 +83,30 @@ class Admin
         
     }
 
+    
 
-    public function generate_shortcode () {
+    public function generate_shortcode_personal() {
+
+        
+        //form_data = $_POST['formulario_data'];
+
+        echo 'hola';
+
+        die();
         
         $shortcode = "";
 
-        $term_id_selected = $_POST['term_id'];
+        $term_id_selected = "";
 
-        $columns = $_POST['number_columns'];
+        $columns = "";
 
-        //Verificar que term_id y columns sea valido
+        //Verifica que term_id y columns sea valido
 
         if( !empty($term_id_selected) && !empty($columns) && ($columns >=1 || $columns <= 4) ) {
             
             $shortcode = "[list-personal category_id=" . $term_id_selected . " columns=" . $columns . "]" ;
-
-            var_dump($shortcode);
+ 
+            echo $shortcode;
         }
 
     }

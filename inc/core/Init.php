@@ -104,7 +104,10 @@ class Init
         // Guarda los campos meta
         $this->loader->add_action('save_post', $plugin_admin, 'personal_save_metas');
 
-        $this->loader->add_action('admin_post_generate_shortcode_hook', $plugin_admin, 'generate_shortcode');
+        $this->loader->add_action('wp_ajax_generate_shortcode_personal', $plugin_admin, 'generate_shortcode_personal');
+        
+    
+        
 
     }
 
