@@ -2,15 +2,15 @@
 
 <h1> Obtener Tag ID de una categoría </h1>
 
-<ul class="lista-categorias">
+<div class="lista-categorias-personal">
 
     <?php foreach ($terms_array as $term): ?>
-        <li class="elemento-categoria">
+        <div class="elemento-categoria">
             <p> <?= $term->name . ' ' . $term->term_id ?></p>
-        </li>
+    </div>
     <?php endforeach; ?>
 
-</ul>
+</div>
 
 <br>
 <br>

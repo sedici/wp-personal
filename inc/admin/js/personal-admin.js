@@ -27,7 +27,7 @@ function procesar_formulario_personal(form) {
 
                 document.getElementById("shortcode-resultante").innerHTML = 
                 "<div class='wrapper-resultado-shortcode-personal'> <p class='texto-resultado-shortcode-personal'> Ocurrio un error! </p> </div>";
-                console.log(reseponse);
+                console.log(response);
             }
 
         },
