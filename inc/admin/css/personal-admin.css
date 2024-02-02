@@ -27,6 +27,7 @@
     transition: transform 0.3s ease-in-out;
 
     font-size: 12px;
+    text-align: center;
 }
 
 .elemento-categoria:hover {
