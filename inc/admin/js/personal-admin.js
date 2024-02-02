@@ -13,10 +13,8 @@ function procesar_formulario_personal(form) {
         },
         
         success: function(response) {
-            
-            //alert(response);
 
-            if (!response == 1) {
+            if (response !== 1) {
 
                 document.getElementById("shortcode-resultante").innerHTML = 
                 "<div class='wrapper-resultado-shortcode-personal'> <p class='texto-resultado-shortcode-personal'> " + response + " </p> </div>";

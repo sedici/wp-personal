@@ -33,7 +33,7 @@ $terms_array = $plugin_admin->get_personal_terms();
 
 <br>
 
-<form id="form-personal-gen-shortcode" method="post" enctype="multipart/form-data" onsubmit="procesar_formulario_personal(this); return false;">
+<form id="form-personal-gen-shortcode" action="<?php echo admin_url('admin-ajax.php'); ?>" method="post" enctype="multipart/form-data" onsubmit="procesar_formulario_personal(this); return false;">
 
     <?php foreach ($terms_array as $term): ?>
 
@@ -54,6 +54,8 @@ $terms_array = $plugin_admin->get_personal_terms();
 
     <label for="number_columns">Selecciona el numero de columnas:</label>
     <input type="number" id="number_columns" name="number_columns" min="1" max="4" required>
+
+    <input type="hidden" name="action" value="generate_shortcode_personal">
 
     <br>
     <br>

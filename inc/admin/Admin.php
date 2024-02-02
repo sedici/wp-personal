@@ -174,7 +174,6 @@ class Admin
 
         wp_die();
         
-        
     }
 
 
