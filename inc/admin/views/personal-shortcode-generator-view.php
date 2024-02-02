@@ -1,14 +1,28 @@
+<?php 
 
+use Personal\Inc\Admin as Admin;
+use Personal as PP;
 
-<h1> Obtener Tag ID de una categoría </h1>
+$plugin_admin = new Admin\Admin(PP\PLUGIN_NAME , PP\PLUGIN_VERSION , PP\PLUGIN_TEXT_DOMAIN);
+
+$terms_array = $plugin_admin->get_personal_terms();
+
+?> 
+
+<h1> Tags ID de las categorías </h1>
 
 <div class="lista-categorias-personal">
 
-    <?php foreach ($terms_array as $term): ?>
-        <div class="elemento-categoria">
-            <p> <?= $term->name . ' ' . $term->term_id ?></p>
-    </div>
-    <?php endforeach; ?>
+    <?php if(!empty($terms_array)) {
+
+        foreach ($terms_array as $term): ?>
+
+            <div class="elemento-categoria">
+                <p> <?php echo $term->name . ' --> ' . $term->term_id ?> </p>
+            </div>
+
+    <?php endforeach; } 
+        else { ?> <div class="elemento-categoria" > No hay ningun post con categoria asignada! </div> <?php  } ?>
 
 </div>
 
@@ -16,6 +30,8 @@
 <br>
 
 <h1>Generar shortcode para una categoría</h1>
+
+<br>
 
 <form id="form-personal-gen-shortcode" method="post" enctype="multipart/form-data" onsubmit="procesar_formulario_personal(this); return false;">
 

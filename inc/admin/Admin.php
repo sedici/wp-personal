@@ -66,13 +66,14 @@ class Admin
         //usar add_menu_page(), add_submenu_page(), etc.
 
         ## Agregar subpágina Generar shortcode
+
 		$ajax_form_page_hook = add_submenu_page(
             'edit.php?post_type=personal',
             __('Generar shortcode', $this->plugin_text_domain), //page title
             __('Generar shortcode', $this->plugin_text_domain), //menu title
             'manage_options', //capability
             'get-personal-tag-id', //menu_slug
-            array($this, 'gettag_submenu_page')// página que va a manejar la sección
+            array($this, 'show_terms')// página que va a manejar la sección
         );
 
     }
@@ -88,58 +89,52 @@ class Admin
         );
 
         $query = new \WP_Query($args);
-        
 
-        // Guardo en $terms_name_array los terminos/categorias de los posts de personal (no guardo categorias repetidas)
+        // Si ningun post tenia una categoria asociada, $terms_name_array quedará vacio
+        $terms_name_array = array();
+        
+        // Guardo en $terms_name_array los terminos de los posts de personal
         if ($query->have_posts()) {
 
-            $terms_name_array = array();
-
             while ($query->have_posts()) {
-                
+
                 $query->the_post();
 
+                // Obtiene los terminos del post asociado
                 $terms = get_the_terms( get_the_ID() , 'categorias');
 
                 if ($terms && !is_wp_error($terms)) {
 
                     foreach ($terms as $term) {
                         
-                        if (!in_array($term->name, $terms_name_array)) {   
-                            $terms_name_array[] = $term->name;
+                        //Evito guardar terminos repetidos
+                        if (!in_array($term->name, $terms_name_array)) {  
+                            array_push($terms_name_array,$term->name); 
                         }
-                    }        
-                }
+                    }
+
+                } 
+
             }
 
-            // Es posible obtener el WP_Term usando get_term_by()
-            if($terms_name_array) {
-                
-                // Aca podria meter en variables o algo todo lo que quiero mostrar para enviarlo al template
-                $terms_array = array();
+            // Si ningun post tenia una categoria asociada, $terms_array quedará vacio
+            $terms_array = array();
+
+            if(!empty($terms_name_array)) {
 
                 foreach( $terms_name_array as $term_name) {
                     $terms_array[] = get_term_by('name', $term_name, 'categorias');
                 }
-
             }
-
-            else {
-                $terms_array = array(); //Si no habia categorias de personal creadas se devuelve un array vacio
-            }
-
+        
             wp_reset_postdata();
         }
 
-       return $terms_array;
+        return $terms_array;
     }
 
-    public function gettag_submenu_page () {
-
-        $terms_array = $this->get_personal_terms();
-
-        //Que hago si no hay cateogiras?
-
+    public function show_terms () {
+        
         include_once dirname(__DIR__) . '/admin/views/personal-shortcode-generator-view.php';
         
     }

@@ -37,3 +37,24 @@ function procesar_formulario_personal(form) {
         },
     });
 };
+
+
+function refrescar_categorias() {
+
+    // Realizar la solicitud AJAX
+    jQuery.ajax({
+        type: "POST",
+        url: personal_ajax_object.url, 
+        data: {
+            action: "generate_shortcode_personal"
+        },
+        
+        success: function(response) {
+            console.log("Categorias actualizadas!" + response);
+        },
+
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error en la actualizacion de categorias de personal:', textStatus, errorThrown);
+        },
+    });
+};

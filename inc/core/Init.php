@@ -106,8 +106,7 @@ class Init
 
         
         $this->loader->add_action('wp_ajax_generate_shortcode_personal', $plugin_admin, 'generate_shortcode_personal');
-        
-    
+        $this->loader->add_action('wp_ajax_generate_shortcode_personal', $plugin_admin, 'generate_shortcode_personal');
         
 
     }
