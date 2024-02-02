@@ -11,7 +11,11 @@
 spl_autoload_register( function( $class_name ) {
 	// Retorna si no esta incluido en el namespace
 	$pos = strpos( $class_name, 'Personal' );
+<<<<<<< HEAD
 	if ( (false === $pos) or ($pos !== 0) ) {
+=======
+	if ( (false === $pos) or ($pos !== 0) )  {
+>>>>>>> master
 		return;
 	}
 	$file_parts = explode( '\\', $class_name );
