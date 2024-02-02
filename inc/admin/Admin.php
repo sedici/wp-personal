@@ -171,9 +171,8 @@ class Admin
         else {
             echo 1;
         }
-
-        wp_die();
         
+        wp_die();
     }
 
 

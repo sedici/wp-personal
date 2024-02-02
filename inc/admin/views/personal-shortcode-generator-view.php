@@ -27,44 +27,63 @@ $terms_array = $plugin_admin->get_personal_terms();
 </div>
 
 <br>
-<br>
 
 <h1>Generar shortcode para una categoría</h1>
 
-<br>
+<div class="lista-categorias-personal"> 
 
-<form id="form-personal-gen-shortcode" action="<?php echo admin_url('admin-ajax.php'); ?>" method="post" enctype="multipart/form-data" onsubmit="procesar_formulario_personal(this); return false;">
+<?php if(empty($terms_array)) { ?>
 
-    <?php foreach ($terms_array as $term): ?>
+    <div class="elemento-categoria" > No hay ningun post con categoria asignada! </div>
 
-        <?php 
-            $term_name = $term->name;
-            $term_id = $term->term_id;
-        ?> 
-    
+<?php
 
-        <input type="radio" id="category_<?php echo $term_id; ?>" name="term_id" value="<?php echo $term_id; ?>" required>
-        <label for="category_<?php echo $term_id; ?>"><?php echo $term_name; ?></label>
+}
+
+else { ?>
+
+    <br>
+
+    <form id="form-personal-gen-shortcode" action="<?php echo admin_url('admin-ajax.php'); ?>" method="post" enctype="multipart/form-data" onsubmit="procesar_formulario_personal(this); return false;">
+
+        <?php foreach ($terms_array as $term): ?>
+
+            <?php 
+                $term_name = $term->name;
+                $term_id = $term->term_id;
+            ?> 
+        
+
+            <input type="radio" id="category_<?php echo $term_id; ?>" name="term_id" value="<?php echo $term_id; ?>" required>
+            <label for="category_<?php echo $term_id; ?>"><?php echo $term_name; ?></label>
+
+            <br>
+
+        <?php endforeach; ?>
 
         <br>
 
-    <?php endforeach; ?>
+        <label for="number_columns">Selecciona el numero de columnas:</label>
+        <input type="number" id="number_columns" name="number_columns" min="1" max="4" required>
 
-    <br>
+        <input type="hidden" name="action" value="generate_shortcode_personal">
 
-    <label for="number_columns">Selecciona el numero de columnas:</label>
-    <input type="number" id="number_columns" name="number_columns" min="1" max="4" required>
+        <br>
+        <br>
 
-    <input type="hidden" name="action" value="generate_shortcode_personal">
+        <button id="button-gen-shortcode" type="submit">Generar shortcode</button>
 
-    <br>
-    <br>
+    </form>
 
-    <button type="submit">Generar shortcode</button>
+    <div id="shortcode-resultante"></div>
 
-</form>
+    </div>
 
-<div id="shortcode-resultante"></div>
+<?php
+
+} 
+
+
 
 
 
