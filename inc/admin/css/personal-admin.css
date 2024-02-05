@@ -73,3 +73,26 @@ label {
     width: 50px;
     margin-bottom: 10px;
 }
+
+.elemento-categoria-tabla {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    width: 38%;
+}
+
+.elemento-categoria-tabla table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.elemento-categoria-tabla th, .elemento-categoria-tabla td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    width: 50%;
+}
+
+.elemento-categoria-tabla th {
+    background-color: #f2f2f2;
+}

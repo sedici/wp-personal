@@ -169,7 +169,7 @@ class Admin
              
         }
         else {
-            echo 1;
+            echo 'Ocurrio un error';
         }
         
         wp_die();

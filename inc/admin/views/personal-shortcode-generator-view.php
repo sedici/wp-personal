@@ -17,8 +17,17 @@ $terms_array = $plugin_admin->get_personal_terms();
 
         foreach ($terms_array as $term): ?>
 
-            <div class="elemento-categoria">
-                <p> <?php echo $term->name . ' --> ' . $term->term_id ?> </p>
+            <div class="elemento-categoria-tabla">
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>ID</th>
+                    </tr>
+                    <tr>
+                        <td><?php echo $term->name; ?></td>
+                        <td><?php echo $term->term_id; ?></td>
+                    </tr>
+                </table>
             </div>
 
     <?php endforeach; } 
