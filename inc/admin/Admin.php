@@ -44,7 +44,6 @@ class Admin
     public function enqueue_styles()
     {
         wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/personal-admin.css', array(), $this->version, 'all');
-
     }
 
     /**
@@ -52,7 +51,10 @@ class Admin
      */
     public function enqueue_scripts()
     {
-        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/personal-admin.js', $this->version, false);
+        //wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/personal-admin.js', $this->version, false);
+        wp_register_script('personal-admin-js', plugin_dir_url(__FILE__) . 'js/personal-admin.js', array('jquery'), '1', false );
+        wp_enqueue_script('personal-admin-js');
+        wp_localize_script('personal-admin-js','personal_ajax_object', array('url' => admin_url( 'admin-ajax.php' ) ));
     }
 
     /**
@@ -60,9 +62,119 @@ class Admin
      */
     public function add_plugin_admin_menu()
     {
+        
         //usar add_menu_page(), add_submenu_page(), etc.
 
+        ## Agregar subpágina Generar shortcode
+
+		$ajax_form_page_hook = add_submenu_page(
+            'edit.php?post_type=personal',
+            __('Generar shortcode', $this->plugin_text_domain), //page title
+            __('Generar shortcode', $this->plugin_text_domain), //menu title
+            'manage_options', //capability
+            'get-personal-tag-id', //menu_slug
+            array($this, 'show_terms')// página que va a manejar la sección
+        );
+
     }
+
+
+    public function get_personal_terms() {
+
+        $post_type_name = 'personal';
+
+        $args = array(
+            'post_type' => $post_type_name,
+            'posts_per_page' => -1, 
+        );
+
+        $query = new \WP_Query($args);
+
+        // Si ningun post tenia una categoria asociada, $terms_name_array quedará vacio
+        $terms_name_array = array();
+        
+        // Guardo en $terms_name_array los terminos de los posts de personal
+        if ($query->have_posts()) {
+
+            while ($query->have_posts()) {
+
+                $query->the_post();
+
+                // Obtiene los terminos del post asociado
+                $terms = get_the_terms( get_the_ID() , 'categorias');
+
+                if ($terms && !is_wp_error($terms)) {
+
+                    foreach ($terms as $term) {
+                        
+                        //Evito guardar terminos repetidos
+                        if (!in_array($term->name, $terms_name_array)) {  
+                            array_push($terms_name_array,$term->name); 
+                        }
+                    }
+
+                } 
+
+            }
+
+            // Si ningun post tenia una categoria asociada, $terms_array quedará vacio
+            $terms_array = array();
+
+            if(!empty($terms_name_array)) {
+
+                foreach( $terms_name_array as $term_name) {
+                    $terms_array[] = get_term_by('name', $term_name, 'categorias');
+                }
+            }
+        
+            wp_reset_postdata();
+        }
+
+        return $terms_array;
+    }
+
+    public function show_terms () {
+        
+        include_once dirname(__DIR__) . '/admin/views/personal-shortcode-generator-view.php';
+        
+    }
+
+    
+
+    public function generate_shortcode_personal() {
+
+        $shortcode = "";
+        
+        $form_data = $_POST['formulario_data'];
+
+        // Guardo los input del formulario en un array
+        $form_data_array = explode("&",$form_data);
+
+
+        //Usando expresiones regulares obtengo los valores numericos de los campos del formulario
+        $diccionario_shortcode = array(
+            "term_id_selected" => preg_replace('/[^0-9]/', '', $form_data_array[0]),
+            "columns" => preg_replace('/[^0-9]/', '', $form_data_array[1]),
+        );
+
+        //Verifica que term_id y columns sea valido
+
+        if( !empty($diccionario_shortcode['term_id_selected']) && 
+            !empty($diccionario_shortcode['columns']) && 
+            ($diccionario_shortcode['columns'] >=1 && $diccionario_shortcode['columns'] <= 4) ) {
+            
+            $shortcode = "[list-personal category_id=" . $diccionario_shortcode['term_id_selected'] . " columns=" . $diccionario_shortcode['columns'] . "]" ;
+            
+            echo $shortcode;
+             
+        }
+        else {
+            echo 'Ocurrio un error';
+        }
+        
+        wp_die();
+    }
+
 
 
     public function get_repositories_wpdspace($value){
