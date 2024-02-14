@@ -17,29 +17,6 @@ $loop = new WP_Query($args);
 <div class=" ">
     <div class="row row-cols-1 row-cols-md-<?php echo $atts['columns'] ?> g-4" >
         <?php while ($loop->have_posts()) :
-<<<<<<< HEAD
-            $loop->the_post(); ?>
-            <?php
-            $reserchgate = $this->the_personal_field('researchgate');
-            $google_scholar = $this->the_personal_field('google_scholar');
-            $orcid = $this->the_personal_field('orcid');
-            $linkedin = $this->the_personal_field('linkedin');
-            $facebook = $this->the_personal_field('facebook');
-            $twitter = $this->the_personal_field('twitter');
-            $email = $this->the_personal_field('email');
-            $unidad_de_investigacion = $this->the_personal_field('unidad_de_investigacion');
-            $rol = $this->the_personal_field('rol_unidad_de_investigacion');
-            $grado_alcanzado = $this->the_personal_field('grado_alcanzado');
-            $biografia = $this->the_personal_field('biografia');
-            if(isset($post->ID)){
-                $categorias = wp_get_post_terms($post->ID, 'categorias', array("personal"));
-                }
-                else{
-                    $categorias = wp_get_post_terms('categorias', array("personal"));
-                }
-            ?>
-            <?php
-=======
                 $loop->the_post(); 
                 $reserchgate = $this->the_personal_field('researchgate');
                 $google_scholar = $this->the_personal_field('google_scholar');
@@ -54,7 +31,6 @@ $loop = new WP_Query($args);
                 $biografia = $this->the_personal_field('biografia');
                 $categorias = wp_get_post_terms(get_the_ID(), 'categorias', array("personal"));
                 
->>>>>>> master
             $image = get_the_post_thumbnail_url();
             $path_image_top = !empty($image) ? $image : plugins_url() . "/personal/assets/images/blank-profile.png";
             ?>
