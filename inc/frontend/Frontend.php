@@ -86,8 +86,15 @@ class Frontend
      *
      */
     public function single_personal_template($content)
-    {
+    {   
+
         global $post;
+
+        // Compruebo que $post no sea nulo
+        if ( ! is_a($post, 'WP_Post') ) {
+            return $content;
+        }
+
         if ($post->post_type == 'personal') {
             if (file_exists(plugin_dir_path(__DIR__) . 'frontend/views/single-personal.php')) {
                 ob_start();
