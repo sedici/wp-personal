@@ -115,6 +115,9 @@ class Init
      */
     private function define_public_hooks()
     {
+        if (wp_doing_cron()) {
+            return;
+        }
 
         $plugin_public = new Frontend\Frontend($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
         // Registra el hook para la vista del template personal
