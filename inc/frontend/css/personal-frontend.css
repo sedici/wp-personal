@@ -55,6 +55,10 @@
     display: flex;
     justify-content: flex-end;
 }
+
+.card{
+    background-color: #ff0000;
+}
 .card-img-top  {
     height: 180px;
     background-position: center center;
