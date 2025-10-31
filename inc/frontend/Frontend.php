@@ -86,26 +86,25 @@ class Frontend
      *
      */
     public function single_personal_template($content)
-    {   
-
+    {
         global $post;
 
-        // Compruebo que $post no sea nulo
-        if ( ! is_a($post, 'WP_Post') ) {
+        if (!isset($post) || !is_a($post, 'WP_Post')) {
             return $content;
         }
 
-        if ($post->post_type == 'personal') {
-            if (file_exists(plugin_dir_path(__DIR__) . 'frontend/views/single-personal.php')) {
-                ob_start();
-                include(plugin_dir_path(__DIR__) . 'frontend/views/single-personal.php');
-                $content = ob_get_clean();
-                return $content;
-            }
+        if (!isset($post->post_type) || $post->post_type !== 'personal') {
+            return $content;
+        }
+
+        if (file_exists(plugin_dir_path(__DIR__) . 'frontend/views/single-personal.php')) {
+            ob_start();
+            include(plugin_dir_path(__DIR__) . 'frontend/views/single-personal.php');
+            $content = ob_get_clean();
+            return $content;
         }
 
         return $content;
-
     }
     public function get_repositories_wpdspace($value){
         $this->repositories= $value;
@@ -130,9 +129,17 @@ class Frontend
         $content = ob_get_clean();
         return $content;
     }
-    public function remove_personal_title( $title, $id ) {
+    public function remove_personal_title($title, $id)
+    {
         global $post;
-        if ( is_singular( 'personal' )  and $id == get_the_ID() ) return '';
+
+        if (!isset($post) || !is_a($post, 'WP_Post')) {
+            return $title;
+        }
+
+        if (is_singular('personal') && $id == get_the_ID()) {
+            return '';
+        }
 
         return $title;
     }
