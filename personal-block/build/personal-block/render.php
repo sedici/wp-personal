@@ -9,7 +9,27 @@
  *
  * @see https://github.com/WordPress/gutenberg/blob/trunk/docs/reference-guides/block-api/block-metadata.md#render
  */
-?>
-<p <?php echo get_block_wrapper_attributes(); ?>>
-	<?php esc_html_e( 'Personal Block – hello from a dynamic block!', 'personal-block' ); ?>
-</p>
+
+$orderBy = $attributes['orderBy'];
+list($orderby_key, $order_direction) = explode('-', $orderBy);
+
+$args = array(
+    'post_type' => 'personal',
+    'posts_per_page' => -1, // Show all
+    'orderby' => $orderby_key,
+    'order' => strtoupper($order_direction),
+);
+
+$loop = new WP_Query($args);
+
+if ($loop->have_posts()) {
+    echo '<div ' . get_block_wrapper_attributes() . '>';
+    // The path to the new view is relative to the plugin root.
+    // \Personal\PLUGIN_NAME_DIR is defined in personal.php
+    include \Personal\PLUGIN_NAME_DIR . 'inc/frontend/views/list-personal-in-order.php';
+    echo '</div>';
+} else {
+    echo '<p ' . get_block_wrapper_attributes() . '>' . __('No personal found.', 'personal-block') . '</p>';
+}
+
+wp_reset_postdata();

@@ -1,41 +1,35 @@
-/**
- * Retrieves the translation of text.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
- */
 import { __ } from '@wordpress/i18n';
-
-/**
- * React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
- */
-import { useBlockProps } from '@wordpress/block-editor';
-
-/**
- * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
- * Those files can contain any CSS code that gets applied to the editor.
- *
- * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
- */
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { PanelBody, SelectControl } from '@wordpress/components';
 import './editor.scss';
 
-/**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
- *
- * @return {Element} Element to render.
- */
-export default function Edit() {
+export default function Edit({ attributes, setAttributes }) {
+	const { orderBy } = attributes;
+
+	const orderOptions = [
+		{ label: __('Name (A-Z)', 'personal-block'), value: 'title-asc' },
+		{ label: __('Name (Z-A)', 'personal-block'), value: 'title-desc' },
+		{ label: __('Date (Newest first)', 'personal-block'), value: 'date-desc' },
+		{ label: __('Date (Oldest first)', 'personal-block'), value: 'date-asc' },
+		{ label: __('Modified (Newest first)', 'personal-block'), value: 'modified-desc' },
+		{ label: __('Modified (Oldest first)', 'personal-block'), value: 'modified-asc' },
+	];
+
 	return (
-		<p { ...useBlockProps() }>
-			{ __(
-				'Personal Block – hello from the editor!',
-				'personal-block'
-			) }
-		</p>
+		<>
+			<InspectorControls>
+				<PanelBody title={__('Sort Options', 'personal-block')}>
+					<SelectControl
+						label={__('Order by', 'personal-block')}
+						value={orderBy}
+						options={orderOptions}
+						onChange={(newOrderBy) => setAttributes({ orderBy: newOrderBy })}
+					/>
+				</PanelBody>
+			</InspectorControls>
+			<p {...useBlockProps()}>
+				{__('Personal Block - Content will be displayed on the page.', 'personal-block')}
+			</p>
+		</>
 	);
 }

@@ -16,6 +16,12 @@ return array(
 		'supports' => array(
 			'html' => false
 		),
+		'attributes' => array(
+			'orderBy' => array(
+				'type' => 'string',
+				'default' => 'date-desc'
+			)
+		),
 		'textdomain' => 'personal-block',
 		'editorScript' => 'file:./index.js',
 		'editorStyle' => 'file:./index.css',
