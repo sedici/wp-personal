@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, SelectControl } from '@wordpress/components';
+import ServerSideRender from '@wordpress/server-side-render';
 import './editor.scss';
 
 export default function Edit({ attributes, setAttributes }) {
@@ -27,9 +28,12 @@ export default function Edit({ attributes, setAttributes }) {
 					/>
 				</PanelBody>
 			</InspectorControls>
-			<p {...useBlockProps()}>
-				{__('Personal Block - Content will be displayed on the page.', 'personal-block')}
-			</p>
+			<div {...useBlockProps()}>
+				<ServerSideRender
+					block="create-block/personal-block"
+					attributes={attributes}
+				/>
+			</div>
 		</>
 	);
 }
