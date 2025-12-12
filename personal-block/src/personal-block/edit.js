@@ -51,7 +51,7 @@ export default function Edit({ attributes, setAttributes }) {
 					title={__('Seleccionar categoría', 'personal-block')}
 					initialOpen={false}
 				>
-					{allCategories &&
+					{allCategories && allCategories.length > 0 ? (
 						allCategories.map((category) => (
 							<CheckboxControl
 								key={category.id}
@@ -66,7 +66,10 @@ export default function Edit({ attributes, setAttributes }) {
 									setAttributes({ categories: newCategories });
 								}}
 							/>
-						))}
+						))
+					) : (
+						<p>{__('No hay categorías creadas', 'personal-block')}</p>
+					)}
 				</PanelBody>
 				<PanelBody
 					title={__('Cantidad de columnas', 'personal-block')}

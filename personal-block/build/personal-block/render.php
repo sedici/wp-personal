@@ -39,7 +39,7 @@ if ($loop->have_posts()) {
     include \Personal\PLUGIN_NAME_DIR . 'inc/frontend/views/list-personal-in-order.php';
     echo '</div>';
 } else {
-    echo '<p ' . get_block_wrapper_attributes() . '>' . __('No personal found.', 'personal-block') . '</p>';
+    echo '<p ' . get_block_wrapper_attributes() . '>' . __('No hay personal para mostrar', 'personal-block') . '</p>';
 }
 
 wp_reset_postdata();
