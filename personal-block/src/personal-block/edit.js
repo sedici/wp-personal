@@ -16,6 +16,7 @@ export default function Edit({ attributes, setAttributes }) {
 	const { orderBy, categories, columns } = attributes;
 
 	const orderOptions = [
+		{ label: __('Orden Manual', 'personal-block'), value: 'menu_order-asc' },
 		{ label: __('Nombre (A-Z)', 'personal-block'), value: 'title-asc' },
 		{ label: __('Nombre (Z-A)', 'personal-block'), value: 'title-desc' },
 		{ label: __('Fecha (más nuevos primero)', 'personal-block'), value: 'date-desc' },

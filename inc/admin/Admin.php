@@ -272,7 +272,7 @@ class Admin
             "hierarchical" => false,
             "rewrite" => array("slug" => "personal", "with_front" => true),
             "query_var" => true,
-            "supports" => array("title", "thumbnail"),
+            "supports" => array("title", "thumbnail", "page-attributes"),
             "taxonomies" => array("categorias"),
         );
 
