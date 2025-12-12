@@ -20,6 +20,16 @@ $args = array(
     'order' => strtoupper($order_direction),
 );
 
+if (!empty($attributes['categories'])) {
+    $args['tax_query'] = array(
+        array(
+            'taxonomy' => 'categorias',
+            'field'    => 'term_id',
+            'terms'    => $attributes['categories'],
+        ),
+    );
+}
+
 $loop = new WP_Query($args);
 
 if ($loop->have_posts()) {

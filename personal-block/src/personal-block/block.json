@@ -15,6 +15,14 @@
 		"orderBy": {
 			"type": "string",
 			"default": "date-desc"
+		},
+		"categories": {
+			"type": "array",
+			"default": []
+		},
+		"columns": {
+			"type": "number",
+			"default": 3
 		}
 	},
 	"textdomain": "personal-block",

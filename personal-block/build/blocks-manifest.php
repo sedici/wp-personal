@@ -20,6 +20,16 @@ return array(
 			'orderBy' => array(
 				'type' => 'string',
 				'default' => 'date-desc'
+			),
+			'categories' => array(
+				'type' => 'array',
+				'default' => array(
+					
+				)
+			),
+			'columns' => array(
+				'type' => 'number',
+				'default' => 3
 			)
 		),
 		'textdomain' => 'personal-block',
