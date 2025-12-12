@@ -16,16 +16,16 @@ export default function Edit({ attributes, setAttributes }) {
 	const { orderBy, categories, columns } = attributes;
 
 	const orderOptions = [
-		{ label: __('Name (A-Z)', 'personal-block'), value: 'title-asc' },
-		{ label: __('Name (Z-A)', 'personal-block'), value: 'title-desc' },
-		{ label: __('Date (Newest first)', 'personal-block'), value: 'date-desc' },
-		{ label: __('Date (Oldest first)', 'personal-block'), value: 'date-asc' },
+		{ label: __('Nombre (A-Z)', 'personal-block'), value: 'title-asc' },
+		{ label: __('Nombre (Z-A)', 'personal-block'), value: 'title-desc' },
+		{ label: __('Fecha (más nuevos primero)', 'personal-block'), value: 'date-desc' },
+		{ label: __('Fecha (más antiguos primero)', 'personal-block'), value: 'date-asc' },
 		{
-			label: __('Modified (Newest first)', 'personal-block'),
+			label: __('Modificado (más nuevos primero)', 'personal-block'),
 			value: 'modified-desc',
 		},
 		{
-			label: __('Modified (Oldest first)', 'personal-block'),
+			label: __('Modificado (más antiguos primero)', 'personal-block'),
 			value: 'modified-asc',
 		},
 	];
@@ -39,16 +39,16 @@ export default function Edit({ attributes, setAttributes }) {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title={__('Sort Options', 'personal-block')}>
+				<PanelBody title={__('Opciones de ordenamiento', 'personal-block')}>
 					<SelectControl
-						label={__('Order by', 'personal-block')}
+						label={__('Ordenar por', 'personal-block')}
 						value={orderBy}
 						options={orderOptions}
 						onChange={(newOrderBy) => setAttributes({ orderBy: newOrderBy })}
 					/>
 				</PanelBody>
 				<PanelBody
-					title={__('Category Settings', 'personal-block')}
+					title={__('Seleccionar categoría', 'personal-block')}
 					initialOpen={false}
 				>
 					{allCategories &&
@@ -69,11 +69,11 @@ export default function Edit({ attributes, setAttributes }) {
 						))}
 				</PanelBody>
 				<PanelBody
-					title={__('Layout Settings', 'personal-block')}
+					title={__('Cantidad de columnas', 'personal-block')}
 					initialOpen={false}
 				>
 					<RangeControl
-						label={__('Columns', 'personal-block')}
+						label={__('Columnas', 'personal-block')}
 						value={columns}
 						onChange={(newColumns) =>
 							setAttributes({ columns: newColumns })

@@ -6,10 +6,10 @@ return array(
 		'apiVersion' => 3,
 		'name' => 'create-block/personal-block',
 		'version' => '0.1.0',
-		'title' => 'Personal Block',
+		'title' => 'Bloque de Personal',
 		'category' => 'widgets',
-		'icon' => 'smiley',
-		'description' => 'Example block scaffolded with Create Block tool.',
+		'icon' => 'businessperson',
+		'description' => 'Bloque para listar el personal.',
 		'example' => array(
 			
 		),
