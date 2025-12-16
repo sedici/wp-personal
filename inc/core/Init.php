@@ -58,6 +58,11 @@ class Init
     {
         $this->loader = new Loader();
 
+        /**
+         * Register Elementor Widgets
+         */
+        require_once(PP\PLUGIN_NAME_DIR . 'personal-block-elementor/init.php');
+
     }
 
     /**
@@ -104,13 +109,14 @@ class Init
         // Guarda los campos meta
         $this->loader->add_action('save_post', $plugin_admin, 'personal_save_metas');
 
-        
-        $this->loader->add_action('wp_ajax_generate_shortcode_personal', $plugin_admin , 'generate_shortcode_personal' );
 
-        $this->loader->add_action( 'init', $plugin_admin , 'create_block_personal_block_block_init' );
+        $this->loader->add_action('wp_ajax_generate_shortcode_personal', $plugin_admin, 'generate_shortcode_personal');
+
+        $this->loader->add_action('init', $plugin_admin, 'create_block_personal_block_block_init');
     }
 
-    function create_block_personal_block_block_init() {
+    function create_block_personal_block_block_init()
+    {
         /**
          * Registers the block(s) metadata from the `blocks-manifest.php` and registers the block type(s)
          * based on the registered block metadata.
@@ -118,19 +124,19 @@ class Init
          *
          * @see https://make.wordpress.org/core/2025/03/13/more-efficient-block-type-registration-in-6-8/
          */
-        if ( function_exists( 'wp_register_block_types_from_metadata_collection' ) ) {
-            wp_register_block_types_from_metadata_collection( __DIR__ . '/build', __DIR__ . '/build/blocks-manifest.php' );
+        if (function_exists('wp_register_block_types_from_metadata_collection')) {
+            wp_register_block_types_from_metadata_collection(__DIR__ . '/build', __DIR__ . '/build/blocks-manifest.php');
             return;
         }
-    
+
         /**
          * Registers the block(s) metadata from the `blocks-manifest.php` file.
          * Added to WordPress 6.7 to improve the performance of block type registration.
          *
          * @see https://make.wordpress.org/core/2024/10/17/new-block-type-registration-apis-to-improve-performance-in-wordpress-6-7/
          */
-        if ( function_exists( 'wp_register_block_metadata_collection' ) ) {
-            wp_register_block_metadata_collection( __DIR__ . '/build', __DIR__ . '/build/blocks-manifest.php' );
+        if (function_exists('wp_register_block_metadata_collection')) {
+            wp_register_block_metadata_collection(__DIR__ . '/build', __DIR__ . '/build/blocks-manifest.php');
         }
         /**
          * Registers the block type(s) in the `blocks-manifest.php` file.
@@ -138,11 +144,11 @@ class Init
          * @see https://developer.wordpress.org/reference/functions/register_block_type/
          */
         $manifest_data = require __DIR__ . '/build/blocks-manifest.php';
-        foreach ( array_keys( $manifest_data ) as $block_type ) {
-            register_block_type( __DIR__ . "/build/{$block_type}" );
+        foreach (array_keys($manifest_data) as $block_type) {
+            register_block_type(__DIR__ . "/build/{$block_type}");
         }
     }
-    
+
 
     /**
      * Registras todos los hooks para la sección pública del plugin
