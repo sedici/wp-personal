@@ -8,6 +8,9 @@ if (!defined('ABSPATH')) {
 /**
  * Register Personal Widget.
  *
+ * Include the widget class and register it with Elementor's widget manager.
+ * This function is hooked into 'elementor/widgets/register'.
+ *
  * @param \Elementor\Widgets_Manager $widgets_manager Elementor widgets manager.
  * @return void
  */

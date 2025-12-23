@@ -75,6 +75,8 @@ class Widget_Personal extends \Elementor\Widget_Base
      * Register Personal widget controls.
      *
      * Add input fields to allow the user to customize the widget settings.
+     * This method retrieves all 'categorias' terms and populates a Select2 control.
+     * It also adds controls for sorting options and column count.
      *
      * @since 1.0.0
      * @access protected
@@ -90,7 +92,7 @@ class Widget_Personal extends \Elementor\Widget_Base
             ]
         );
 
-        // Fetch categories
+        // Fetch categories to populate the select control.
         $categories = get_terms('categorias', ['hide_empty' => false]);
         $options = [];
         if (!is_wp_error($categories) && !empty($categories)) {
@@ -147,6 +149,9 @@ class Widget_Personal extends \Elementor\Widget_Base
      * Render Personal widget output on the frontend.
      *
      * Written in PHP and used to generate the final HTML.
+     * This method retrieves the widget settings, prepares the WP_Query arguments
+     * (including filtering by category if selected), executes the query,
+     * and includes the view file to display the results.
      *
      * @since 1.0.0
      * @access protected
@@ -166,6 +171,7 @@ class Widget_Personal extends \Elementor\Widget_Base
         $orderBy = $attributes['orderBy'];
         list($orderby_key, $order_direction) = explode('-', $orderBy);
 
+        // Prepare query arguments
         $args = array(
             'post_type' => 'personal',
             'posts_per_page' => -1, // Show all
@@ -173,6 +179,7 @@ class Widget_Personal extends \Elementor\Widget_Base
             'order' => strtoupper($order_direction),
         );
 
+        // Filter by categories if set
         if (!empty($attributes['categories'])) {
             $args['tax_query'] = array(
                 array(
@@ -183,6 +190,7 @@ class Widget_Personal extends \Elementor\Widget_Base
             );
         }
 
+        // Execute query
         $loop = new \WP_Query($args);
 
         if ($loop->have_posts()) {
