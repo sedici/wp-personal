@@ -150,3 +150,12 @@
     
     background: rgba(0,0,0,.03);
 }
+
+/* Custom styles for card-body text color */
+.card-body {
+    color: rgb(51, 51, 51);
+}
+
+.card-body h5.card-title a {
+    color: rgb(51, 51, 51);
+}

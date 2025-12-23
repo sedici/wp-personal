@@ -1,0 +1,34 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "create-block/personal-block",
+  "version": "0.1.0",
+  "title": "Bloque de Personal",
+  "category": "widgets",
+  "icon": "businessperson",
+  "description": "Bloque para listar el personal.",
+  "example": {},
+  "supports": {
+    "html": false
+  },
+  "attributes": {
+    "orderBy": {
+      "type": "string",
+      "default": "date-desc"
+    },
+    "categories": {
+      "type": "array",
+      "default": []
+    },
+    "columns": {
+      "type": "number",
+      "default": 3
+    }
+  },
+  "textdomain": "personal-block",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php",
+  "viewScript": "file:./view.js"
+}

@@ -29,4 +29,26 @@ Una vez creado el/los perfiles es posible listarlos en una página agregando el 
 - Para listar los perfiles pertenecientes a una categoria agregar la opción `category_id` al shortcode : `[list-personal category_id=3]`
 - Para organizar los perfiles por columnas, agregar la opción `columns`al shortcode : `[list-personal columns=2]`
 
+### Bloque de Gutenberg
+
+También puedes listar los perfiles de personal utilizando el bloque de Gutenberg "Bloque de Personal".
+
+1.  En el editor de WordPress, haz clic en el botón '+' para añadir un nuevo bloque.
+2.  Busca "Bloque de Personal" y selecciónalo.
+3.  Una vez añadido, puedes configurar las siguientes opciones en el panel lateral de ajustes del bloque:
+    *   **Opciones de ordenamiento**: Permite ordenar la lista de personal de forma manual (el número más bajo aparece primero), por nombre (A-Z, Z-A), fecha de publicación (más nuevos/antiguos primero) o fecha de modificación (más nuevos/antiguos primero).
+    *   **Seleccionar categoría**: Elige una o varias categorías para filtrar los perfiles de personal.
+    *   **Cantidad de columnas**: Define el número de columnas (entre 1 y 4) en las que se mostrarán los perfiles.
+
+### Widget de Elementor
+
+El plugin también incluye un widget compatible con el constructor de páginas **Elementor**.
+
+1.  En el editor de Elementor, busca el widget **"Listado de Personal"**.
+2.  Arrástralo a la sección deseada.
+3.  Utiliza los controles del panel izquierdo (pestaña Contenido) para:
+    *   Seleccionar categorías.
+    *   Configurar el ordenamiento.
+    *   Definir el número de columnas.
+
 ## Licencia
