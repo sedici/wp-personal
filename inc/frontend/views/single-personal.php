@@ -154,8 +154,7 @@ $other_repositories = $this->getRepositories();
                                 </h2>
                                 <div id="collapseOne" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordion_publicaciones">
                                     <div class="accordion-body card-body">
-                                        <?php echo do_shortcode('[get_publications  config="sedici"  author="' . $sedici . '" show_subtype=false show_author=true group_date=true date=true max_results="1000" ]'); ?>
-                                    </div>
+                                    <?php echo do_shortcode('[dspace_search repo="sedici" author="' . $sedici . '" size="5"]'); ?>                                    </div>
                                 </div>
                             </div>
                         <?php endif; ?>
@@ -168,7 +167,7 @@ $other_repositories = $this->getRepositories();
                                 </h2>
                                 <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordion_publicaciones">
                                     <div class="accordion-body card-body">
-                                        <?php echo do_shortcode('[get_publications  config="cic"  author="' . $cic . '" show_subtype=false show_author=true  group_date=true date=true max_results="1000" ]'); ?>
+                                        <?php echo do_shortcode('[dspace_search repo="cic-digital" author="' . $cic . '" size="5"]'); ?>
                                     </div>
                                 </div>
                             </div>
@@ -182,7 +181,7 @@ $other_repositories = $this->getRepositories();
                                 </h2>
                                 <div id="collapseThree" class="accordion-collapse collapse " aria-labelledby="headingThree" data-bs-parent="#accordion_publicaciones">
                                     <div class="accordion-body card-body ">
-                                        <?php echo do_shortcode('[get_publications  config="conicet"  author="' . $conicet . '" show_subtype=false show_author=true group_date=true date=true max_results="1000" ]'); ?>
+                                        <?php echo do_shortcode('[dspace_search repo="conicet" author="' . $conicet . '" size="5"]'); ?>
                                     </div>
                                 </div>
                             </div>
