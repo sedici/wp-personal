@@ -1,6 +1,7 @@
 <?php
 namespace Personal\Inc\Admin;
 
+use Personal\Inc\Admin\Csv_Importer;
 
 /**
  * Define la funcionalidad del área admin
@@ -35,7 +36,7 @@ class Admin
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->plugin_text_domain = $plugin_text_domain;
-//        $this->initializeInputsPersonal();
+        //        $this->initializeInputsPersonal();
     }
 
     /**
@@ -52,9 +53,9 @@ class Admin
     public function enqueue_scripts()
     {
         //wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/personal-admin.js', $this->version, false);
-        wp_register_script('personal-admin-js', plugin_dir_url(__FILE__) . 'js/personal-admin.js', array('jquery'), '1', false );
+        wp_register_script('personal-admin-js', plugin_dir_url(__FILE__) . 'js/personal-admin.js', array('jquery'), '1', false);
         wp_enqueue_script('personal-admin-js');
-        wp_localize_script('personal-admin-js','personal_ajax_object', array('url' => admin_url( 'admin-ajax.php' ) ));
+        wp_localize_script('personal-admin-js', 'personal_ajax_object', array('url' => admin_url('admin-ajax.php')));
     }
 
     /**
@@ -62,12 +63,12 @@ class Admin
      */
     public function add_plugin_admin_menu()
     {
-        
+
         //usar add_menu_page(), add_submenu_page(), etc.
 
         ## Agregar subpágina Generar shortcode
 
-		$ajax_form_page_hook = add_submenu_page(
+        $ajax_form_page_hook = add_submenu_page(
             'edit.php?post_type=personal',
             __('Generar shortcode', $this->plugin_text_domain), //page title
             __('Generar shortcode', $this->plugin_text_domain), //menu title
@@ -76,23 +77,36 @@ class Admin
             array($this, 'show_terms')// página que va a manejar la sección
         );
 
+        $csv_importer = new Csv_Importer();
+
+
+        add_submenu_page(
+            'edit.php?post_type=personal',
+            __('Importar personal', $this->plugin_text_domain), //page title
+            __('Importar personal', $this->plugin_text_domain), //menu title
+            'manage_options',
+            'import-personal',
+            array($csv_importer, 'show_csv_importer_view'),
+        );
+
     }
 
 
-    public function get_personal_terms() {
+    public function get_personal_terms()
+    {
 
         $post_type_name = 'personal';
 
         $args = array(
             'post_type' => $post_type_name,
-            'posts_per_page' => -1, 
+            'posts_per_page' => -1,
         );
 
         $query = new \WP_Query($args);
 
         // Si ningun post tenia una categoria asociada, $terms_name_array quedará vacio
         $terms_name_array = array();
-        
+
         // Guardo en $terms_name_array los terminos de los posts de personal
         if ($query->have_posts()) {
 
@@ -101,54 +115,56 @@ class Admin
                 $query->the_post();
 
                 // Obtiene los terminos del post asociado
-                $terms = get_the_terms( get_the_ID() , 'categorias');
+                $terms = get_the_terms(get_the_ID(), 'categorias');
 
                 if ($terms && !is_wp_error($terms)) {
 
                     foreach ($terms as $term) {
-                        
+
                         //Evito guardar terminos repetidos
-                        if (!in_array($term->name, $terms_name_array)) {  
-                            array_push($terms_name_array,$term->name); 
+                        if (!in_array($term->name, $terms_name_array)) {
+                            array_push($terms_name_array, $term->name);
                         }
                     }
 
-                } 
+                }
 
             }
 
             // Si ningun post tenia una categoria asociada, $terms_array quedará vacio
             $terms_array = array();
 
-            if(!empty($terms_name_array)) {
+            if (!empty($terms_name_array)) {
 
-                foreach( $terms_name_array as $term_name) {
+                foreach ($terms_name_array as $term_name) {
                     $terms_array[] = get_term_by('name', $term_name, 'categorias');
                 }
             }
-        
+
             wp_reset_postdata();
         }
 
         return $terms_array;
     }
 
-    public function show_terms () {
-        
+    public function show_terms()
+    {
+
         include_once dirname(__DIR__) . '/admin/views/personal-shortcode-generator-view.php';
-        
+
     }
 
-    
 
-    public function generate_shortcode_personal() {
+
+    public function generate_shortcode_personal()
+    {
 
         $shortcode = "";
-        
+
         $form_data = $_POST['formulario_data'];
 
         // Guardo los input del formulario en un array
-        $form_data_array = explode("&",$form_data);
+        $form_data_array = explode("&", $form_data);
 
 
         //Usando expresiones regulares obtengo los valores numericos de los campos del formulario
@@ -159,26 +175,28 @@ class Admin
 
         //Verifica que term_id y columns sea valido
 
-        if( !empty($diccionario_shortcode['term_id_selected']) && 
-            !empty($diccionario_shortcode['columns']) && 
-            ($diccionario_shortcode['columns'] >=1 && $diccionario_shortcode['columns'] <= 4) ) {
-            
-            $shortcode = "[list-personal category_id=" . $diccionario_shortcode['term_id_selected'] . " columns=" . $diccionario_shortcode['columns'] . "]" ;
-            
+        if (
+            !empty($diccionario_shortcode['term_id_selected']) &&
+            !empty($diccionario_shortcode['columns']) &&
+            ($diccionario_shortcode['columns'] >= 1 && $diccionario_shortcode['columns'] <= 4)
+        ) {
+
+            $shortcode = "[list-personal category_id=" . $diccionario_shortcode['term_id_selected'] . " columns=" . $diccionario_shortcode['columns'] . "]";
+
             echo $shortcode;
-             
-        }
-        else {
+
+        } else {
             echo 'Ocurrio un error';
         }
-        
+
         wp_die();
     }
 
 
 
-    public function get_repositories_wpdspace($value){
-        $this->repositories= $value;
+    public function get_repositories_wpdspace($value)
+    {
+        $this->repositories = $value;
         $this->initializeInputsPersonal();
         return $value;
     }
@@ -190,13 +208,15 @@ class Admin
      *
      * @since    1.0.0
      */
-    public function custom_redirect( $admin_notice, $response, $path = "" ) {
-        wp_redirect( esc_url_raw( add_query_arg( array(
-            'personal_admin_add_notice' => $admin_notice,
-            'personal_response' => $response,
-        ),
-            admin_url('admin.php?page='. $this->plugin_name . $path )  //Fixme agregar url para redirigir.
-        ) ) );
+    public function custom_redirect($admin_notice, $response, $path = "")
+    {
+        wp_redirect(esc_url_raw(add_query_arg(
+            array(
+                'personal_admin_add_notice' => $admin_notice,
+                'personal_response' => $response,
+            ),
+            admin_url('admin.php?page=' . $this->plugin_name . $path)  //Fixme agregar url para redirigir.
+        )));
 
     }
 
@@ -303,7 +323,7 @@ class Admin
             "show_in_menu" => true,
             "show_in_nav_menus" => true,
             "query_var" => true,
-            "rewrite" => array('slug' => 'categorias', 'with_front' => true,),
+            "rewrite" => array('slug' => 'categorias', 'with_front' => true, ),
             "show_admin_column" => true,
             "show_in_rest" => true,
             "rest_base" => "",
@@ -357,32 +377,31 @@ class Admin
         $personal = get_post($idpersonal);
 
         if ($personal->post_type == 'personal') {
-            $inputs= $this->getInputsPersonal();
-            foreach ( $inputs as $input) {
+            $inputs = $this->getInputsPersonal();
+            foreach ($inputs as $input) {
 
-                if ( isset($input['name'])  and isset($_POST[$input['name']]) )
+                if (isset($input['name']) and isset($_POST[$input['name']]))
                     update_post_meta($idpersonal, $input['name'], $_POST[$input['name']]);
-                if(isset($input['repositories'])){
+                if (isset($input['repositories'])) {
                     foreach ($input['repositories'] as $repository) {
                         if (isset($_POST[$repository['name']]))
                             update_post_meta($idpersonal, $repository['name'], $_POST[$repository['name']]);
                     }
                 }
             }
-            if(!empty($_FILES['curriculum_vitae']['name'])) {
+            if (!empty($_FILES['curriculum_vitae']['name'])) {
                 $supported_types = array('application/pdf');
                 $arr_file_type = wp_check_filetype(basename($_FILES['curriculum_vitae']['name']));
                 $uploaded_type = $arr_file_type['type'];
 
-                if(in_array($uploaded_type, $supported_types)) {
+                if (in_array($uploaded_type, $supported_types)) {
                     $upload = wp_upload_bits($_FILES['curriculum_vitae']['name'], null, file_get_contents($_FILES['curriculum_vitae']['tmp_name']));
-                    if(isset($upload['error']) && $upload['error'] != 0) {
+                    if (isset($upload['error']) && $upload['error'] != 0) {
                         wp_die('There was an error uploading your file. The error is: ' . $upload['error']);
                     } else {
                         update_post_meta($idpersonal, 'curriculum_vitae', $upload);
                     }
-                }
-                else {
+                } else {
                     wp_die("The file type that you've uploaded is not a PDF.");
                 }
             }
@@ -399,31 +418,34 @@ class Admin
     /**
      * Permite manipular archivos en un formulario (Se usa para guardar el cv del personal)
      */
-    public function update_edit_form() {
+    public function update_edit_form()
+    {
         echo 'enctype="multipart/form-data"';
     }
 
     /**
      * no muestra la imagen destacada del post personal.
      */
-    function wordpress_hide_feature_image( $html, $post_id, $post_image_id ) {
+    function wordpress_hide_feature_image($html, $post_id, $post_image_id)
+    {
         return (is_single() and get_post_type() == 'personal') ? '' : $html;
     }
     private function initializeInputsPersonal()
     {
-//        add_filter('get_repositorios',$this,'get_repositories_wpdspace',1);
-        $repositories = array(array(
-            'key' => 'field_59dd247f52528',
-            'label' => '<img src="' . plugins_url() . '/personal/assets/images/sedici.png"	height="32"> SEDICI',
-            'name' => 'sedici',
-            'type' => 'text',
-            'default_value' => '',
-            'placeholder' => '',
-            'prepend' => '',
-            'append' => '',
-            'formatting' => 'none',
-            'maxlength' => '',
-        ),
+        //        add_filter('get_repositorios',$this,'get_repositories_wpdspace',1);
+        $repositories = array(
+            array(
+                'key' => 'field_59dd247f52528',
+                'label' => '<img src="' . plugins_url() . '/personal/assets/images/sedici.png"	height="32"> SEDICI',
+                'name' => 'sedici',
+                'type' => 'text',
+                'default_value' => '',
+                'placeholder' => '',
+                'prepend' => '',
+                'append' => '',
+                'formatting' => 'none',
+                'maxlength' => '',
+            ),
             array(
                 'key' => 'field_59dd24ac52529',
                 'label' => '<img src="' . plugins_url() . '/personal/assets/images/cic_digital.png" height="32"> CIC',
@@ -447,9 +469,10 @@ class Admin
                 'append' => '',
                 'formatting' => 'none',
                 'maxlength' => '',
-            ));
+            )
+        );
         $repositories_custom = $this->getRepositories();
-        foreach ( $repositories_custom as $r) {
+        foreach ($repositories_custom as $r) {
             $repo = array(
                 'key' => $r['id'],
                 'label' => strtoupper($r['name']),
@@ -462,7 +485,7 @@ class Admin
                 'formatting' => 'none',
                 'maxlength' => '',
             );
-            array_push($repositories,$repo);
+            array_push($repositories, $repo);
         }
         $this->inputs_personal = array(
             array(
@@ -625,16 +648,17 @@ class Admin
 
     private function getRepositories()
     {
-       return array_filter(
+        return array_filter(
             $this->repositories,
-            function ($repo)  {
-                return !(strtolower($repo['name']) == 'sedici' or strtolower($repo['name']) == 'conicet' or strtolower($repo['name']) == 'cic'  );
+            function ($repo) {
+                return !(strtolower($repo['name']) == 'sedici' or strtolower($repo['name']) == 'conicet' or strtolower($repo['name']) == 'cic');
             }
         );
 
     }
 
-    public function create_block_personal_block_block_init() {
+    public function create_block_personal_block_block_init()
+    {
         $build_dir = \Personal\PLUGIN_NAME_DIR . 'personal-block/build';
         $manifest = $build_dir . '/blocks-manifest.php';
         /**
@@ -644,19 +668,19 @@ class Admin
          *
          * @see https://make.wordpress.org/core/2025/03/13/more-efficient-block-type-registration-in-6-8/
          */
-        if ( function_exists( 'wp_register_block_types_from_metadata_collection' ) ) {
-            wp_register_block_types_from_metadata_collection( $build_dir, $manifest );
+        if (function_exists('wp_register_block_types_from_metadata_collection')) {
+            wp_register_block_types_from_metadata_collection($build_dir, $manifest);
             return;
         }
-    
+
         /**
          * Registers the block(s) metadata from the `blocks-manifest.php` file.
          * Added to WordPress 6.7 to improve the performance of block type registration.
          *
          * @see https://make.wordpress.org/core/2024/10/17/new-block-type-registration-apis-to-improve-performance-in-wordpress-6-7/
          */
-        if ( function_exists( 'wp_register_block_metadata_collection' ) ) {
-            wp_register_block_metadata_collection( $build_dir, $manifest );
+        if (function_exists('wp_register_block_metadata_collection')) {
+            wp_register_block_metadata_collection($build_dir, $manifest);
         }
         /**
          * Registers the block type(s) in the `blocks-manifest.php` file.
@@ -664,8 +688,8 @@ class Admin
          * @see https://developer.wordpress.org/reference/functions/register_block_type/
          */
         $manifest_data = require $manifest;
-        foreach ( array_keys( $manifest_data ) as $block_type ) {
-            register_block_type( $build_dir . "/{$block_type}" );
+        foreach (array_keys($manifest_data) as $block_type) {
+            register_block_type($build_dir . "/{$block_type}");
         }
     }
 
