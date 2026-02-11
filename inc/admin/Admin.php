@@ -1,8 +1,6 @@
 <?php
 namespace Personal\Inc\Admin;
 
-use Personal\Inc\Admin\Csv_Importer;
-
 /**
  * Define la funcionalidad del área admin
  *
@@ -77,8 +75,6 @@ class Admin
             array($this, 'show_terms')// página que va a manejar la sección
         );
 
-        $csv_importer = new Csv_Importer();
-
 
         add_submenu_page(
             'edit.php?post_type=personal',
@@ -86,9 +82,19 @@ class Admin
             __('Importar personal', $this->plugin_text_domain), //menu title
             'manage_options',
             'import-personal',
-            array($csv_importer, 'show_csv_importer_view'),
+            array($this, 'show_csv_importer_view'),
         );
 
+    }
+
+    public function import_csv()
+    {
+        if (!isset($_POST['personal_csv_import_nonce']) || !wp_verify_nonce($_POST['personal_csv_import_nonce'], 'personal_csv_import')) {
+            wp_die('Error de seguridad: acceso no autorizado.');
+        }
+        $csv_importer = new Csv_Importer();
+        $csv_importer->process_csv();
+        wp_die();
     }
 
 
@@ -153,6 +159,12 @@ class Admin
         include_once dirname(__DIR__) . '/admin/views/personal-shortcode-generator-view.php';
 
     }
+
+    public function show_csv_importer_view()
+    {
+        include_once dirname(__DIR__) . '/admin/views/csv-importer-view.php';
+    }
+
 
 
 
