@@ -92,7 +92,14 @@ class Admin
         if (!isset($_POST['personal_csv_import_nonce']) || !wp_verify_nonce($_POST['personal_csv_import_nonce'], 'personal_csv_import')) {
             wp_die('Error de seguridad: acceso no autorizado.');
         }
-        $csv_importer = new Csv_Importer();
+
+        if (!isset($_FILES['personal_csv_file']) || $_FILES['personal_csv_file']['error'] !== 0) {
+            wp_die('Error : no se subio ningun archivo');
+        }
+
+        $file = $_FILES['personal_csv_file'];
+
+        $csv_importer = new Csv_Importer($file);
         $csv_importer->process_csv();
         wp_die();
     }
