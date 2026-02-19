@@ -40,15 +40,15 @@ class Csv_Importer
                 'validate' => function ($value) {
                     return !empty($value) && is_email($value);
                 },
-                'error' => 'El formato del correo electrónico no es válido.'
+                'error' => 'El email no debe ser vacio y el formato debe ser valido.'
             ],
             'nombre_apellido' => [
                 'required' => true,
                 'sanitize' => 'sanitize_text_field',
                 'validate' => function ($value) {
-                    return !empty($value) && strlen($value) > 1;
+                    return !empty($value);
                 },
-                'error' => 'El nombre debe tener al menos 1 caracter'
+                'error' => 'El nombre no debe ser vacio'
             ],
             'telefono' => [
                 'required' => false,
