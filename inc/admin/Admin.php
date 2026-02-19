@@ -89,19 +89,31 @@ class Admin
 
     public function import_csv()
     {
+
+        // Validacion de nonce
         if (!isset($_POST['personal_csv_import_nonce']) || !wp_verify_nonce($_POST['personal_csv_import_nonce'], 'personal_csv_import')) {
-            wp_die('Error de seguridad: acceso no autorizado.');
+            wp_send_json_error('Error de seguridad: el token de sesión ha expirado. Por favor, recarga la página.');
         }
 
+        // Validacion de permisos
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Error: no tienes permisos suficientes para realizar esta acción.');
+        }
+
+        // Validacion del archivo subido
         if (!isset($_FILES['personal_csv_file']) || $_FILES['personal_csv_file']['error'] !== 0) {
-            wp_die('Error : no se subio ningun archivo');
+            wp_send_json_error('Error : no se subio ningun archivo');
         }
 
         $file = $_FILES['personal_csv_file'];
 
-        $csv_importer = new Csv_Importer($file);
-        $csv_importer->process_csv();
-        wp_die();
+        try {
+            $csv_importer = new Csv_Importer($file);
+            $results = $csv_importer->process_csv();
+            wp_send_json_success($results);
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage());
+        }
     }
 
 

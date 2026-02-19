@@ -178,9 +178,9 @@ class Csv_Importer
     public function process_csv()
     {
         $this->file_is_valid();
-        $this->read_csv();
+        $this->validate_csv_content();
         $results = $this->create_and_update_cpts();
-        $this->inform_results($results);
+        return $this->inform_results($results);
     }
 
     /*
@@ -190,7 +190,7 @@ class Csv_Importer
     {
 
         if ($this->csv_file['type'] !== 'text/csv') {
-            wp_die('Error: el formato de archivo no es valido');
+            throw new \Exception('Error: el formato de archivo no es valido');
         }
 
         $handle = fopen($this->csv_file['tmp_name'], 'r');
@@ -198,7 +198,7 @@ class Csv_Importer
         fclose($handle);
 
         if ($cols !== $this->num_columns_expected) {
-            wp_die('Error: el archivo no contiene la cantidad de columnas esperadas');
+            throw new \Exception('Error: el archivo no contiene la cantidad de columnas esperadas');
         }
     }
     protected function map_csv_fields_to_cpt_fields($row, $headers)
@@ -245,7 +245,7 @@ class Csv_Importer
      *   Lee el csv, decide por cada fila si es para crear o actualizar un cpt y guarda 
      *   la información de los cpt a crear o actualizar
      */
-    protected function read_csv()
+    protected function validate_csv_content()
     {
         $handle = fopen($this->csv_file['tmp_name'], "r");
 
@@ -324,8 +324,11 @@ class Csv_Importer
 
     protected function inform_results($results)
     {
-        error_log('Se crearon : ' . $results['personal_created'] . ' perfiles de personal');
-        error_log('Se actualizaron : ' . $results['personal_updated'] . ' perfiles de personal');
+        return [
+            'personal_created' => 'Se crearon : ' . $results['personal_created'] . ' perfiles de personal',
+            'personal_updated' => 'Se actualizaron : ' . $results['personal_updated'] . ' perfiles de personal',
+            'errors' => $this->errors,
+        ];
     }
 
     /*
@@ -371,7 +374,7 @@ class Csv_Importer
                 }
 
             } else
-                var_dump("Error : la regla para el campo especificado no existe");
+                throw new \Exception("Error : la regla para el campo especificado no existe");
 
         }
 

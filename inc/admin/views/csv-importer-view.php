@@ -10,7 +10,7 @@
     <p>Utilice este formulario para subir un archivo CSV que contenga la información del personal que desea importar.
         Asegúrese de que el archivo CSV esté correctamente formateado.</p>
 
-    <form method="post" enctype="multipart/form-data" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+    <form method="post" enctype="multipart/form-data" onsubmit="process_csv_form(this); return false;">
         <input type="hidden" name="action" value="import_csv">
         <?php wp_nonce_field('personal_csv_import', 'personal_csv_import_nonce'); ?>
         <input type="file" name="personal_csv_file" accept=".csv" />
