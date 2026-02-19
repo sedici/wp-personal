@@ -39,6 +39,10 @@ function procesar_formulario_personal(form) {
 function process_csv_form(form) {
 
     let formData = new FormData(form);
+    let $results = jQuery('#csv-import-results');
+
+    // Preparar el contenedor
+    $results.show().html('<p>Procesando...</p>');
 
     jQuery.ajax({
         type: "POST",
@@ -48,11 +52,30 @@ function process_csv_form(form) {
         contentType: false,
 
         success: function (response) {
-            console.log("La rta del servidor llego con exito" + response);
+            let html = '';
+            
+            if (response.success) {
+                // Si todo fue bien (aunque haya errores en filas individuales)
+                html += '<div class="notice notice-success"><p>' + response.data.personal_created + '</p></div>';
+                html += '<div class="notice notice-success"><p>' + response.data.personal_updated + '</p></div>';
+
+                if (response.data.errors && response.data.errors.length > 0) {
+                    html += '<div class="notice notice-warning"><h4>Errores en filas:</h4><ul>';
+                    response.data.errors.forEach(function(e) {
+                        html += '<li>Fila ' + e.row + ' (' + e.field + '): ' + e.error + '</li>';
+                    });
+                    html += '</ul></div>';
+                }
+            } else {
+                // Error de seguridad o archivo no válido
+                html = '<div class="notice notice-error"><p>' + response.data + '</p></div>';
+            }
+            
+            $results.html(html);
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-            console.error('Hubo un error en la rta del servidor:', textStatus, errorThrown);
+            $results.html('<div class="notice notice-error"><p>Error de conexión con el servidor.</p></div>');
         },
     });
 }

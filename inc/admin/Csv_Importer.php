@@ -38,23 +38,22 @@ class Csv_Importer
                 'required' => true,
                 'sanitize' => 'sanitize_email',
                 'validate' => function ($value) {
-                    return !empty($value);
+                    return !empty($value) && is_email($value);
                 },
                 'error' => 'El formato del correo electrónico no es válido.'
             ],
             'nombre_apellido' => [
-                'required' => false,
+                'required' => true,
                 'sanitize' => 'sanitize_text_field',
                 'validate' => function ($value) {
-                    return true;
+                    return !empty($value) && strlen($value) > 1;
                 },
-                'error' => ''
+                'error' => 'El nombre debe tener al menos 1 caracter'
             ],
             'telefono' => [
                 'required' => false,
                 'sanitize' => 'sanitize_text_field',
                 'validate' => function ($valor) {
-                    // Permite números, espacios, guiones, paréntesis y el signo +
                     return preg_match('/^[\d\+\-\(\)\s]+$/', $valor);
                 },
                 'error' => 'El teléfono contiene caracteres no permitidos.'
@@ -63,76 +62,76 @@ class Csv_Importer
                 'required' => false,
                 'sanitize' => 'sanitize_text_field',
                 'validate' => function ($valor) {
-                    return true;
+                    return !preg_match('/^(http|www)/i', $valor);
                 },
-                'error' => 'La unidad de investigación es demasiado corta.'
+                'error' => 'La unidad de investigacion no puede ser un enlace'
             ],
 
             'rol_unidad_de_investigacion' => [
                 'required' => false,
                 'sanitize' => 'sanitize_text_field',
                 'validate' => function ($valor) {
-                    return true;
+                    return !preg_match('/^(http|www)/i', $valor);
                 },
-                'error' => ''
+                'error' => 'El rol de la unidad de investigacion no puede ser un enlace'
             ],
             'grado_alcanzado' => [
                 'required' => false,
                 'sanitize' => 'sanitize_text_field',
                 'validate' => function ($valor) {
-                    return true;
+                    return !preg_match('/^(http|www)/i', $valor);
                 },
-                'error' => ''
+                'error' => 'El grado alcanzado no puede ser un enlace'
             ],
 
             'google_scholar' => [
                 'required' => false,
                 'sanitize' => 'esc_url_raw',
                 'validate' => function ($valor) {
-                    return true;
+                    return filter_var($valor, FILTER_VALIDATE_URL);
                 },
-                'error' => ''
+                'error' => 'El enlace a google scholar no es valido'
             ],
             'orcid' => [
                 'required' => false,
-                'sanitize' => 'sanitize_text_field',
+                'sanitize' => 'esc_url_raw',
                 'validate' => function ($valor) {
-                    return true;
+                    return filter_var($valor, FILTER_VALIDATE_URL);
                 },
-                'error' => ''
+                'error' => 'El enlace del orcid no es valido'
             ],
             'linkedin' => [
                 'required' => false,
                 'sanitize' => 'esc_url_raw',
                 'validate' => function ($valor) {
-                    return true;
+                    return filter_var($valor, FILTER_VALIDATE_URL);
                 },
-                'error' => ''
+                'error' => 'El enlace a linkedin no es valido'
             ],
 
             'facebook' => [
                 'required' => false,
                 'sanitize' => 'esc_url_raw',
                 'validate' => function ($valor) {
-                    return true;
+                    return filter_var($valor, FILTER_VALIDATE_URL);
                 },
-                'error' => ''
+                'error' => 'El enlace a facebook no es valido'
             ],
             'twitter' => [
                 'required' => false,
                 'sanitize' => 'esc_url_raw',
                 'validate' => function ($valor) {
-                    return true;
+                    return filter_var($valor, FILTER_VALIDATE_URL);
                 },
-                'error' => ''
+                'error' => 'El enlace a twitter no es valido'
             ],
             'researchgate' => [
                 'required' => false,
                 'sanitize' => 'esc_url_raw',
                 'validate' => function ($valor) {
-                    return true;
+                    return filter_var($valor, FILTER_VALIDATE_URL);
                 },
-                'error' => ''
+                'error' => 'El enlace a researchgate no es valido'
             ],
 
             'biografia' => [
@@ -296,9 +295,7 @@ class Csv_Importer
         // Si hay cpts_to_create, los creo
 
         if (!empty($this->cpts_to_create)) {
-
             foreach ($this->cpts_to_create as $personal) {
-
                 $result = wp_insert_post($personal);
                 if ($result !== 0)
                     $count_created++;
@@ -307,12 +304,16 @@ class Csv_Importer
 
         // Si hay cpts_to_update, los actualizo
         if (!empty($this->cpts_to_update)) {
-
             foreach ($this->cpts_to_update as $personal) {
-
-                $result = wp_insert_post($personal);
-                if ($result !== 0)
-                    $count_updated++;
+                $id = $this->get_cpt_id($personal['meta_input']['email']);
+                if (!empty($id)) {
+                    $personal['ID'] = $id;
+                    $result = wp_insert_post($personal);
+                    if ($result !== 0)
+                        $count_updated++;
+                } else {
+                    $this->errors[] = 'Error al actualizar: no se encontro el personal con el email : ' . $personal['meta_input']['email'];
+                }
             }
         }
 
@@ -320,6 +321,20 @@ class Csv_Importer
             'personal_created' => $count_created,
             'personal_updated' => $count_updated,
         ];
+    }
+
+    protected function get_cpt_id($email)
+    {
+        $id = get_posts([
+            'post_type' => 'personal',
+            'meta_key' => 'email',
+            'meta_value' => $email,
+            'post_status' => 'any',
+            'numberposts' => 1,
+            'fields' => 'ids',
+        ]);
+
+        return $id;
     }
 
     protected function inform_results($results)

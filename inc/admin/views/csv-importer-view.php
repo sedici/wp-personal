@@ -18,4 +18,6 @@
             <input type="submit" name="submit" id="submit" class="button button-primary" value="Procesar CSV">
         </p>
     </form>
+
+    <div id="csv-import-results" style="display:none; margin-top: 20px;"></div>
 </div>

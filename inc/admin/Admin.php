@@ -111,7 +111,7 @@ class Admin
             $csv_importer = new Csv_Importer($file);
             $results = $csv_importer->process_csv();
             wp_send_json_success($results);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             wp_send_json_error($e->getMessage());
         }
     }
