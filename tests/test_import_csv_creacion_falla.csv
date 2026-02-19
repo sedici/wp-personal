@@ -1,0 +1,7 @@
+email,nombre_apellido,telefono,unidad_de_investigacion,rol_unidad_de_investigacion,grado_alcanzado,google_scholar,biografia,orcid,researchgate,linkedin,facebook,twitter,sedici,cic,conicet
+falla.telefono@gmail.com,Falla Telefono,letras123,LIFIA,Inv,Doc,https://scholar.google.com,Bio,https://orcid.org,https://researchgate.net,https://linkedin.com,https://facebook.com,https://twitter.com,Falla Telefono,Falla Telefono,Falla Telefono
+falla.unidad@gmail.com,Falla Unidad,123456,http://lifia.com,Inv,Doc,https://scholar.google.com,Bio,https://orcid.org,https://researchgate.net,https://linkedin.com,https://facebook.com,https://twitter.com,Falla Unidad,Falla Unidad,Falla Unidad
+falla.rol@gmail.com,Falla Rol,123456,LIFIA,www.rol.com,Doc,https://scholar.google.com,Bio,https://orcid.org,https://researchgate.net,https://linkedin.com,https://facebook.com,https://twitter.com,Falla Rol,Falla Rol,Falla Rol
+falla.grado@gmail.com,Falla Grado,123456,LIFIA,Inv,http://doc.com,https://scholar.google.com,Bio,https://orcid.org,https://researchgate.net,https://linkedin.com,https://facebook.com,https://twitter.com,Falla Grado,Falla Grado,Falla Grado
+falla.scholar@gmail.com,Falla Scholar,123456,LIFIA,Inv,Doc,http://,Bio,https://orcid.org,https://researchgate.net,https://linkedin.com,https://facebook.com,https://twitter.com,Falla Scholar,Falla Scholar,Falla Scholar
+falla.orcid@gmail.com,Falla Orcid,123456,LIFIA,Inv,Doc,https://scholar.google.com,Bio,http://,https://researchgate.net,https://linkedin.com,https://facebook.com,https://twitter.com,Falla Orcid,Falla Orcid,Falla Orcid
