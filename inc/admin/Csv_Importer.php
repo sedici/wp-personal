@@ -230,6 +230,17 @@ class Csv_Importer
         return $args;
     }
 
+    protected function sanitize_cpt_fields_before_save($personal)
+    {
+        $personal['post_title'] = $this->rules['nombre_apellido']['sanitize']($personal['post_title']);
+
+        foreach ($personal['meta_input'] as $key => $value) {
+            $personal['meta_input'][$key] = $this->rules[$key]['sanitize']($value);
+        }
+
+        return $personal;
+    }
+
     /*
      *   Lee el csv, decide por cada fila si es para crear o actualizar un cpt y guarda 
      *   la información de los cpt a crear o actualizar
@@ -263,7 +274,8 @@ class Csv_Importer
             } else {
 
                 $personal = $this->map_csv_fields_to_cpt_fields($row, $headers);
-                error_log(print_r($personal, true));
+                $personal = $this->sanitize_cpt_fields_before_save($personal);
+
                 if ($row_result['create_new_cpt'])
                     array_push($this->cpts_to_create, $personal);
                 else
@@ -330,15 +342,15 @@ class Csv_Importer
 
             if (isset($this->rules[$header])) {
                 // Sanitizo
-                $this->rules[$header]['sanitize']($content);
-                $is_valid = $this->rules[$header]['validate']($content);
+                $content_sanitized = $this->rules[$header]['sanitize']($content);
+                $is_valid = $this->rules[$header]['validate']($content_sanitized);
 
                 // Chequeo si el cpt existe (actualizo o lo creo)
                 if ($header == 'email' && $is_valid) {
                     $ids = get_posts([
                         'post_type' => 'personal',
                         'meta_key' => 'email',
-                        'meta_value' => $content,
+                        'meta_value' => $content_sanitized,
                         'post_status' => 'any',
                         'numberposts' => 1,
                         'fields' => 'ids',
