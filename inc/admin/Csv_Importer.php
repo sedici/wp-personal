@@ -11,6 +11,8 @@ class Csv_Importer
     protected array $cpts_to_create;
     protected array $cpts_to_update;
 
+    protected array $personal_metadata;
+
     protected array $errors;
 
     protected $csv_config; // Parametros para pasarle a la funcion fopen y parsear el csv
@@ -19,7 +21,7 @@ class Csv_Importer
 
     public function __construct($csv_file)
     {
-        $this->num_columns_expected = 13;
+        $this->num_columns_expected = 16;
         $this->csv_file = $csv_file;
         $this->rules = $this->initialize_rules();
 
@@ -141,7 +143,30 @@ class Csv_Importer
                 },
                 'error' => ''
             ],
-
+            'sedici' => [
+                'required' => false,
+                'sanitize' => 'sanitize_text_field',
+                'validate' => function ($valor) {
+                    return true;
+                },
+                'error' => ''
+            ],
+            'cic' => [
+                'required' => false,
+                'sanitize' => 'sanitize_text_field',
+                'validate' => function ($valor) {
+                    return true;
+                },
+                'error' => ''
+            ],
+            'conicet' => [
+                'required' => false,
+                'sanitize' => 'sanitize_text_field',
+                'validate' => function ($valor) {
+                    return true;
+                },
+                'error' => ''
+            ],
         ];
 
         return $rules;
@@ -154,8 +179,8 @@ class Csv_Importer
     {
         $this->file_is_valid();
         $this->read_csv();
-        $this->create_and_update_cpts();
-        $this->inform_results();
+        $results = $this->create_and_update_cpts();
+        $this->inform_results($results);
     }
 
     /*
@@ -176,13 +201,38 @@ class Csv_Importer
             wp_die('Error: el archivo no contiene la cantidad de columnas esperadas');
         }
     }
-    protected function map_csv_fields_to_cpt_fields()
+    protected function map_csv_fields_to_cpt_fields($row, $headers)
     {
-        return;
+        $personal = array_combine($headers, $row);
+
+        $args = [
+            'post_title' => $personal['nombre_apellido'],
+            'post_type' => 'personal',
+            'post_status' => 'publish',
+            'meta_input' => [
+                'email' => $personal['email'],
+                'telefono' => $personal['telefono'],
+                'unidad_de_investigacion' => $personal['unidad_de_investigacion'],
+                'rol_unidad_de_investigacion' => $personal['rol_unidad_de_investigacion'],
+                'grado_alcanzado' => $personal['grado_alcanzado'],
+                'google_scholar' => $personal['google_scholar'],
+                'orcid' => $personal['orcid'],
+                'linkedin' => $personal['linkedin'],
+                'facebook' => $personal['facebook'],
+                'twitter' => $personal['twitter'],
+                'researchgate' => $personal['researchgate'],
+                'sedici' => $personal['sedici'],
+                'cic' => $personal['cic'],
+                'conicet' => $personal['conicet'],
+            ]
+        ];
+
+        return $args;
     }
 
     /*
-     *   Lee el csv y decide por cada fila, si es para crear o actualizar un cpt
+     *   Lee el csv, decide por cada fila si es para crear o actualizar un cpt y guarda 
+     *   la información de los cpt a crear o actualizar
      */
     protected function read_csv()
     {
@@ -206,32 +256,64 @@ class Csv_Importer
 
             // Si hay errores, paso a la siguiente fila, sino almaceno qué hacer (creo nuevo cpt o actualizo)
             if ($row_result['error']) {
+
                 $row_number++;
                 continue;
-            } else if ($row_result['create_new_cpt']) {
-                array_push($this->cpts_to_create, $row);
+
             } else {
-                array_push($this->cpts_to_update, $row);
+
+                $personal = $this->map_csv_fields_to_cpt_fields($row, $headers);
+                error_log(print_r($personal, true));
+                if ($row_result['create_new_cpt'])
+                    array_push($this->cpts_to_create, $personal);
+                else
+                    array_push($this->cpts_to_update, $personal);
             }
 
             $row_number++;
         }
-
-        var_dump($this->errors);
-        var_dump($this->cpts_to_create);
-        var_dump($this->cpts_to_update);
 
         fclose($handle);
     }
 
     protected function create_and_update_cpts()
     {
+        $count_created = 0;
+        $count_updated = 0;
 
+        // Si hay cpts_to_create, los creo
+
+        if (!empty($this->cpts_to_create)) {
+
+            foreach ($this->cpts_to_create as $personal) {
+
+                $result = wp_insert_post($personal);
+                if ($result !== 0)
+                    $count_created++;
+            }
+        }
+
+        // Si hay cpts_to_update, los actualizo
+        if (!empty($this->cpts_to_update)) {
+
+            foreach ($this->cpts_to_update as $personal) {
+
+                $result = wp_insert_post($personal);
+                if ($result !== 0)
+                    $count_updated++;
+            }
+        }
+
+        return [
+            'personal_created' => $count_created,
+            'personal_updated' => $count_updated,
+        ];
     }
 
-    protected function inform_results()
+    protected function inform_results($results)
     {
-
+        error_log('Se crearon : ' . $results['personal_created'] . ' perfiles de personal');
+        error_log('Se actualizaron : ' . $results['personal_updated'] . ' perfiles de personal');
     }
 
     /*
