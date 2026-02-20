@@ -390,7 +390,7 @@ class Csv_Importer
                 }
 
             } else
-                throw new \Exception("Error : la regla para el campo especificado no existe");
+                throw new \Exception("Error : " . $header . " no es un campo valido para procesar");
 
         }
 
