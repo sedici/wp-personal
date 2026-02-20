@@ -389,8 +389,11 @@ class Csv_Importer
                     break;
                 }
 
-            } else
-                throw new \Exception("Error : " . $header . " no es un campo valido para procesar");
+            } else {
+                $aux = ($header === '') ? "VACIO" : $header;
+                throw new \Exception("Error : " . $aux . " no es un campo valido para procesar");
+            }
+
 
         }
 
