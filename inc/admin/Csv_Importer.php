@@ -308,7 +308,7 @@ class Csv_Importer
                 $id = $this->get_cpt_id($personal['meta_input']['email']);
                 if (!empty($id)) {
                     $personal['ID'] = $id;
-                    $result = wp_insert_post($personal);
+                    $result = wp_update_post($personal);
                     if ($result !== 0)
                         $count_updated++;
                 } else {
@@ -334,7 +334,7 @@ class Csv_Importer
             'fields' => 'ids',
         ]);
 
-        return $id;
+        return $id[0];
     }
 
     protected function inform_results($results)
