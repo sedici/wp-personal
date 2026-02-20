@@ -214,6 +214,7 @@ class Csv_Importer
                 'unidad_de_investigacion' => $personal['unidad_de_investigacion'],
                 'rol_unidad_de_investigacion' => $personal['rol_unidad_de_investigacion'],
                 'grado_alcanzado' => $personal['grado_alcanzado'],
+                'biografia' => $personal['biografia'],
                 'google_scholar' => $personal['google_scholar'],
                 'orcid' => $personal['orcid'],
                 'linkedin' => $personal['linkedin'],
