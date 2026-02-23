@@ -193,9 +193,19 @@ class Csv_Importer
      */
     protected function file_is_valid()
     {
+        // 1. Validar extensión real 
+        $extension = pathinfo($this->csv_file['name'], PATHINFO_EXTENSION);
+        if (strtolower($extension) !== 'csv') {
+            throw new \Exception('Error: La extensión del archivo debe ser .csv');
+        }
 
-        if ($this->csv_file['type'] !== 'text/csv') {
-            throw new \Exception('Error: el formato de archivo no es valido');
+        // 2. Validar contenido real (MIME-type real)
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $real_mime = $finfo->file($this->csv_file['tmp_name']);
+
+        $allowed_mimes = ['text/csv', 'text/plain', 'application/csv'];
+        if (!in_array($real_mime, $allowed_mimes)) {
+            throw new \Exception('Error: El contenido del archivo no es un CSV válido.');
         }
 
         $handle = fopen($this->csv_file['tmp_name'], 'r');
