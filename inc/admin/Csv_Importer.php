@@ -8,6 +8,7 @@ class Csv_Importer
     protected $csv_file;
 
     protected int $num_columns_expected;
+    protected int $max_file_size;
     protected array $cpts_to_create;
     protected array $cpts_to_update;
 
@@ -15,13 +16,15 @@ class Csv_Importer
 
     protected array $errors;
 
-    protected $csv_config; // Parametros para pasarle a la funcion fopen y parsear el csv
+    protected $csv_read_config; // Parametros para pasarle a la funcion fopen y parsear el csv
 
     protected array $rules;
 
     public function __construct($csv_file)
     {
         $this->num_columns_expected = 16;
+        $this->max_file_size = 2 * 1024 * 1024;
+        $this->csv_read_config = [];
         $this->csv_file = $csv_file;
         $this->rules = $this->initialize_rules();
 
@@ -188,11 +191,15 @@ class Csv_Importer
     }
 
     /**
-     * Valida el formato del archivo y la cantidad de campos
-     * @throws \Exception Si el archivo no es de tipo 'text/csv' o si no coincide la cantidad de columnas.
+     * Valida el formato del archivo, la cantidad de campos y el tamaño
+     * @throws \Exception Si incumple con alguna de las validaciones.
      */
     protected function file_is_valid()
     {
+        if ($this->csv_file['size'] > $this->max_file_size) {
+            throw new \Exception('Error: El archivo es demasiado grande. El límite permitido es de 2 MB.');
+        }
+
         // 1. Validar extensión real 
         $extension = pathinfo($this->csv_file['name'], PATHINFO_EXTENSION);
         if (strtolower($extension) !== 'csv') {
