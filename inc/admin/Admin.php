@@ -87,6 +87,11 @@ class Admin
 
     }
 
+    /**
+     * Valida e importa un csv para crear o actualizar personal
+     * 
+     * @return void
+     */
     public function import_csv()
     {
 

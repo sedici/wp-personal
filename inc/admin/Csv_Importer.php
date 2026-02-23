@@ -30,7 +30,10 @@ class Csv_Importer
         $this->cpts_to_update = [];
     }
 
-
+    /**
+     * Inicializa las reglas de validacion para cada columna del csv
+     * @return array Array con las reglas de validacion
+     */
     protected function initialize_rules()
     {
         $rules = [
@@ -171,19 +174,22 @@ class Csv_Importer
         return $rules;
     }
 
-    /*
+    /** 
      *  Function principal para importar el csv
+     *  @return array Array con los resultados de la importacion
      */
     public function process_csv()
     {
         $this->file_is_valid();
+        $this->validate_csv_headers();
         $this->validate_csv_content();
         $results = $this->create_and_update_cpts();
         return $this->inform_results($results);
     }
 
-    /*
-     *   Valida el formato del archivo y la cantidad de campos
+    /**
+     * Valida el formato del archivo y la cantidad de campos
+     * @throws \Exception Si el archivo no es de tipo 'text/csv' o si no coincide la cantidad de columnas.
      */
     protected function file_is_valid()
     {
@@ -200,6 +206,14 @@ class Csv_Importer
             throw new \Exception('Error: el archivo no contiene la cantidad de columnas esperadas');
         }
     }
+
+    /**
+     *   Mapea los campos del csv a los campos del cpt
+     *   @param array $row Array con el contenido de una fila del csv
+     *   @param array $headers Array con los nombres de las columnas del csv
+     *   @return array Array con la estructura esperada por la función wp_insert_post
+     * 
+     */
     protected function map_csv_fields_to_cpt_fields($row, $headers)
     {
         $personal = array_combine($headers, $row);
@@ -230,6 +244,12 @@ class Csv_Importer
         return $args;
     }
 
+    /**
+     *   Sanitiza los campos del personal antes de guardarlos
+     *   @param array $personal 
+     *   @return array
+     * 
+     */
     protected function sanitize_cpt_fields_before_save($personal)
     {
         $personal['post_title'] = $this->rules['nombre_apellido']['sanitize']($personal['post_title']);
@@ -241,9 +261,10 @@ class Csv_Importer
         return $personal;
     }
 
-    /*
-     *   Lee el csv, decide por cada fila si es para crear o actualizar un cpt y guarda 
-     *   la información de los cpt a crear o actualizar
+    /**
+     *   Lee el csv, y por cada fila crea o actualiza un personal u omite la fila en caso de haber un error
+     *   @return void
+     * 
      */
     protected function validate_csv_content()
     {
@@ -288,6 +309,11 @@ class Csv_Importer
         fclose($handle);
     }
 
+    /**
+     * Crea y actualiza el personal en base al contenido de $this->cpts_to_create y $this->cpts_to_update
+     * 
+     * @return array{personal_created: int, personal_updated: int}
+     */
     protected function create_and_update_cpts()
     {
         $count_created = 0;
@@ -324,6 +350,12 @@ class Csv_Importer
         ];
     }
 
+    /**
+     * Obtiene el id de un cpt personal por email
+     * 
+     * @param string $email Email del personal
+     * @return int
+     */
     protected function get_cpt_id($email)
     {
         $id = get_posts([
@@ -338,6 +370,12 @@ class Csv_Importer
         return $id[0];
     }
 
+    /**
+     * Informa los resultados de la importacion
+     * 
+     * @param array $results Array con el numero de perfiles creados y actualizados 
+     * @return array
+     */
     protected function inform_results($results)
     {
         return [
@@ -347,8 +385,40 @@ class Csv_Importer
         ];
     }
 
-    /*
-     *   Parsea los datos de la fila y los valida, si hay un error en alguno de los campos, guarda el error en $this->errors, sino retorna ...
+    /**
+     * Valida los headers del csv
+     * 
+     * @throws \Exception Si habia una columna en el csv que no se correspondia con una regla en $this->rules
+     * @return void
+     */
+    protected function validate_csv_headers()
+    {
+        try {
+            $handle = fopen($this->csv_file['tmp_name'], "r");
+
+            $headers = fgetcsv($handle);
+            $headers = array_map('sanitize_title', $headers);
+
+            foreach ($headers as $header) {
+                if (!isset($this->rules[$header])) {
+                    $aux = ($header === '') ? "VACIO" : $header;
+                    throw new \Exception("Error : " . $aux . " no es un campo valido para procesar");
+                }
+            }
+        } finally {
+            fclose($handle);
+        }
+    }
+
+    /**
+     *   Parsea los datos de la fila recibida y los valida, 
+     *   si hay un error en alguno de los campos, guarda el error en $this->errors, sino retorna un array
+     *   con el resultado de la validacion
+     * 
+     * @param array $row Array con los datos de la fila
+     * @param int $row_number Numero de la fila
+     * @param array $headers Array con los headers de la fila
+     * @return array Array con el resultado de la validacion (error, create_new_cpt)
      */
     protected function validate_row($row, $row_number, $headers)
     {
@@ -359,39 +429,33 @@ class Csv_Importer
             $header = $headers[$i];
             $content = $row[$i];
 
-            if (isset($this->rules[$header])) {
-                // Sanitizo
-                $content_sanitized = $this->rules[$header]['sanitize']($content);
-                $is_valid = $this->rules[$header]['validate']($content_sanitized);
+            // Sanitizo
+            $content_sanitized = $this->rules[$header]['sanitize']($content);
+            $is_valid = $this->rules[$header]['validate']($content_sanitized);
 
-                // Chequeo si el cpt existe (actualizo o lo creo)
-                if ($header == 'email' && $is_valid) {
-                    $ids = get_posts([
-                        'post_type' => 'personal',
-                        'meta_key' => 'email',
-                        'meta_value' => $content_sanitized,
-                        'post_status' => 'any',
-                        'numberposts' => 1,
-                        'fields' => 'ids',
-                    ]);
+            // Chequeo si el cpt existe (actualizo o lo creo)
+            if ($header == 'email' && $is_valid) {
+                $ids = get_posts([
+                    'post_type' => 'personal',
+                    'meta_key' => 'email',
+                    'meta_value' => $content_sanitized,
+                    'post_status' => 'any',
+                    'numberposts' => 1,
+                    'fields' => 'ids',
+                ]);
 
-                    if (!empty($ids))
-                        $row_result['create_new_cpt'] = false;
-                }
+                if (!empty($ids))
+                    $row_result['create_new_cpt'] = false;
+            }
 
-                if (!$is_valid) {
-                    $row_result['error'] = true;
-                    $this->errors[] = [
-                        'row' => $row_number,
-                        'field' => $header,
-                        'error' => $this->rules[$header]['error'],
-                    ];
-                    break;
-                }
-
-            } else {
-                $aux = ($header === '') ? "VACIO" : $header;
-                throw new \Exception("Error : " . $aux . " no es un campo valido para procesar");
+            if (!$is_valid) {
+                $row_result['error'] = true;
+                $this->errors[] = [
+                    'row' => $row_number,
+                    'field' => $header,
+                    'error' => $this->rules[$header]['error'],
+                ];
+                break;
             }
 
 
