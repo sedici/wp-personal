@@ -44,7 +44,7 @@ class Csv_Importer
                 'required' => true,
                 'sanitize' => 'sanitize_text_field',
                 'validate' => function ($value) {
-                    return $value === -1 || empty($ids = $this->get_personal_post_ids()) || in_array($value, $ids);
+                    return $value == -1 || empty($ids = $this->get_personal_post_ids()) || in_array($value, $ids);
                 },
                 'error' => 'El ID ingresado no existe o no es un ID válido para crear un personal.'
             ],
@@ -52,7 +52,7 @@ class Csv_Importer
                 'required' => false,
                 'sanitize' => 'sanitize_email',
                 'validate' => function ($value) {
-                    return is_email($value);
+                    return (!empty($value)) ? is_email($value) : true;
                 },
                 'error' => 'El formato del email no es valido.'
             ],
@@ -68,7 +68,7 @@ class Csv_Importer
                 'required' => false,
                 'sanitize' => 'sanitize_text_field',
                 'validate' => function ($valor) {
-                    return preg_match('/^[\d\+\-\(\)\s]+$/', $valor);
+                    return (!empty($value)) ? preg_match('/^[\d\+\-\(\)\s]+$/', $valor) : true;
                 },
                 'error' => 'El teléfono contiene caracteres no permitidos.'
             ],
@@ -102,6 +102,9 @@ class Csv_Importer
                 'required' => false,
                 'sanitize' => 'esc_url_raw',
                 'validate' => function ($valor) {
+                    if (empty($valor)) {
+                        return true;
+                    }
                     return filter_var($valor, FILTER_VALIDATE_URL);
                 },
                 'error' => 'El enlace a google scholar no es valido'
@@ -110,6 +113,9 @@ class Csv_Importer
                 'required' => false,
                 'sanitize' => 'esc_url_raw',
                 'validate' => function ($valor) {
+                    if (empty($valor)) {
+                        return true;
+                    }
                     return filter_var($valor, FILTER_VALIDATE_URL);
                 },
                 'error' => 'El enlace del orcid no es valido'
@@ -118,6 +124,9 @@ class Csv_Importer
                 'required' => false,
                 'sanitize' => 'esc_url_raw',
                 'validate' => function ($valor) {
+                    if (empty($valor)) {
+                        return true;
+                    }
                     return filter_var($valor, FILTER_VALIDATE_URL);
                 },
                 'error' => 'El enlace a linkedin no es valido'
@@ -127,6 +136,9 @@ class Csv_Importer
                 'required' => false,
                 'sanitize' => 'esc_url_raw',
                 'validate' => function ($valor) {
+                    if (empty($valor)) {
+                        return true;
+                    }
                     return filter_var($valor, FILTER_VALIDATE_URL);
                 },
                 'error' => 'El enlace a facebook no es valido'
@@ -135,6 +147,9 @@ class Csv_Importer
                 'required' => false,
                 'sanitize' => 'esc_url_raw',
                 'validate' => function ($valor) {
+                    if (empty($valor)) {
+                        return true;
+                    }
                     return filter_var($valor, FILTER_VALIDATE_URL);
                 },
                 'error' => 'El enlace a twitter no es valido'
@@ -143,6 +158,9 @@ class Csv_Importer
                 'required' => false,
                 'sanitize' => 'esc_url_raw',
                 'validate' => function ($valor) {
+                    if (empty($valor)) {
+                        return true;
+                    }
                     return filter_var($valor, FILTER_VALIDATE_URL);
                 },
                 'error' => 'El enlace a researchgate no es valido'
