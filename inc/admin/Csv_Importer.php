@@ -22,7 +22,7 @@ class Csv_Importer
 
     public function __construct($csv_file)
     {
-        $this->num_columns_expected = 16;
+        $this->num_columns_expected = 17;
         $this->max_file_size = 2 * 1024 * 1024;
         $this->csv_read_config = [];
         $this->csv_file = $csv_file;
@@ -40,13 +40,21 @@ class Csv_Importer
     protected function initialize_rules()
     {
         $rules = [
-            'email' => [
+            'post_id' => [
                 'required' => true,
+                'sanitize' => 'sanitize_text_field',
+                'validate' => function ($value) {
+                    return $value === -1 || empty($ids = $this->get_personal_post_ids()) || in_array($value, $ids);
+                },
+                'error' => 'El ID ingresado no existe o no es un ID válido para crear un personal.'
+            ],
+            'email' => [
+                'required' => false,
                 'sanitize' => 'sanitize_email',
                 'validate' => function ($value) {
-                    return !empty($value) && is_email($value);
+                    return is_email($value);
                 },
-                'error' => 'El email no debe ser vacio y el formato debe ser valido.'
+                'error' => 'El formato del email no es valido.'
             ],
             'nombre_apellido' => [
                 'required' => true,
@@ -177,6 +185,25 @@ class Csv_Importer
         return $rules;
     }
 
+    /**
+     * Obtiene los post_ids del personal cargado
+     */
+    protected function get_personal_post_ids()
+    {
+        $args = [
+            'post_type' => 'personal',
+            'posts_per_page' => -1,
+            'post_status' => 'any',
+            'fields' => 'ids',
+        ];
+
+        $query = new \WP_Query($args);
+
+        $ids = $query->posts;
+
+        return $ids;
+    }
+
     /** 
      *  Function principal para importar el csv
      *  @return array Array con los resultados de la importacion
@@ -236,6 +263,7 @@ class Csv_Importer
         $personal = array_combine($headers, $row);
 
         $args = [
+            'ID' => $personal['post_id'],
             'post_title' => $personal['nombre_apellido'],
             'post_type' => 'personal',
             'post_status' => 'publish',
@@ -305,7 +333,6 @@ class Csv_Importer
 
             // Si hay errores, paso a la siguiente fila, sino almaceno qué hacer (creo nuevo cpt o actualizo)
             if ($row_result['error']) {
-
                 $row_number++;
                 continue;
 
@@ -340,6 +367,7 @@ class Csv_Importer
 
         if (!empty($this->cpts_to_create)) {
             foreach ($this->cpts_to_create as $personal) {
+                unset($personal['ID']);
                 $result = wp_insert_post($personal);
                 if ($result !== 0)
                     $count_created++;
@@ -349,15 +377,12 @@ class Csv_Importer
         // Si hay cpts_to_update, los actualizo
         if (!empty($this->cpts_to_update)) {
             foreach ($this->cpts_to_update as $personal) {
-                $id = $this->get_cpt_id($personal['meta_input']['email']);
-                if (!empty($id)) {
-                    $personal['ID'] = $id;
-                    $result = wp_update_post($personal);
-                    if ($result !== 0)
-                        $count_updated++;
-                } else {
+                $result = wp_update_post($personal);
+
+                if ($result !== 0)
+                    $count_updated++;
+                else
                     $this->errors[] = 'Error al actualizar: no se encontro el personal con el email : ' . $personal['meta_input']['email'];
-                }
             }
         }
 
@@ -365,26 +390,6 @@ class Csv_Importer
             'personal_created' => $count_created,
             'personal_updated' => $count_updated,
         ];
-    }
-
-    /**
-     * Obtiene el id de un cpt personal por email
-     * 
-     * @param string $email Email del personal
-     * @return int
-     */
-    protected function get_cpt_id($email)
-    {
-        $id = get_posts([
-            'post_type' => 'personal',
-            'meta_key' => 'email',
-            'meta_value' => $email,
-            'post_status' => 'any',
-            'numberposts' => 1,
-            'fields' => 'ids',
-        ]);
-
-        return $id[0];
     }
 
     /**
@@ -442,7 +447,6 @@ class Csv_Importer
         $row_result = ['error' => false, 'create_new_cpt' => true];
 
         for ($i = 0; $i < $this->num_columns_expected; $i++) {
-
             $header = $headers[$i];
             $content = $row[$i];
 
@@ -450,19 +454,13 @@ class Csv_Importer
             $content_sanitized = $this->rules[$header]['sanitize']($content);
             $is_valid = $this->rules[$header]['validate']($content_sanitized);
 
-            // Chequeo si el cpt existe (actualizo o lo creo)
-            if ($header == 'email' && $is_valid) {
-                $ids = get_posts([
-                    'post_type' => 'personal',
-                    'meta_key' => 'email',
-                    'meta_value' => $content_sanitized,
-                    'post_status' => 'any',
-                    'numberposts' => 1,
-                    'fields' => 'ids',
-                ]);
 
-                if (!empty($ids))
+            // Chequeo si el cpt existe (actualizo o lo creo)
+            if ($header == 'post_id' && $is_valid) {
+                if ($content_sanitized != -1) {
                     $row_result['create_new_cpt'] = false;
+                }
+
             }
 
             if (!$is_valid) {

@@ -62,8 +62,8 @@ Para que el archivo sea procesado correctamente por el importador, el CSV genera
 1. **Formato:** Debe ser un archivo de texto plano con extensión `.csv` (`text/csv`).
 2. **Cantidad de Columnas:** El archivo debe contener **exactamente 16 columnas**.
 3. **Nombres de Cabeceras:** La primera fila del CSV debe contener exactamente estos nombres de columnas:
-
-   * **`email` (Obligatorio):** Identificador único para crear o actualizar. Debe ser un correo válido.
+   * **`post_id` (Obligatorio):** Identificador único para crear o actualizar un personal. Se indica -1 para crear un nuevo personal
+   * **`email` (Opcional):** Debe ser un correo válido.
    * **`nombre_apellido` (Obligatorio):** Nombre completo. No puede estar vacío.
    * **`telefono` (Opcional):** Solo admite números, espacios, guiones (`-`), paréntesis y el signo `+`.
    * **`unidad_de_investigacion` (Opcional):** Nombre de la unidad. No puede contener enlaces (`http`/`www`).
