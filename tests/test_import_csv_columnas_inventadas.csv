@@ -1,2 +1,2 @@
-"altura","edad","nombre_del_perro","color_favorito","comida","pelicula","ciudad","deporte","hobbie","marca_auto","profesion","libro","cancion","instrumento","estacion","planeta"
-180,30,"Firulais","Azul","Milanesa","Matrix","La Plata","Futbol","Leer","Ford","Carpintero",1984,"Imagine","Guitarra","Otoño","Marte"
+post_id,altura,edad,nombre_del_perro,color_favorito,comida,pelicula,ciudad,deporte,hobbie,marca_auto,profesion,libro,cancion,instrumento,estacion,planeta
+-1,180,30,Firulais,Azul,Milanesa,Matrix,La Plata,Futbol,Leer,Ford,Carpintero,1984,Imagine,Guitarra,Otoño,Marte
