@@ -1,0 +1,2 @@
+post_id,email,nombre_apellido,telefono,unidad_de_investigacion,rol_unidad_de_investigacion,grado_alcanzado,google_scholar,biografia,orcid,researchgate,linkedin,facebook,twitter,sedici,cic,conicet
+-1,perfecto@gmail.com,Maria Gomez,+54 221 1234567,LIFIA,Investigadora,Doctorado,https://scholar.google.com,Biógrafa experta en testing.,https://orcid.org/0000,https://researchgate.net,https://linkedin.com,https://facebook.com,https://twitter.com,Maria Gomez,Maria Gomez,Maria Gomez

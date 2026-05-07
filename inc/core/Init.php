@@ -113,6 +113,11 @@ class Init
         $this->loader->add_action('wp_ajax_generate_shortcode_personal', $plugin_admin, 'generate_shortcode_personal');
 
         $this->loader->add_action('init', $plugin_admin, 'create_block_personal_block_block_init');
+
+        $this->loader->add_action('wp_ajax_import_csv', $plugin_admin, 'import_csv');
+
+        $this->loader->add_action('admin_post_export_personal_csv', $plugin_admin, 'export_personal_csv');
+
     }
 
     function create_block_personal_block_block_init()

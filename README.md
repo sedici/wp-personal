@@ -51,4 +51,35 @@ El plugin también incluye un widget compatible con el constructor de páginas *
     *   Configurar el ordenamiento.
     *   Definir el número de columnas.
 
+## Importador de CSV
+
+El plugin cuenta con una función para importar el personal automaticamente mediante un CSV
+
+### Requisitos del Archivo CSV
+
+Para que el archivo sea procesado correctamente por el importador, el CSV generado debe cumplir con las siguientes características:
+
+1. **Formato:** Debe ser un archivo de texto plano con extensión `.csv` (`text/csv`).
+2. **Cantidad de Columnas:** El archivo debe contener **exactamente 16 columnas**.
+3. **Nombres de Cabeceras:** La primera fila del CSV debe contener exactamente estos nombres de columnas:
+   * **`post_id` (Obligatorio):** Identificador único para crear o actualizar un personal. Se indica -1 para crear un nuevo personal
+   * **`email` (Opcional):** Debe ser un correo válido.
+   * **`nombre_apellido` (Obligatorio):** Nombre completo. No puede estar vacío.
+   * **`telefono` (Opcional):** Solo admite números, espacios, guiones (`-`), paréntesis y el signo `+`.
+   * **`unidad_de_investigacion` (Opcional):** Nombre de la unidad. No puede contener enlaces (`http`/`www`).
+   * **`rol_unidad_de_investigacion` (Opcional):** Cargo o rol. No puede contener enlaces.
+   * **`grado_alcanzado` (Opcional):** Título académico. No puede contener enlaces.
+   * **`sedici` (Opcional):** Nombre del personal tal cual figura en SEDICI.
+   * **`cic` (Opcional):** Nombre del personal tal cual figura en CIC Digital.
+   * **`conicet` (Opcional):** Nombre del personal tal cual figura en CONICET.
+   * **`google_scholar` (Opcional):** Debe ser una URL absoluta y válida (ej. `https://...`).
+   * **`orcid` (Opcional):** Debe ser una URL absoluta y válida.
+   * **`linkedin` (Opcional):** Debe ser una URL absoluta y válida.
+   * **`facebook` (Opcional):** Debe ser una URL absoluta y válida.
+   * **`twitter` (Opcional):** Debe ser una URL absoluta y válida.
+   * **`researchgate` (Opcional):** Debe ser una URL absoluta y válida.
+   * **`biografia` (Opcional):** Resumen profesional. Permite texto enriquecido y formato HTML (`<p>`, `<strong>`, `<a>`).
+
+
+
 ## Licencia
