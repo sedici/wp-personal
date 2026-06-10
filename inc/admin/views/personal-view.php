@@ -11,11 +11,14 @@ foreach ($this->getInputsPersonal() as $item) {
         }
         $args[] =array('repositories' => $repositories);
     } else {
-        $item['default_value'] = get_post_meta($post->ID, $item['name'], true);
+        $meta_val = get_post_meta($post->ID, $item['name'], true);
+        // Si hay algo guardado en la base de datos, usamos eso. 
+        // Si está vacío, preservamos el get_bloginfo('name') que viene de initializeInputsPersonal()
+        if (!empty($meta_val)) {
+            $item['default_value'] = $meta_val;
+        }
         $args[] = $item;
-
     }
-
 
 }
 echo register_personal_field_group($args);
