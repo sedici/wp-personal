@@ -85,15 +85,6 @@ class Admin
             array($this, 'show_csv_importer_view'),
         );
 
-        add_submenu_page(
-            'edit.php?post_type=personal',
-            __('Exportar personal', $this->plugin_text_domain), //page title
-            __('Exportar personal', $this->plugin_text_domain), //menu title
-            'manage_options',
-            'export-personal',
-            array($this, 'show_csv_exporter_view'),
-        );
-
     }
 
     /**
@@ -128,12 +119,6 @@ class Admin
         } catch (\Exception $e) {
             wp_send_json_error($e->getMessage());
         }
-    }
-
-    public function export_personal_csv()
-    {
-        $csv_exporter = new Csv_Exporter();
-        $csv_exporter->export();
     }
 
 
@@ -204,10 +189,7 @@ class Admin
         include_once dirname(__DIR__) . '/admin/views/csv-importer-view.php';
     }
 
-    public function show_csv_exporter_view()
-    {
-        include_once dirname(__DIR__) . '/admin/views/csv-exporter-view.php';
-    }
+
 
 
     public function generate_shortcode_personal()
@@ -274,6 +256,141 @@ class Admin
 
     }
 
+    /**
+     * Registra el Post Type Personal
+     */
+
+    public function cptui_register_my_cpts_personal()
+    {
+        /**
+         * Post Type: Personal.
+         */
+
+
+        $labels = array(
+            "name" => __("Personal", ""),
+            "singular_name" => __("Persona", ""),
+            "menu_name" => __("Personal", ""),
+            "all_items" => __("Todo el Personal", ""),
+            "add_new" => __("Agregar Personal", ""),
+            "add_new_item" => __("Agregar nuevo Personal", ""),
+            "edit_item" => __("Editar Personal", ""),
+            "new_item" => __("Nuevo Personal", ""),
+            "view_item" => __("Ver Personal", ""),
+            "view_items" => __("Ver Personal", ""),
+            "search_items" => __("Buscar Personal", ""),
+            "not_found" => __("No se encontro el Personal", ""),
+            "not_found_in_trash" => __("No se encontro el Personal en la papelera", ""),
+            "parent_item_colon" => __("Personal Padre", ""),
+            "featured_image" => __("Foto del Personal", ""),
+            "set_featured_image" => __("Seleccionar la imagen", ""),
+            "remove_featured_image" => __("Remover la imagen", ""),
+            "use_featured_image" => __("Utilizar la imagen", ""),
+            "archives" => __("Archivar al personal", ""),
+            "insert_into_item" => __("Insert en Personal", ""),
+            "uploaded_to_this_item" => __("Subir al personal", ""),
+            "filter_items_list" => __("Filtrar lista de personal", ""),
+            "items_list_navigation" => __("Navegación de la lista de personal", ""),
+            "items_list" => __("Lista de Personal", ""),
+            "attributes" => __("Atributos del Personal", ""),
+            "parent_item_colon" => __("Personal Padre", ""),
+        );
+
+        $args = array(
+            "label" => __("Personal", ""),
+            "labels" => $labels,
+            "description" => "",
+            "public" => true,
+            "publicly_queryable" => true,
+            "show_ui" => true,
+            "show_in_rest" => false,
+            "rest_base" => "",
+            "has_archive" => "personal",
+            "show_in_menu" => true,
+            "exclude_from_search" => false,
+            "capability_type" => "post",
+            "capabilities" => array(
+                'create_posts' => 'create_personal',
+                'delete_others_posts' => 'delete_others_personales',
+                'delete_private_posts' => 'delete_private_personales',
+                'delete_published_posts' => 'delete_published_personales',
+                'edit_private_posts' => 'edit_private_personales',
+                'edit_published_posts' => 'edit_published_personales',
+                'edit_post' => 'edit_personal',
+                'edit_posts' => 'edit_personales',
+                'edit_others_posts' => 'edit_other_personales',
+                'publish_posts' => 'publish_personales',
+                'read_post' => 'read_personal',
+                'read_private_posts' => 'read_private_personales',
+                'delete_post' => 'delete_personal'
+            ),
+            "map_meta_cap" => true,
+            "hierarchical" => false,
+            "rewrite" => array("slug" => "personal", "with_front" => true),
+            "query_var" => true,
+            "supports" => array("title", "thumbnail", "page-attributes"),
+            "taxonomies" => array("categorias"),
+        );
+
+        register_post_type("personal", $args);
+    }
+
+    /**
+     * Registra las taxonomias para el Post Type personal
+     */
+    public function cptui_register_my_taxes_categorias()
+    {
+        /**
+         * Taxonomy: Categorias.
+         */
+
+        $labels = array(
+            "name" => __("Categorias", ""),
+            "singular_name" => __("Categoria", ""),
+        );
+
+        $args = array(
+            "label" => __("Categorias", ""),
+            "labels" => $labels,
+            "public" => true,
+            "hierarchical" => true,
+            "label" => "Categorias",
+            "show_ui" => true,
+            "show_in_menu" => true,
+            "show_in_nav_menus" => true,
+            "query_var" => true,
+            "rewrite" => array('slug' => 'categorias', 'with_front' => true, ),
+            "show_admin_column" => true,
+            "show_in_rest" => true,
+            "rest_base" => "",
+            "show_in_quick_edit" => true,
+        );
+        register_taxonomy("categorias", array("personal"), $args);
+    }
+
+    /**
+     * Agrega las capabilites para editar el custom post.
+     */
+    public function add_personal_caps()
+    {
+        // gets the administrator role
+        // FIXME Evaluar si agregar un rol personal.
+        $admins = get_role('administrator');
+        $admins->add_cap('create_personal');
+        $admins->add_cap('delete_private_personales');
+        $admins->add_cap('delete_others_personales');
+        $admins->add_cap('delete_published_personales');
+        $admins->add_cap('edit_published_personales');
+        $admins->add_cap('edit_personal');
+        $admins->add_cap('edit_personales');
+        $admins->add_cap('publish_personales');
+        $admins->add_cap('read_personal');
+        $admins->add_cap('delete_personal');
+        $admins->add_cap('edit_private_personales');
+        $admins->add_cap('edit_other_personales');
+        $admins->add_cap('read_private_personales');
+
+    }
     /**
      * Agrega los campos personalizados para el custom post.
      */
@@ -349,222 +466,7 @@ class Admin
     {
         return (is_single() and get_post_type() == 'personal') ? '' : $html;
     }
-    private function initializeInputsPersonal()
-    {
-        //        add_filter('get_repositorios',$this,'get_repositories_wpdspace',1);
-        $repositories = array(
-            array(
-                'key' => 'field_59dd247f52528',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/sedici.png"	height="32"> SEDICI',
-                'name' => 'sedici',
-                'type' => 'text',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'none',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd24ac52529',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/cic_digital.png" height="32"> CIC',
-                'name' => 'cic',
-                'type' => 'text',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'none',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd24b65252a',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/conicet-digital.png" height="40"> CONICET',
-                'name' => 'conicet',
-                'type' => 'text',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'none',
-                'maxlength' => '',
-            )
-        );
-        $repositories_custom = $this->getRepositories();
-        foreach ($repositories_custom as $r) {
-            $repo = array(
-                'key' => $r['id'],
-                'label' => strtoupper($r['name']),
-                'name' => $r['name'],
-                'type' => 'text',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'none',
-                'maxlength' => '',
-            );
-            array_push($repositories, $repo);
-        }
-        $this->inputs_personal = array(
-            array(
-                'class' => '',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/email.png" height="32"> Email ',
-                'name' => 'email',
-                'type' => 'email',
-                'instructions' => 'Correo electrónico',
-                'default_value' => '',
-                'placeholder' => 'Email',
-            ),
-            array(
-                'class' => '',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/tel.png" height="32">	Teléfono',
-                'name' => 'telefono',
-                'type' => 'text',
-                'instructions' => 'Teléfono',
-                'default_value' => '',
-                'placeholder' => '0221-11111111',
-            ),
-            array(
-                'key' => 'field_59dd232d52523',
-                'label' => 'Unidad de investigación',
-                'name' => 'unidad_de_investigacion',
-                'type' => 'text',
-                'instructions' => 'Unidad de investigación a la que pertenece',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd232d52das',
-                'label' => 'Rol',
-                'name' => 'rol_unidad_de_investigacion',
-                'type' => 'text',
-                'instructions' => 'Rol que cumple en la unidad de investigación a la que pertenece',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd235252524',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/grado_alcanzado.png" height="32">	 Grado Alcanzado',
-                'name' => 'grado_alcanzado',
-                'type' => 'text',
-                'instructions' => 'Grado alcanzado',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd238952525',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/google_scholar.png" width="32" height="32"> Google Scholar ',
-                'name' => 'google_scholar',
-                'type' => 'text',
-                'instructions' => 'http://scholar.google.com/citations?user=xxxxxx',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd241852526',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/orcid.gif" width="32" height="32"> ORCID',
-                'name' => 'orcid',
-                'type' => 'text',
-                'instructions' => 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd244f52527',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/research-gate.png" width="32" height="32"> ResearchGate',
-                'name' => 'researchgate',
-                'type' => 'text',
-                'instructions' => 'https://www.researchgate.net/profile/xxxxxxx',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd244f534434',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/linkedin.png" width="32" height="32"> Linkedin',
-                'name' => 'linkedin',
-                'type' => 'text',
-                'instructions' => 'https://www.linkedin.com/in/xxxxxxx',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd244f5343',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/facebook.jpg" width="32" height="32"> Facebook',
-                'name' => 'facebook',
-                'type' => 'text',
-                'instructions' => 'https://www.facebook.com/xxxxxxx',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd244f5434334',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/twitter.png" width="32" height="32"> Twitter',
-                'name' => 'twitter',
-                'type' => 'text',
-                'instructions' => 'https://twitter.com/xxxxxxx',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array('repositories' => $repositories),
-            array(
-                'key' => 'field_59dd25596cb02',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/biography.png" height="32">	Biografía',
-                'name' => 'biografia',
-                'type' => 'wp_editor',
-                /*'size'=>'15',
-                'maxlength' =>'30',*/
-                'default_value' => '',
-                'toolbar' => 'full',
-                'media_upload' => 'yes',
-            ),
-            array(
-                'key' => 'field_59dd25736cb03',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/cv.png" height="32">	Curriculum Vitae',
-                'name' => 'curriculum_vitae',
-                'type' => 'file',
-                'save_format' => 'object',
-                'library' => 'all',
-            )
-        );
-    }
-
+   
     private function getRepositories()
     {
         return array_filter(

@@ -5,6 +5,13 @@ namespace Personal\Inc\Core;
 use Personal as PP;
 use Personal\Inc\Admin as Admin;
 use Personal\Inc\Frontend as Frontend;
+use Personal\Inc\Admin\Metaboxes as Metaboxes;
+use Personal\Inc\Admin\CSV_Handler as CSV_Handler;
+use Personal\Inc\Core\Internationalization_i18n as Internationalization_i18n;
+use Personal\Inc\Core\Loader as Loader;
+use Personal\Inc\Core\CPT_personal as CPT_personal;
+
+
 
 /**
  * La clase que inicia el plugin
@@ -14,45 +21,38 @@ use Personal\Inc\Frontend as Frontend;
  */
 class Init
 {
-    /**
-     * @var     string $plugin_name nombre del plugin
-     */
-    private $plugin_name;
-
-    /**
-     * @var     Loader $loader registra y ejecuta los  hooks del plugin.
-     */
-    private $loader;
-
-    /**
-     * @var      string $plugin_base_name El nombre que identifica el plugin
-     */
-    private $plugin_basename;
-
-    /**
-     * @var      string $version Version del plugin
-     */
-    private $version;
-
-    /**
-     *
-     *
-     * @var      string $version Text domain del plugin
-     */
-    private $plugin_text_domain;
-
+    private string $plugin_name;
+    private string $version;
+    private string $plugin_text_domain;
+    private Loader $loader;
 
     public function __construct()
     {
-        $this->plugin_name = PP\PLUGIN_NAME;
-        $this->version = PP\PLUGIN_VERSION;
-        $this->plugin_basename = PP\PLUGIN_BASENAME;
+        $this->plugin_name        = PP\PLUGIN_NAME;
+        $this->version            = PP\PLUGIN_VERSION;
         $this->plugin_text_domain = PP\PLUGIN_TEXT_DOMAIN;
-        $this->load_dependencies();
+
+        $this->loader = new Loader();
+
+        $this->register_cpt();
         $this->set_locale();
         $this->define_admin_hooks();
         $this->define_public_hooks();
     }
+
+
+
+    private function register_cpt()
+    {
+        $cpt_personal = new CPT_personal();
+        
+        $this->loader->add_action('init', $cpt_personal, 'cptui_register_my_cpts_personal', 20);
+        $this->loader->add_action('init', $cpt_personal, 'cptui_register_my_taxes_categorias', 20);
+        $this->loader->add_action('admin_init', $cpt_personal, 'add_personal_caps', 20);
+
+
+    }
+
 
     private function load_dependencies()
     {
@@ -64,6 +64,35 @@ class Init
         require_once(PP\PLUGIN_NAME_DIR . 'personal-block-elementor/init.php');
 
     }
+
+
+     private function define_admin_hooks(): void
+    {
+        $admin = new Admin\Admin($this->plugin_name, $this->version, $this->plugin_text_domain);
+
+
+        $this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_styles');
+        $this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_scripts');
+        $this->loader->add_action('admin_menu',            $admin, 'add_plugin_admin_menu');
+        $this->loader->add_action('post_edit_form_tag',    $admin, 'update_edit_form');
+        $this->loader->add_filter('post_thumbnail_html',   $admin, 'wordpress_hide_feature_image', 10, 3);
+        $this->loader->add_filter('get_repositorios',      $admin, 'get_repositories_wpdspace');
+
+
+        
+        //Shortcode generator (AJAX para el admin, no el shortcode público)
+        $this->loader->add_action('wp_ajax_generate_shortcode_personal', $admin, 'generate_shortcode_personal');
+
+        //Metaboxes
+        $metaboxes = new Metaboxes();
+        $this->loader->add_action('add_meta_boxes', $metaboxes, 'register');
+        $this->loader->add_action('save_post',      $metaboxes, 'save');
+
+        // CSV
+     //   $this->loader->add_action('wp_ajax_import_csv',$admin, 'import_csv');
+      //  $this->loader->add_action('admin_post_export_personal_csv', $admin, 'export_personal_csv');
+    }
+
 
     /**
      * Defina la configuración regional de este complemento para la internacionalización.
@@ -77,82 +106,6 @@ class Init
 
     }
 
-    /**.
-     * Registras todos los hooks para la seccion  admin del plugin
-     *
-     */
-    private function define_admin_hooks()
-    {
-        $plugin_admin = new Admin\Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
-
-
-        // Permite cargar un archivo desde un formulario (Carga el cv del personal)
-        $this->loader->add_action('post_edit_form_tag', $plugin_admin, 'update_edit_form');
-        $this->loader->add_filter('post_thumbnail_html', $plugin_admin, 'wordpress_hide_feature_image', 10, 3);
-        // obtengo los repositorios del plugin wp-dspace
-        $this->loader->add_filter('get_repositorios', $plugin_admin, 'get_repositories_wpdspace');
-        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
-        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
-
-        // crea el menu para la administracion.
-        $this->loader->add_action('admin_menu', $plugin_admin, 'add_plugin_admin_menu');
-
-        // Registra el custom post personal
-        $this->loader->add_action('init', $plugin_admin, 'cptui_register_my_cpts_personal', 20);
-        // Registra las taxonomias del custom post personal
-        $this->loader->add_action('init', $plugin_admin, 'cptui_register_my_taxes_categorias', 20);
-        // Registra roles y capabilities
-        $this->loader->add_action('admin_init', $plugin_admin, 'add_personal_caps', 20);
-
-        // Agrega los campos meta al custom post personal
-        $this->loader->add_action('add_meta_boxes', $plugin_admin, 'personal_custom_metabox');
-        // Guarda los campos meta
-        $this->loader->add_action('save_post', $plugin_admin, 'personal_save_metas');
-
-
-        $this->loader->add_action('wp_ajax_generate_shortcode_personal', $plugin_admin, 'generate_shortcode_personal');
-
-        $this->loader->add_action('init', $plugin_admin, 'create_block_personal_block_block_init');
-
-        $this->loader->add_action('wp_ajax_import_csv', $plugin_admin, 'import_csv');
-
-        $this->loader->add_action('admin_post_export_personal_csv', $plugin_admin, 'export_personal_csv');
-
-    }
-
-    function create_block_personal_block_block_init()
-    {
-        /**
-         * Registers the block(s) metadata from the `blocks-manifest.php` and registers the block type(s)
-         * based on the registered block metadata.
-         * Added in WordPress 6.8 to simplify the block metadata registration process added in WordPress 6.7.
-         *
-         * @see https://make.wordpress.org/core/2025/03/13/more-efficient-block-type-registration-in-6-8/
-         */
-        if (function_exists('wp_register_block_types_from_metadata_collection')) {
-            wp_register_block_types_from_metadata_collection(__DIR__ . '/build', __DIR__ . '/build/blocks-manifest.php');
-            return;
-        }
-
-        /**
-         * Registers the block(s) metadata from the `blocks-manifest.php` file.
-         * Added to WordPress 6.7 to improve the performance of block type registration.
-         *
-         * @see https://make.wordpress.org/core/2024/10/17/new-block-type-registration-apis-to-improve-performance-in-wordpress-6-7/
-         */
-        if (function_exists('wp_register_block_metadata_collection')) {
-            wp_register_block_metadata_collection(__DIR__ . '/build', __DIR__ . '/build/blocks-manifest.php');
-        }
-        /**
-         * Registers the block type(s) in the `blocks-manifest.php` file.
-         *
-         * @see https://developer.wordpress.org/reference/functions/register_block_type/
-         */
-        $manifest_data = require __DIR__ . '/build/blocks-manifest.php';
-        foreach (array_keys($manifest_data) as $block_type) {
-            register_block_type(__DIR__ . "/build/{$block_type}");
-        }
-    }
 
 
     /**
