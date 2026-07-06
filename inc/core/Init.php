@@ -33,11 +33,12 @@ class Init
         $this->plugin_text_domain = PP\PLUGIN_TEXT_DOMAIN;
 
         $this->loader = new Loader();
-
+        $this->load_dependencies();
         $this->register_cpt();
         $this->set_locale();
         $this->define_admin_hooks();
         $this->define_public_hooks();
+        $this->loader->add_action('init', $this, 'register_gutenberg_blocks');
     }
 
 
@@ -53,6 +54,8 @@ class Init
 
     }
 
+    
+
 
     private function load_dependencies()
     {
@@ -61,9 +64,43 @@ class Init
         /**
          * Register Elementor Widgets
          */
-        require_once(PP\PLUGIN_NAME_DIR . 'personal-block-elementor/init.php');
+        require_once(PP\PLUGIN_NAME_DIR . 'inc/blocks/personal-block-elementor/init.php');
 
     }
+
+
+    /**
+     * Registra los bloques nativos de Gutenberg usando el manifest.
+     * Nota: Debe ser public para que el Loader pueda ejecutarlo.
+     */
+    public function register_gutenberg_blocks()
+    {
+        // IMPORTANTE: Asegúrate de que 'personal-block/build' coincide con la ruta de tu carpeta
+        $build_path = PP\PLUGIN_NAME_DIR . 'inc/blocks/personal-block/build'; 
+        $manifest_path = $build_path . '/blocks-manifest.php';
+
+        if (!file_exists($manifest_path)) {
+            return; // Evita errores si la carpeta o el manifest no existen
+        }
+
+        // WordPress 6.8+
+        if (function_exists('wp_register_block_types_from_metadata_collection')) {
+            wp_register_block_types_from_metadata_collection($build_path, $manifest_path);
+            return;
+        }
+
+        // WordPress 6.7+
+        if (function_exists('wp_register_block_metadata_collection')) {
+            wp_register_block_metadata_collection($build_path, $manifest_path);
+        }
+
+        // Fallback para versiones anteriores
+        $manifest_data = require $manifest_path;
+        foreach (array_keys($manifest_data) as $block_type) {
+            register_block_type($build_path . "/{$block_type}");
+        }
+    }
+
 
 
      private function define_admin_hooks(): void

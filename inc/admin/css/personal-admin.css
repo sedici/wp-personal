@@ -1,14 +1,73 @@
-.inptuts-personal input {
-    width: 100%;
-    margin-bottom: 5%;
-}
-.inptuts-personal textarea {
-    display: block;
-    width: 100%;
-    margin-bottom: 5%;
+/* ==========================================================================
+   1. ESTILOS DEL FORMULARIO DE PERSONAL (METABOX)
+   ========================================================================== */
+
+/* Contenedor principal del metabox */
+.inptuts-personal {
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 4px;
 }
 
+/* Fila de cada campo */
+.personal-field-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f1;
+    transition: background-color 0.2s ease;
+}
 
+/* Quitar el borde al último elemento */
+.personal-field-row:last-child {
+    border-bottom: none;
+}
+
+/* Efecto hover sutil para la fila activa */
+.personal-field-row:hover {
+    background-color: #f9f9f9;
+}
+
+/* Columna de la etiqueta */
+.personal-label-col {
+    flex: 0 0 250px;
+    padding-right: 20px;
+}
+
+.personal-label-col label {
+    font-size: 14px;
+    color: #2271b1; /* Azul nativo de WP */
+}
+
+/* Columna del input */
+.personal-input-col {
+    flex: 1;
+    min-width: 300px;
+}
+
+/* Estilo del input y textarea */
+.personal-input-col input.personal-input,
+.personal-input-col textarea.personal-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    box-shadow: 0 0 0 transparent;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Foco del input al estilo WordPress */
+.personal-input-col input.personal-input:focus,
+.personal-input-col textarea.personal-input:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: none;
+}
+
+/* ==========================================================================
+   2. EL RESTO DE TUS ESTILOS (INTACTOS)
+   ========================================================================== */
 
 .lista-categorias-personal {
     display: flex;

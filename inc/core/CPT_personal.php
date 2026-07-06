@@ -7,6 +7,7 @@ class CPT_personal
     {
         add_action('init', array($this, 'cptui_register_my_cpts_personal'));
         add_action('init', array($this, 'cptui_register_my_taxes_categorias'));
+        add_action('init', array($this, 'cptui_register_my_taxes_lineas_de_investigacion'));
         add_action('admin_init', array($this, 'add_personal_caps'));
     }
 
@@ -87,6 +88,38 @@ class CPT_personal
         );
 
         register_post_type("personal", $args);
+    }
+
+
+
+    public function cptui_register_my_taxes_lineas_de_investigacion()
+    {
+        /**
+         * Taxonomy: Lineas de investigacion.
+         */
+
+        $labels = array(
+            "name" => __("Lineas de investigacion", ""),
+            "singular_name" => __("Linea de investigacion", ""),
+        );
+
+        $args = array(
+            "label" => __("Lineas de investigacion", ""),
+            "labels" => $labels,
+            "public" => true,
+            "hierarchical" => true,
+            "label" => "Lineas de investigacion",
+            "show_ui" => true,
+            "show_in_menu" => true,
+            "show_in_nav_menus" => true,
+            "query_var" => true,
+            "rewrite" => array('slug' => 'lineas_de_investigacion', 'with_front' => true, ),
+            "show_admin_column" => true,
+            "show_in_rest" => true,
+            "rest_base" => "",
+            "show_in_quick_edit" => true,
+        );
+        register_taxonomy("lineas_de_investigacion", array("personal"), $args);
     }
 
     /**
