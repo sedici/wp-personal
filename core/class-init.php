@@ -76,7 +76,7 @@ class Init
     public function register_gutenberg_blocks()
     {
         // IMPORTANTE: Asegúrate de que 'personal-block/build' coincide con la ruta de tu carpeta
-        $build_path = PP\PLUGIN_NAME_DIR . 'inc/blocks/personal-block/build'; 
+        $build_path = PP\PLUGIN_NAME_DIR . 'inc/blocks/wp-personal-block/build'; 
         $manifest_path = $build_path . '/blocks-manifest.php';
 
         if (!file_exists($manifest_path)) {
@@ -197,3 +197,4 @@ class Init
     }
 
 }
+

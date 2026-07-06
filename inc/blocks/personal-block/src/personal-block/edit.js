@@ -89,7 +89,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</InspectorControls>
 			<div {...useBlockProps()}>
 				<ServerSideRender
-					block="create-block/personal-block"
+					block="create-block/wp-personal-block"
 					attributes={attributes}
 				/>
 			</div>

@@ -50,7 +50,7 @@ class Admin
      */
     public function enqueue_scripts()
     {
-        //wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/personal-admin.js', $this->version, false);
+        //wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/wp-personal-admin.js', $this->version, false);
         wp_register_script('personal-admin-js', plugin_dir_url(__FILE__) . 'js/personal-admin.js', array('jquery'), '1', false);
         wp_enqueue_script('personal-admin-js');
         wp_localize_script('personal-admin-js', 'personal_ajax_object', array('url' => admin_url('admin-ajax.php')));
@@ -180,7 +180,7 @@ class Admin
     public function show_terms()
     {
 
-        include_once dirname(__DIR__) . '/admin/views/personal-shortcode-generator-view.php';
+        include_once dirname(__DIR__) . '/admin/views/wp-personal-shortcode-generator-view.php';
 
     }
 

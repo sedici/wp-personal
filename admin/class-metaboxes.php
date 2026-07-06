@@ -23,7 +23,7 @@
      */
     public function render($post)
     {
-        include_once('views/personal-view.php');
+        include_once('views/wp-personal-view.php');
     }
     /**
      * Guarda los campos personalizados del post
@@ -97,7 +97,7 @@
         foreach ($repositories as $key => $repository) {
             $repository_inputs[] = array(
                 'class' => '',
-                'label'=> '<img src="' . plugins_url() . '/personal/assets/images/' . $key . '.png" height="32"> ' . ucwords(str_replace('-', ' ', $key)),
+                'label'=> '<img src="' . plugins_url() . '/wp-personal/assets/images/' . $key . '.png" height="32"> ' . ucwords(str_replace('-', ' ', $key)),
                 'name' => $key,
                 'type' => 'text',
                 'instructions' => 'Debe completar con el nombre EXACTO del perfil dentro del repostirio, por ejemplo: Villareal,Gonzalo Luján',
@@ -109,7 +109,7 @@
         $this->inputs_personal = array(
             array(
                 'class' => '',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/email.png" height="32"> Email ',
+                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/email.png" height="32"> Email ',
                 'name' => 'email',
                 'type' => 'email',
                 'instructions' => 'Correo electrónico',
@@ -118,7 +118,7 @@
             ),
             array(
                 'class' => '',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/tel.png" height="32">	Teléfono',
+                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/tel.png" height="32">	Teléfono',
                 'name' => 'telefono',
                 'type' => 'text',
                 'instructions' => 'Teléfono',
@@ -140,7 +140,7 @@
             ),
             array(
                 'key' => 'field_59dd235252524',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/grado_alcanzado.png" height="32">	 Grado Alcanzado',
+                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/grado_alcanzado.png" height="32">	 Grado Alcanzado',
                 'name' => 'grado_alcanzado',
                 'type' => 'text',
                 'instructions' => 'Grado alcanzado',
@@ -153,7 +153,7 @@
             ),
             array(
                 'key' => 'field_59dd238952525',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/google_scholar.png" width="32" height="32"> Google Scholar ',
+                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/google_scholar.png" width="32" height="32"> Google Scholar ',
                 'name' => 'google_scholar',
                 'type' => 'url',
                 'instructions' => 'http://scholar.google.com/citations?user=xxxxxx',
@@ -166,7 +166,7 @@
             ),
             array(
                 'key' => 'field_59dd241852526',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/orcid.gif" width="32" height="32"> ORCID',
+                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/orcid.gif" width="32" height="32"> ORCID',
                 'name' => 'orcid',
                 'type' => 'url',
                 'instructions' => 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
@@ -179,7 +179,7 @@
             ),
             array(
                 'key' => 'field_59dd244f52527',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/research-gate.png" width="32" height="32"> ResearchGate',
+                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/research-gate.png" width="32" height="32"> ResearchGate',
                 'name' => 'researchgate',
                 'type' => 'url',
                 'instructions' => 'https://www.researchgate.net/profile/xxxxxxx',
@@ -192,7 +192,7 @@
             ),
             array(
                 'key' => 'field_59dd244f534434',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/linkedin.png" width="32" height="32"> Linkedin',
+                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/linkedin.png" width="32" height="32"> Linkedin',
                 'name' => 'linkedin',
                 'type' => 'url',
                 'instructions' => 'https://www.linkedin.com/in/xxxxxxx',
@@ -205,7 +205,7 @@
             ),
             array(
                 'key' => 'field_59dd244f5343',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/facebook.jpg" width="32" height="32"> Facebook',
+                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/facebook.jpg" width="32" height="32"> Facebook',
                 'name' => 'facebook',
                 'type' => 'url',
                 'instructions' => 'https://www.facebook.com/xxxxxxx',
@@ -218,7 +218,7 @@
             ),
             array(
                 'key' => 'field_59dd244f5344',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/instagram.png" width="32" height="32"> Instagram',
+                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/instagram.png" width="32" height="32"> Instagram',
                 'name' => 'instagram',
                 'type' => 'url',
                 'instructions' => 'https://www.instagram.com/xxxxxxx',
@@ -231,7 +231,7 @@
             ),
             array(
                 'key' => 'field_59dd244f5434334',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/twitter.png" width="32" height="32"> Twitter',
+                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/twitter.png" width="32" height="32"> Twitter',
                 'name' => 'X',
                 'type' => 'url',
                 'instructions' => 'https://twitter.com/xxxxxxx',
@@ -244,7 +244,7 @@
             ),
             array(
                 'key' => 'field_59dd25596cb02',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/biography.png" height="32">	Biografía',
+                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/biography.png" height="32">	Biografía',
                 'name' => 'biografia',
                 'type' => 'textarea',
                 /*'size'=>'15',
@@ -254,7 +254,7 @@
             ),
             array(
                 'key' => 'field_59dd25736cb03',
-                'label' => '<img src="' . plugins_url() . '/personal/assets/images/cv.png" height="32">	Curriculum Vitae',
+                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/cv.png" height="32">	Curriculum Vitae',
                 'name' => 'curriculum_vitae',
                 'type' => 'file',
                 'save_format' => 'object',

@@ -4,7 +4,7 @@ return array(
 	'personal-block' => array(
 		'$schema' => 'https://schemas.wp.org/trunk/block.json',
 		'apiVersion' => 3,
-		'name' => 'create-block/personal-block',
+		'name' => 'create-block/wp-personal-block',
 		'version' => '0.1.0',
 		'title' => 'Bloque de Personal',
 		'category' => 'widgets',

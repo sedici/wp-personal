@@ -43,6 +43,6 @@ public function generate_shortcode_personal()
     public function show_view()
 {
 
-    include_once dirname(__DIR__) . '/admin/views/personal-shortcode-generator-view.php';
+    include_once dirname(__DIR__) . '/admin/views/wp-personal-shortcode-generator-view.php';
 
 }
