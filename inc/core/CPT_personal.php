@@ -3,13 +3,7 @@ namespace Personal\Inc\Core;
 
 class CPT_personal
 {
-    public function __construct()
-    {
-        add_action('init', array($this, 'cptui_register_my_cpts_personal'));
-        add_action('init', array($this, 'cptui_register_my_taxes_categorias'));
-        add_action('init', array($this, 'cptui_register_my_taxes_lineas_de_investigacion'));
-        add_action('admin_init', array($this, 'add_personal_caps'));
-    }
+    public function __construct(){}
 
 /**
      * Registra el Post Type Personal

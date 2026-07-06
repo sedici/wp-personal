@@ -1,9 +1,6 @@
   <?php 
    
    
-   
-   
-   
    public function generate_shortcode_personal()
     {
 
