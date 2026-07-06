@@ -1,5 +1,5 @@
 <?php
-namespace Personal\Inc\Core;
+namespace Personal\Core;
 
 class CPT_personal
 {

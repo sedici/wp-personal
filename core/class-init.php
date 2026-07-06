@@ -1,15 +1,15 @@
 <?php
 
-namespace Personal\Inc\Core;
+namespace Personal\Core;
 
 use Personal as PP;
-use Personal\Inc\Admin as Admin;
+use Personal\Admin\Admin as Admin;
 use Personal\Inc\Frontend as Frontend;
-use Personal\Inc\Admin\Metaboxes as Metaboxes;
-use Personal\Inc\Admin\CSV_Handler as CSV_Handler;
-use Personal\Inc\Core\Internationalization_i18n as Internationalization_i18n;
-use Personal\Inc\Core\Loader as Loader;
-use Personal\Inc\Core\CPT_personal as CPT_personal;
+use Personal\Admin\Metaboxes as Metaboxes;
+use Personal\Admin\CSV_Handler as CSV_Handler;
+use Personal\Core\Internationalization_i18n as Internationalization_i18n;
+use Personal\Core\Loader as Loader;
+use Personal\Core\CPT_personal as CPT_personal;
 
 
 
@@ -35,7 +35,7 @@ class Init
         $this->loader = new Loader();
         $this->load_dependencies();
         $this->register_cpt();
-        $this->set_locale();
+        //$this->set_locale();
         $this->define_admin_hooks();
         $this->define_public_hooks();
         $this->loader->add_action('init', $this, 'register_gutenberg_blocks');
@@ -105,7 +105,7 @@ class Init
 
      private function define_admin_hooks(): void
     {
-        $admin = new Admin\Admin($this->plugin_name, $this->version, $this->plugin_text_domain);
+        $admin = new Admin($this->plugin_name, $this->version, $this->plugin_text_domain);
 
 
         $this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_styles');

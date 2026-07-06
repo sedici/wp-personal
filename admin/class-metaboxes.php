@@ -1,5 +1,5 @@
 <?php
-  namespace Personal\Inc\Admin;
+  namespace Personal\Admin;
 
   class Metaboxes
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Personal\Inc\Admin;
+namespace Personal\Admin;
 
 class Csv_Exporter
 {
