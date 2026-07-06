@@ -12,7 +12,6 @@
 
         public function set_repositories(array $repos): void
         {
-        error_log('set_repositories fue llamado con: ' . print_r($repos, true));
 
         $this->repositories = $repos;
         $this->initializeInputsPersonal();
@@ -93,7 +92,6 @@
     {
 
         $repositories = apply_filters('wp_dspace_registered_repositories', []);
-        error_log(print_r($repositories, true));
 
         $repository_inputs= [];
         foreach ($repositories as $key => $repository) {
@@ -107,9 +105,6 @@
                 'placeholder' => '',
             );
         }
-
-        error_log(print_r($repository_inputs, true));
-
 
         $this->inputs_personal = array(
             array(
