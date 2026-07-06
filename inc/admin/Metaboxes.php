@@ -10,11 +10,6 @@
         public function __construct(){}
 
 
-
-
-
-
-
         public function set_repositories(array $repos): void
         {
         error_log('set_repositories fue llamado con: ' . print_r($repos, true));

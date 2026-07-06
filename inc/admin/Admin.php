@@ -232,6 +232,7 @@ class Admin
 
     public function get_repositories_wpdspace($value)
     {
+        //error_log(print_r($value), true);
         $this->repositories = $value;
         $this->initializeInputsPersonal();
         return $value;
@@ -391,65 +392,6 @@ class Admin
         $admins->add_cap('read_private_personales');
 
     }
-    /**
-     * Agrega los campos personalizados para el custom post.
-     */
-    public function personal_custom_metabox()
-    {
-        add_meta_box('personal_meta', __('Información del personal', 'personal'), array($this, 'personal_display_callback'), 'personal');
-    }
-    /**
-     * Formulario custom post
-     */
-    public function personal_display_callback($post)
-    {
-        include_once('views/personal-view.php');
-    }
-    /**
-     * Guarda los campos personalizados del post
-     */
-    public function personal_save_metas($idpersonal)
-    {
-        $personal = get_post($idpersonal);
-
-        if ($personal->post_type == 'personal') {
-            $inputs = $this->getInputsPersonal();
-            foreach ($inputs as $input) {
-
-                if (isset($input['name']) and isset($_POST[$input['name']]))
-                    update_post_meta($idpersonal, $input['name'], $_POST[$input['name']]);
-                if (isset($input['repositories'])) {
-                    foreach ($input['repositories'] as $repository) {
-                        if (isset($_POST[$repository['name']]))
-                            update_post_meta($idpersonal, $repository['name'], $_POST[$repository['name']]);
-                    }
-                }
-            }
-            if (!empty($_FILES['curriculum_vitae']['name'])) {
-                $supported_types = array('application/pdf');
-                $arr_file_type = wp_check_filetype(basename($_FILES['curriculum_vitae']['name']));
-                $uploaded_type = $arr_file_type['type'];
-
-                if (in_array($uploaded_type, $supported_types)) {
-                    $upload = wp_upload_bits($_FILES['curriculum_vitae']['name'], null, file_get_contents($_FILES['curriculum_vitae']['tmp_name']));
-                    if (isset($upload['error']) && $upload['error'] != 0) {
-                        wp_die('There was an error uploading your file. The error is: ' . $upload['error']);
-                    } else {
-                        update_post_meta($idpersonal, 'curriculum_vitae', $upload);
-                    }
-                } else {
-                    wp_die("The file type that you've uploaded is not a PDF.");
-                }
-            }
-        }
-    }
-
-
-    public function getInputsPersonal()
-    {
-        return $this->inputs_personal;
-    }
-
 
     /**
      * Permite manipular archivos en un formulario (Se usa para guardar el cv del personal)

@@ -113,7 +113,7 @@ class Init
         $this->loader->add_action('admin_menu',            $admin, 'add_plugin_admin_menu');
         $this->loader->add_action('post_edit_form_tag',    $admin, 'update_edit_form');
         $this->loader->add_filter('post_thumbnail_html',   $admin, 'wordpress_hide_feature_image', 10, 3);
-        $this->loader->add_filter('get_repositorios',      $admin, 'get_repositories_wpdspace');
+        //$this->loader->add_filter('get_repositorios',      $admin, 'get_repositories_wpdspace');
 
 
         
