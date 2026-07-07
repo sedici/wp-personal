@@ -49,6 +49,7 @@ class Init
         
         $this->loader->add_action('init', $cpt_personal, 'cptui_register_my_cpts_personal', 20);
         $this->loader->add_action('init', $cpt_personal, 'cptui_register_my_taxes_categorias', 20);
+        $this->loader->add_action('init', $cpt_personal, 'cptui_register_my_taxes_lineas_de_investigacion', 20);
         $this->loader->add_action('admin_init', $cpt_personal, 'add_personal_caps', 20);
 
 
@@ -125,9 +126,9 @@ class Init
         $this->loader->add_action('add_meta_boxes', $metaboxes, 'register');
         $this->loader->add_action('save_post',      $metaboxes, 'save');
 
-        // CSV
-     //   $this->loader->add_action('wp_ajax_import_csv',$admin, 'import_csv');
-      //  $this->loader->add_action('admin_post_export_personal_csv', $admin, 'export_personal_csv');
+        //CSV
+        $this->loader->add_action('wp_ajax_import_csv',$admin, 'import_csv');
+        $this->loader->add_action('admin_post_export_personal_csv', $admin, 'export_personal_csv');
     }
 
 
