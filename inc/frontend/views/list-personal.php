@@ -18,17 +18,17 @@ $loop = new WP_Query($args);
     <div class="row row-cols-1 row-cols-md-<?php echo $atts['columns'] ?> g-4" >
         <?php while ($loop->have_posts()) :
                 $loop->the_post(); 
-                $reserchgate = $this->the_personal_field('researchgate');
-                $google_scholar = $this->the_personal_field('google_scholar');
-                $orcid = $this->the_personal_field('orcid');
-                $linkedin = $this->the_personal_field('linkedin');
-                $facebook = $this->the_personal_field('facebook');
-                $twitter = $this->the_personal_field('twitter');
-                $email = $this->the_personal_field('email');
-                $unidad_de_investigacion = $this->the_personal_field('unidad_de_investigacion');
-                $rol = $this->the_personal_field('rol_unidad_de_investigacion');
-                $grado_alcanzado = $this->the_personal_field('grado_alcanzado');
-                $biografia = $this->the_personal_field('biografia');
+                $reserchgate = $this->the_personal_meta('researchgate');
+                $google_scholar = $this->the_personal_meta('google_scholar');
+                $orcid = $this->the_personal_meta('orcid');
+                $linkedin = $this->the_personal_meta('linkedin');
+                $facebook = $this->the_personal_meta('facebook');
+                $twitter = $this->the_personal_meta('twitter');
+                $email = $this->the_personal_meta('email');
+                $unidad_de_investigacion = $this->the_personal_meta('unidad_de_investigacion');
+                $rol = $this->the_personal_meta('rol_unidad_de_investigacion');
+                $grado_alcanzado = $this->the_personal_meta('grado_alcanzado');
+                $biografia = $this->the_personal_meta('biografia');
                 $categorias = wp_get_post_terms(get_the_ID(), 'categorias', array("personal"));
                 
             $image = get_the_post_thumbnail_url();

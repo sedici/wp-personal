@@ -66,16 +66,6 @@ class Frontend
      * @param string $name nombre del campo meta a obtener
      * @return retorna el valor del campo meta
      */
-
-    private function the_personal_field($name)
-    {
-        return get_post_custom()[$name][0];
-    }
-
-    /**
-     * @param string $name nombre del campo meta a obtener
-     * @return retorna el valor del campo meta
-     */
     private function the_personal_meta($name)
     {
         return get_post_meta(get_the_ID(), $name, true);
@@ -125,11 +115,13 @@ class Frontend
             'title' => '',
             'columns' => 3,
         ), $atts);
+
         ob_start();
         include('views/list-personal.php');
         $content = ob_get_clean();
         return $content;
     }
+
     public function remove_personal_title( $title, $id ) {
         global $post;
         if ( is_singular( 'personal' )  and $id == get_the_ID() ) return '';
