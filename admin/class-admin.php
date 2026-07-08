@@ -85,6 +85,15 @@ class Admin
             array($this, 'show_csv_importer_view'),
         );
 
+        add_submenu_page(
+            'edit.php?post_type=personal',
+            __('Exportar personal', $this->plugin_text_domain), //page title
+            __('Exportar personal', $this->plugin_text_domain), //menu title
+            'manage_options',
+            'export-personal',
+            array($this, 'show_csv_exporter_view'),
+        );
+
     }
 
     /**
@@ -120,6 +129,13 @@ class Admin
             wp_send_json_error($e->getMessage());
         }
     }
+
+    public function export_personal_csv()
+    {
+        $csv_exporter = new Csv_Exporter();
+        $csv_exporter->export();
+    }
+
 
 
     public function get_personal_terms()
@@ -189,7 +205,10 @@ class Admin
         include_once dirname(__DIR__) . '/admin/views/csv-importer-view.php';
     }
 
-
+    public function show_csv_exporter_view()
+    {
+        include_once dirname(__DIR__) . '/admin/views/csv-exporter-view.php';
+    }
 
 
     public function generate_shortcode_personal()
