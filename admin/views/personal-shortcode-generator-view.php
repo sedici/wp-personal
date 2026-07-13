@@ -1,11 +1,10 @@
 <?php 
 
-use Personal\Inc\Admin as Admin;
-use Personal as PP;
+use Personal\Core\CPT_personal;
 
-$plugin_admin = new Admin\Admin(PP\PLUGIN_NAME , PP\PLUGIN_VERSION , PP\PLUGIN_TEXT_DOMAIN);
+$cpt_personal = new CPT_Personal();
 
-$terms_array = $plugin_admin->get_personal_terms();
+$terms_array = $cpt_personal->get_personal_terms();
 
 ?> 
 
