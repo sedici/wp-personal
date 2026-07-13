@@ -282,14 +282,6 @@ class Admin
     {
         echo 'enctype="multipart/form-data"';
     }
-
-    /**
-     * no muestra la imagen destacada del post personal.
-     */
-    function wordpress_hide_feature_image($html, $post_id, $post_image_id)
-    {
-        return (is_single() and get_post_type() == 'personal') ? '' : $html;
-    }
    
     private function getRepositories()
     {

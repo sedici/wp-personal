@@ -37,6 +37,7 @@ class Frontend
             wp_enqueue_style($style, plugin_dir_url(__FILE__) . 'css/bootstrap.min.css', array(), $this->version, 'all');
         }
         wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/personal-frontend.css', array(), $this->version, 'all');
+        //wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/single-personal.css', array(), $this->version, 'all');
 
     }
 
@@ -97,6 +98,16 @@ class Frontend
         return $content;
 
     }
+
+    /**
+     * Evita que se muestre la imagen destacada del post personal.
+     */
+    function wordpress_hide_feature_image($html, $post_id, $post_image_id)
+    {
+        return (is_single() and get_post_type() == 'personal') ? '' : $html;
+    }
+
+
     public function get_repositories_wpdspace($value){
         $this->repositories= $value;
         return $value;
