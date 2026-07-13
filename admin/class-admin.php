@@ -137,62 +137,6 @@ class Admin
     }
 
 
-
-    public function get_personal_terms()
-    {
-
-        $post_type_name = 'personal';
-
-        $args = array(
-            'post_type' => $post_type_name,
-            'posts_per_page' => -1,
-        );
-
-        $query = new \WP_Query($args);
-
-        // Si ningun post tenia una categoria asociada, $terms_name_array quedará vacio
-        $terms_name_array = array();
-
-        // Guardo en $terms_name_array los terminos de los posts de personal
-        if ($query->have_posts()) {
-
-            while ($query->have_posts()) {
-
-                $query->the_post();
-
-                // Obtiene los terminos del post asociado
-                $terms = get_the_terms(get_the_ID(), 'categorias');
-
-                if ($terms && !is_wp_error($terms)) {
-
-                    foreach ($terms as $term) {
-
-                        //Evito guardar terminos repetidos
-                        if (!in_array($term->name, $terms_name_array)) {
-                            array_push($terms_name_array, $term->name);
-                        }
-                    }
-
-                }
-
-            }
-
-            // Si ningun post tenia una categoria asociada, $terms_array quedará vacio
-            $terms_array = array();
-
-            if (!empty($terms_name_array)) {
-
-                foreach ($terms_name_array as $term_name) {
-                    $terms_array[] = get_term_by('name', $term_name, 'categorias');
-                }
-            }
-
-            wp_reset_postdata();
-        }
-
-        return $terms_array;
-    }
-
     public function show_terms()
     {
 
