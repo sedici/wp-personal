@@ -1,4 +1,3 @@
-/* Container Principal de la Ficha */
 .personal-profile-wrapper {
     max-width: 1140px;
     margin: 40px auto;
@@ -7,7 +6,6 @@
     line-height: 1.5;
 }
 
-/* Layout de dos columnas superior con CSS Grid */
 .personal-top-section {
     display: grid;
     grid-template-columns: 210px 1fr; /* Ancho fijo para el avatar, resto del espacio para el texto */
@@ -15,27 +13,23 @@
     align-items: start;
 }
 
-/* * [Certain] display: contents hace que el navegador actúe como si estos divs no existieran, 
- * permitiendo al Grid alinear directamente a sus hijos en filas y columnas unificadas.
- */
+
 .personal-sidebar,
 .personal-main-content {
     display: contents;
 }
 
-/* --- FILA 1 DE LA REJILLA --- */
 
 .personal-avatar {
     grid-column: 1;
     grid-row: 1;
-    margin-bottom: 25px; /* Define el espacio exacto antes del contacto */
+    margin-bottom: 25px; 
     text-align: center;
 }
 
 .personal-avatar img {
     width: 210px;
     height: 210px;
-    border-radius: 50%;
     object-fit: cover;
     display: block;
 }
@@ -44,11 +38,9 @@
     grid-column: 2;
     grid-row: 1;
     align-self: start;
-    padding-bottom: 25px; /* Controla la distancia del texto antes de llegar a la línea divisoria */
+    padding-bottom: 25px; 
 }
 
-
-/* --- FILA 2 DE LA REJILLA (ALINEACIÓN PERFECTA) --- */
 
 .personal-contact-box {
     grid-column: 1;
@@ -60,13 +52,10 @@
 .personal-body-info {
     grid-column: 2;
     grid-row: 2;
-    /* [Certain] Este borde superior reemplaza al tag <hr> y se alinea automáticamente con la caja de contacto */
     border-top: 1px solid #cbd5e0; 
     padding-top: 30px; 
 }
 
-
-/* --- TIPOGRAFÍAS Y DETALLES COSMÉTICOS (Se mantienen de tu diseño) --- */
 
 .personal-contact-box h3 {
     font-size: 11px;
@@ -110,7 +99,7 @@
 
 .personal-cv-download-btn {
     grid-column: 1;
-    grid-row: 3; /* Se posiciona debajo de la caja de contacto */
+    grid-row: 3; 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -234,4 +223,85 @@
     font-size: 12px;
     color: #718096;
     transition: transform 0.2s;
+}
+
+/* ==========================================================================
+   Estilos Responsivos (Mobile First / Collapse)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    
+    .personal-top-section {
+        grid-template-columns: 1fr;
+        row-gap: 25px;
+    }
+
+    .personal-avatar {
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: center;
+        margin-bottom: 0;
+    }
+
+    .personal-avatar img {
+        width: 180px;
+        height: 180px;
+    }
+
+    .personal-header-info {
+        grid-column: 1;
+        grid-row: 2;
+        text-align: center;
+        padding-bottom: 0;
+    }
+
+    .personal-fullname {
+        font-size: 28px;
+        margin-bottom: 8px;
+    }
+
+    .personal-degree-label {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    
+    .personal-contact-box {
+        grid-column: 1;
+        grid-row: 3;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .personal-social-row {
+        justify-content: center;
+    }
+
+    .personal-cv-download-btn {
+        grid-column: 1;
+        grid-row: 4;
+        margin-top: 5px;
+    }
+
+    .personal-body-info {
+        grid-column: 1;
+        grid-row: 5;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 25px;
+    }
+
+    /* Ajustes menores de espaciados para pantallas chicas */
+    .personal-lines-section h2,
+    .personal-biography-body h2 {
+        font-size: 18px;
+    }
+
+    .personal-bullets-list {
+        padding-left: 15px;
+    }
+
+    .personal-accordion-header {
+        font-size: 14px;
+        padding: 15px 0;
+    }
 }
