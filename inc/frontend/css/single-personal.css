@@ -7,23 +7,29 @@
     line-height: 1.5;
 }
 
-/* Layout de dos columnas superior */
+/* Layout de dos columnas superior con CSS Grid */
 .personal-top-section {
-    display: flex;
-    gap: 50px;
-    margin-bottom: 50px;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 210px 1fr; /* Ancho fijo para el avatar, resto del espacio para el texto */
+    column-gap: 50px;
+    align-items: start;
 }
 
-/* Barra Lateral Izquierda (25%) */
-.personal-sidebar {
-    width: 25%;
-    flex-shrink: 0;
+/* * [Certain] display: contents hace que el navegador actúe como si estos divs no existieran, 
+ * permitiendo al Grid alinear directamente a sus hijos en filas y columnas unificadas.
+ */
+.personal-sidebar,
+.personal-main-content {
+    display: contents;
 }
+
+/* --- FILA 1 DE LA REJILLA --- */
 
 .personal-avatar {
+    grid-column: 1;
+    grid-row: 1;
+    margin-bottom: 25px; /* Define el espacio exacto antes del contacto */
     text-align: center;
-    margin-bottom: 25px;
 }
 
 .personal-avatar img {
@@ -31,14 +37,36 @@
     height: 210px;
     border-radius: 50%;
     object-fit: cover;
-    display: inline-block;
+    display: block;
 }
 
-/* Caja de datos de contacto */
-.personal-contact-box {
-    border-top: 1px solid #e2e8f0;
-    padding-top: 20px;
+.personal-header-info {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    padding-bottom: 25px; /* Controla la distancia del texto antes de llegar a la línea divisoria */
 }
+
+
+/* --- FILA 2 DE LA REJILLA (ALINEACIÓN PERFECTA) --- */
+
+.personal-contact-box {
+    grid-column: 1;
+    grid-row: 2;
+    border: 1px solid #e2e8f0;
+    padding: 20px;
+}
+
+.personal-body-info {
+    grid-column: 2;
+    grid-row: 2;
+    /* [Certain] Este borde superior reemplaza al tag <hr> y se alinea automáticamente con la caja de contacto */
+    border-top: 1px solid #cbd5e0; 
+    padding-top: 30px; 
+}
+
+
+/* --- TIPOGRAFÍAS Y DETALLES COSMÉTICOS (Se mantienen de tu diseño) --- */
 
 .personal-contact-box h3 {
     font-size: 11px;
@@ -60,11 +88,10 @@
     text-decoration: none;
 }
 
-/* Redes Sociales e Iconos */
 .personal-social-row {
     display: flex;
     gap: 12px;
-    margin: 20px 0;
+    margin: 20px 0 0 0;
     flex-wrap: wrap;
 }
 
@@ -81,8 +108,9 @@
     opacity: 1;
 }
 
-/* Botón de descarga de CV Oscuro */
 .personal-cv-download-btn {
+    grid-column: 1;
+    grid-row: 3; /* Se posiciona debajo de la caja de contacto */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -95,14 +123,7 @@
     font-weight: 500;
     text-decoration: none;
     border-radius: 3px;
-    margin-top: 20px;
-    width: 100%;
     box-sizing: border-box;
-}
-
-/* Columna de Contenido Derecha (75%) */
-.personal-main-content {
-    width: 75%;
 }
 
 .personal-badge-label {
@@ -127,12 +148,11 @@
     color: #a0aec0;
     display: block;
     margin-bottom: 25px;
+    font-weight: 400;
 }
 
-/* Metadatos en línea del Título */
 .personal-metadata-block {
     font-size: 14px;
-    margin-bottom: 25px;
     color: #2d3748;
 }
 
@@ -145,13 +165,31 @@
     color: #000000;
 }
 
-.personal-divider {
-    border: 0;
-    border-top: 1px solid #cbd5e0;
-    margin: 30px 0;
+.personal-lines-section {
+    margin-bottom: 35px;
 }
 
-/* Tipografía de la biografía (Títulos h2 de Gestión e I+D) */
+.personal-lines-section h2 {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: #2d3748;
+    margin: 0 0 15px 0;
+}
+
+.personal-bullets-list {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 0;
+}
+
+.personal-bullets-list li {
+    font-size: 14px;
+    color: #2d3748;
+    margin-bottom: 6px;
+    line-height: 1.6;
+}
+
 .personal-biography-body h2 {
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 20px;
@@ -167,7 +205,11 @@
     margin-bottom: 15px;
 }
 
-/* Estructura del listado de acordeones de publicaciones */
+.personal-role-inline {
+    color: #4a5568;
+    font-weight: 400;
+}
+
 .personal-publications-area {
     margin-top: 40px;
     border-top: 1px solid #e2e8f0;
@@ -192,50 +234,4 @@
     font-size: 12px;
     color: #718096;
     transition: transform 0.2s;
-}
-
-/* Taxonomías de Cierre */
-.personal-taxonomies-footer {
-    margin-top: 50px;
-    font-size: 13px;
-    color: #718096;
-}
-
-.personal-taxonomies-footer a {
-    color: #0073aa;
-    text-decoration: none;
-    margin: 0 5px;
-}
-
-/* Bloque de Líneas de Investigación */
-.personal-lines-section {
-    margin-bottom: 35px;
-}
-
-.personal-lines-section h2 {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 22px;
-    font-weight: 400;
-    color: #2d3748;
-    margin: 0 0 15px 0;
-}
-
-/* Lista de Viñetas idéntica a PERFIL_2.png */
-.personal-bullets-list {
-    list-style-type: disc;
-    padding-left: 20px;
-    margin: 0;
-}
-
-.personal-bullets-list li {
-    font-size: 14px;
-    color: #2d3748;
-    margin-bottom: 6px;
-    line-height: 1.6;
-}
-
-/* Formato grisáceo sutil para el rol inline */
-.personal-role-inline {
-    color: #4a5568;
-    font-weight: 400;
 }
