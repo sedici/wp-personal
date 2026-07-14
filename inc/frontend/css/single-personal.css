@@ -1,0 +1,241 @@
+/* Container Principal de la Ficha */
+.personal-profile-wrapper {
+    max-width: 1140px;
+    margin: 40px auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #333333;
+    line-height: 1.5;
+}
+
+/* Layout de dos columnas superior */
+.personal-top-section {
+    display: flex;
+    gap: 50px;
+    margin-bottom: 50px;
+    align-items: flex-start;
+}
+
+/* Barra Lateral Izquierda (25%) */
+.personal-sidebar {
+    width: 25%;
+    flex-shrink: 0;
+}
+
+.personal-avatar {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.personal-avatar img {
+    width: 210px;
+    height: 210px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: inline-block;
+}
+
+/* Caja de datos de contacto */
+.personal-contact-box {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 20px;
+}
+
+.personal-contact-box h3 {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #718096;
+    letter-spacing: 0.05em;
+    margin: 0 0 15px 0;
+    font-weight: 600;
+}
+
+.personal-contact-box .contact-item {
+    font-size: 13px;
+    margin: 8px 0;
+    color: #4a5568;
+}
+
+.personal-contact-box .contact-item a {
+    color: #a0aec0;
+    text-decoration: none;
+}
+
+/* Redes Sociales e Iconos */
+.personal-social-row {
+    display: flex;
+    gap: 12px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.personal-social-row img {
+    width: 18px;
+    height: 18px;
+    display: block;
+    filter: grayscale(100%);
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.personal-social-row img:hover {
+    opacity: 1;
+}
+
+/* Botón de descarga de CV Oscuro */
+.personal-cv-download-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #1a202c;
+    color: #ffffff !important;
+    text-align: center;
+    padding: 10px 15px;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 3px;
+    margin-top: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Columna de Contenido Derecha (75%) */
+.personal-main-content {
+    width: 75%;
+}
+
+.personal-badge-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #a0aec0;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.personal-fullname {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 34px;
+    font-weight: 700;
+    color: #000000;
+    margin: 0 0 5px 0;
+}
+
+.personal-degree-label {
+    font-size: 20px;
+    color: #a0aec0;
+    display: block;
+    margin-bottom: 25px;
+}
+
+/* Metadatos en línea del Título */
+.personal-metadata-block {
+    font-size: 14px;
+    margin-bottom: 25px;
+    color: #2d3748;
+}
+
+.personal-metadata-block p {
+    margin: 6px 0;
+}
+
+.personal-metadata-block strong {
+    font-weight: 600;
+    color: #000000;
+}
+
+.personal-divider {
+    border: 0;
+    border-top: 1px solid #cbd5e0;
+    margin: 30px 0;
+}
+
+/* Tipografía de la biografía (Títulos h2 de Gestión e I+D) */
+.personal-biography-body h2 {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: #2d3748;
+    margin: 30px 0 15px 0;
+}
+
+.personal-biography-body p {
+    font-size: 14px;
+    color: #2d3748;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+/* Estructura del listado de acordeones de publicaciones */
+.personal-publications-area {
+    margin-top: 40px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.personal-accordion-item {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.personal-accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0;
+    font-size: 16px;
+    color: #2d3748;
+    cursor: pointer;
+    font-weight: 400;
+}
+
+.personal-accordion-icon {
+    font-size: 12px;
+    color: #718096;
+    transition: transform 0.2s;
+}
+
+/* Taxonomías de Cierre */
+.personal-taxonomies-footer {
+    margin-top: 50px;
+    font-size: 13px;
+    color: #718096;
+}
+
+.personal-taxonomies-footer a {
+    color: #0073aa;
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+/* Bloque de Líneas de Investigación */
+.personal-lines-section {
+    margin-bottom: 35px;
+}
+
+.personal-lines-section h2 {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: #2d3748;
+    margin: 0 0 15px 0;
+}
+
+/* Lista de Viñetas idéntica a PERFIL_2.png */
+.personal-bullets-list {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 0;
+}
+
+.personal-bullets-list li {
+    font-size: 14px;
+    color: #2d3748;
+    margin-bottom: 6px;
+    line-height: 1.6;
+}
+
+/* Formato grisáceo sutil para el rol inline */
+.personal-role-inline {
+    color: #4a5568;
+    font-weight: 400;
+}
