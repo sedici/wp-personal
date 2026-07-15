@@ -105,12 +105,14 @@ if ( ! defined( 'ABSPATH' ) ) {
         </div>
     </div>
 
-    <?php if ( ! empty( $args['publicaciones'] ) && empty( $args['dspace_activo'] ) ) : ?>
+    <?php if ( empty( $args['dspace_activo'] ) && is_user_logged_in()) : ?>
         <div class="personal-publications-area">
-            <p class="personal-dspace-missing">
-                <?php esc_html_e( 'Para mostrar la producción científica de los repositorios es necesario activar el plugin DSpace Connector v2 (wp-dspace-v2).', 'personal' ); ?>
-            </p>
+                <p class="personal-dspace-missing">
+                    <?php esc_html_e('Para mostrar la producción científica de esta persona en repositorios es necesario activar el plugin', 'personal'); ?> <a href="https://github.com/sedici/wp-dspace-v2"> DSpace Connector v2 (wp-dspace-v2) </a>
+                </p>
         </div>
+    <?php elseif ( empty( $args['dspace_activo'] ) && ! is_user_logged_in()) : ?>
+        <!-- Nothing to display -->
     <?php elseif ( ! empty( $args['publicaciones'] ) ) : ?>
         <div class="personal-publications-area">
             <?php foreach ( $args['publicaciones'] as $repositorio ) : ?>

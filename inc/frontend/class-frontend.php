@@ -182,8 +182,6 @@ class Frontend
             'lineas_investigación' => wp_get_post_terms($post->ID, 'lineas_de_investigacion', ["personal"]),
             'redes' => $redes_activas,
             'publicaciones' => $publicaciones_shortcodes,
-            // Dependencia blanda: si wp-dspace-v2 no está activo, la vista
-            // muestra un aviso en lugar de las publicaciones.
             'dspace_activo' => shortcode_exists('dspace_search')
         ] );
 
