@@ -1,6 +1,6 @@
 <?php
 
-namespace Personal\Inc\Core;
+namespace Personal\Core;
 
 /**
  *

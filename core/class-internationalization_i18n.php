@@ -1,6 +1,6 @@
 <?php
 
-namespace Personal\Inc\Core;
+namespace Personal\Core;
 
 /**
  * Carga y define los archivos de internacionalización para que el plugin esté listo para la traducción.

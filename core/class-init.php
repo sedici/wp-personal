@@ -1,15 +1,15 @@
 <?php
 
-namespace Personal\Inc\Core;
+namespace Personal\Core;
 
 use Personal as PP;
-use Personal\Inc\Admin as Admin;
+use Personal\Admin\Admin as Admin;
 use Personal\Inc\Frontend as Frontend;
-use Personal\Inc\Admin\Metaboxes as Metaboxes;
-use Personal\Inc\Admin\CSV_Handler as CSV_Handler;
-use Personal\Inc\Core\Internationalization_i18n as Internationalization_i18n;
-use Personal\Inc\Core\Loader as Loader;
-use Personal\Inc\Core\CPT_personal as CPT_personal;
+use Personal\Admin\Metaboxes as Metaboxes;
+use Personal\Admin\CSV_Handler as CSV_Handler;
+use Personal\Core\Internationalization_i18n as Internationalization_i18n;
+use Personal\Core\Loader as Loader;
+use Personal\Core\CPT_personal as CPT_personal;
 
 
 
@@ -35,7 +35,7 @@ class Init
         $this->loader = new Loader();
         $this->load_dependencies();
         $this->register_cpt();
-        $this->set_locale();
+        //$this->set_locale();
         $this->define_admin_hooks();
         $this->define_public_hooks();
         $this->loader->add_action('init', $this, 'register_gutenberg_blocks');
@@ -49,6 +49,7 @@ class Init
         
         $this->loader->add_action('init', $cpt_personal, 'cptui_register_my_cpts_personal', 20);
         $this->loader->add_action('init', $cpt_personal, 'cptui_register_my_taxes_categorias', 20);
+        $this->loader->add_action('init', $cpt_personal, 'cptui_register_my_taxes_lineas_de_investigacion', 20);
         $this->loader->add_action('admin_init', $cpt_personal, 'add_personal_caps', 20);
 
 
@@ -105,15 +106,14 @@ class Init
 
      private function define_admin_hooks(): void
     {
-        $admin = new Admin\Admin($this->plugin_name, $this->version, $this->plugin_text_domain);
+        $admin = new Admin($this->plugin_name, $this->version, $this->plugin_text_domain);
 
 
         $this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_scripts');
         $this->loader->add_action('admin_menu',            $admin, 'add_plugin_admin_menu');
         $this->loader->add_action('post_edit_form_tag',    $admin, 'update_edit_form');
-        $this->loader->add_filter('post_thumbnail_html',   $admin, 'wordpress_hide_feature_image', 10, 3);
-        $this->loader->add_filter('get_repositorios',      $admin, 'get_repositories_wpdspace');
+        //$this->loader->add_filter('get_repositorios',      $admin, 'get_repositories_wpdspace');
 
 
         
@@ -125,9 +125,9 @@ class Init
         $this->loader->add_action('add_meta_boxes', $metaboxes, 'register');
         $this->loader->add_action('save_post',      $metaboxes, 'save');
 
-        // CSV
-     //   $this->loader->add_action('wp_ajax_import_csv',$admin, 'import_csv');
-      //  $this->loader->add_action('admin_post_export_personal_csv', $admin, 'export_personal_csv');
+        //CSV
+        $this->loader->add_action('wp_ajax_import_csv',$admin, 'import_csv');
+        $this->loader->add_action('admin_post_export_personal_csv', $admin, 'export_personal_csv');
     }
 
 
@@ -158,6 +158,7 @@ class Init
         $this->loader->add_action('init', $plugin_public, 'register_shortcodes');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+        $this->loader->add_filter('post_thumbnail_html', $plugin_public, 'wordpress_hide_feature_image', 10,3);
         // obtengo los repositorios del plugin wp-dspace
         $this->loader->add_filter('get_repositorios', $plugin_public, 'get_repositories_wpdspace');
         $this->loader->add_filter('the_title', $plugin_public, 'remove_personal_title', 10, 2);
@@ -197,3 +198,4 @@ class Init
     }
 
 }
+

@@ -40,13 +40,13 @@ define(NP . 'PLUGIN_TEXT_DOMAIN', 'personal');
  * Autoload de Clases
  */
 
-require_once(PLUGIN_NAME_DIR . 'inc/libraries/autoloader.php');
+require_once(PLUGIN_NAME_DIR . 'inc/class-autoloader.php');
 
 /**
  * Se registran los hook para cuando se activa o se desactiva el plugin
  */
-register_activation_hook(__FILE__, array(NP . 'Inc\Core\Activator', 'activate'));
-register_deactivation_hook(__FILE__, array(NP . 'Inc\Core\Deactivator', 'deactivate'));
+register_activation_hook(__FILE__, array(NP . 'Core\Activator', 'activate'));
+register_deactivation_hook(__FILE__, array(NP . 'Core\Deactivator', 'deactivate'));
 
 
 /**
@@ -64,7 +64,7 @@ class Personal
 	{
 
 		if (null == self::$init) {
-			self::$init = new Inc\Core\Init();
+			self::$init = new Core\Init();
 			self::$init->run();
 		}
 

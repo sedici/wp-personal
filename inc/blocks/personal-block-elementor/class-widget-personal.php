@@ -167,7 +167,7 @@ class Widget_Personal extends \Elementor\Widget_Base
             'columns' => $settings['columns'],
         ];
 
-        // Logic copied from personal-block/src/personal-block/render.php
+        // Logic copied from personal-block/src/wp-personal-block/render.php
         $orderBy = $attributes['orderBy'];
         list($orderby_key, $order_direction) = explode('-', $orderBy);
 
