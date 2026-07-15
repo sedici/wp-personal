@@ -62,32 +62,6 @@ class Frontend
         return get_post_meta(get_the_ID(), $name, true);
     }
 
-    // /**
-    //  *  Remplaza el contenido del post para la vista publica.
-    //  *
-    //  */
-    // public function single_personal_template($content)
-    // {   
-
-    //     global $post;
-
-    //     // Compruebo que $post no sea nulo
-    //     if ( ! is_a($post, 'WP_Post') ) {
-    //         return $content;
-    //     }
-
-    //     if ($post->post_type == 'personal') {
-    //         if (file_exists(plugin_dir_path(__DIR__) . 'frontend/views/single-personal.php')) {
-    //             ob_start();
-    //             include(plugin_dir_path(__DIR__) . 'frontend/views/single-personal.php');
-    //             $content = ob_get_clean();
-    //             return $content;
-    //         }
-    //     }
-
-    //     return $content;
-
-    // }
 
     public function single_personal_template($content) {
         global $post;
