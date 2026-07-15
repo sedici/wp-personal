@@ -5,17 +5,17 @@
     {
 
         private $inputs_personal;
-        private $repositories;
+
+        /**
+         * Mapa slug del repositorio en wp-dspace-v2 => nombre del campo meta.
+         * Los campos meta conservan los nombres históricos ('cic', etc.) para
+         * que los posts existentes y el import/export CSV sigan funcionando.
+         */
+        private const REPO_FIELD_NAMES = [
+            'cic-digital' => 'cic',
+        ];
 
         public function __construct(){}
-
-
-        public function set_repositories(array $repos): void
-        {
-
-        $this->repositories = $repos;
-        $this->initializeInputsPersonal();
-        }
 
 
     /**
@@ -95,10 +95,13 @@
 
         $repository_inputs= [];
         foreach ($repositories as $key => $repository) {
+            // El input guarda en el campo meta histórico, pero ícono y label
+            // se derivan del slug del repositorio.
+            $field = self::REPO_FIELD_NAMES[$key] ?? $key;
             $repository_inputs[] = array(
                 'class' => '',
                 'label'=> '<img src="' . plugins_url() . '/wp-personal/assets/images/' . $key . '.png" height="32"> ' . ucwords(str_replace('-', ' ', $key)),
-                'name' => $key,
+                'name' => $field,
                 'type' => 'text',
                 'instructions' => 'Debe completar con el nombre EXACTO del perfil dentro del repostirio, por ejemplo: Villareal,Gonzalo Luján',
                 'default_value' => '',

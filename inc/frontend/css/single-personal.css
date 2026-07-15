@@ -225,6 +225,20 @@
     transition: transform 0.2s;
 }
 
+/* Los paneles arrancan cerrados; personal-frontend.js alterna is-open */
+.personal-accordion-content {
+    display: none;
+    padding-bottom: 18px;
+}
+
+.personal-accordion-item.is-open .personal-accordion-content {
+    display: block;
+}
+
+.personal-accordion-item.is-open .personal-accordion-icon {
+    transform: rotate(90deg);
+}
+
 /* ==========================================================================
    Estilos Responsivos (Mobile First / Collapse)
    ========================================================================== */

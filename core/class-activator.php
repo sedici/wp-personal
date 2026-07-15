@@ -12,14 +12,9 @@ class Activator
 
     public static function activate()
     {
-        include_once(ABSPATH . 'wp-admin/includes/plugin.php');
-        // Si no esta activado el plugin wp-dspace no se puede activar este plugin
-        //Fixme evaluar si tiene sentido usar el plugin de personal sin el de wp-dspace
-        if (!is_plugin_active('wp-dspace/Dspace.php')) {
-            deactivate_plugins(plugin_basename(__FILE__));
-            wp_die("Para usar este plugin se requiere el plugin <a href='https://github.com/sedici/wp-dspace/blob/master/wp-dspace.zip'> wp-dspace </a>");
-        }
-
+        // El plugin wp-dspace-v2 es una dependencia blanda: personal se puede
+        // activar sin él, y la vista single avisa que hay que activarlo para
+        // mostrar las publicaciones de los repositorios.
         $args = array('post_type' => 'personal');
         $loop = new \WP_Query($args);
         while ($loop->have_posts()) :

@@ -105,7 +105,13 @@ if ( ! defined( 'ABSPATH' ) ) {
         </div>
     </div>
 
-    <?php if ( ! empty( $args['publicaciones'] ) ) : ?>
+    <?php if ( ! empty( $args['publicaciones'] ) && empty( $args['dspace_activo'] ) ) : ?>
+        <div class="personal-publications-area">
+            <p class="personal-dspace-missing">
+                <?php esc_html_e( 'Para mostrar la producción científica de los repositorios es necesario activar el plugin DSpace Connector v2 (wp-dspace-v2).', 'personal' ); ?>
+            </p>
+        </div>
+    <?php elseif ( ! empty( $args['publicaciones'] ) ) : ?>
         <div class="personal-publications-area">
             <?php foreach ( $args['publicaciones'] as $repositorio ) : ?>
                 <div class="personal-accordion-item">

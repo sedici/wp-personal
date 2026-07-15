@@ -113,10 +113,8 @@ class Init
         $this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_scripts');
         $this->loader->add_action('admin_menu',            $admin, 'add_plugin_admin_menu');
         $this->loader->add_action('post_edit_form_tag',    $admin, 'update_edit_form');
-        //$this->loader->add_filter('get_repositorios',      $admin, 'get_repositories_wpdspace');
 
 
-        
         //Shortcode generator (AJAX para el admin, no el shortcode público)
         $this->loader->add_action('wp_ajax_generate_shortcode_personal', $admin, 'generate_shortcode_personal');
 
@@ -159,8 +157,6 @@ class Init
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
         $this->loader->add_filter('post_thumbnail_html', $plugin_public, 'wordpress_hide_feature_image', 10,3);
-        // obtengo los repositorios del plugin wp-dspace
-        $this->loader->add_filter('get_repositorios', $plugin_public, 'get_repositories_wpdspace');
         $this->loader->add_filter('the_title', $plugin_public, 'remove_personal_title', 10, 2);
 
 

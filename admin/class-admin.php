@@ -23,12 +23,6 @@ class Admin
      */
     private $inputs_personal;
 
-    /**
-     * Son las configuraciones del repositorio obtenidas del plugin wp-dspace
-     * @var array() $repositories
-     */
-    private $repositories;
-
     public function __construct($plugin_name, $version, $plugin_text_domain)
     {
         $this->plugin_name = $plugin_name;
@@ -193,15 +187,6 @@ class Admin
 
 
 
-    public function get_repositories_wpdspace($value)
-    {
-        $this->repositories = $value;
-        $this->initializeInputsPersonal();
-        return $value;
-    }
-
-
-
     /**
      * Redirect
      *
@@ -225,17 +210,6 @@ class Admin
     public function update_edit_form()
     {
         echo 'enctype="multipart/form-data"';
-    }
-   
-    private function getRepositories()
-    {
-        return array_filter(
-            $this->repositories,
-            function ($repo) {
-                return !(strtolower($repo['name']) == 'sedici' or strtolower($repo['name']) == 'conicet' or strtolower($repo['name']) == 'cic');
-            }
-        );
-
     }
 
 }
