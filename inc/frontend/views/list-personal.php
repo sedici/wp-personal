@@ -1,102 +1,48 @@
 <?php
-$args = array('post_type' => 'personal','posts_per_page' => 50);
-if (!empty($atts['category_id'])) {
-    $args['tax_query'] =
-        array(
-            array(
-                'terms' => $atts['category_id'],
-                'taxonomy' => 'categorias',
-
-            ));
-}
-
-$loop = new WP_Query($args);
+/**
+ * Vista para listar el personal.
+ * @var array $args Datos inyectados de forma segura desde el controlador.
+ */
 ?>
+<h3><?php echo esc_html( $args['atts']['title'] ); ?></h3>
 
-<h3> <?php echo $atts['title'] ?></h3>
-<div class=" ">
-    <div class="row row-cols-1 row-cols-md-<?php echo $atts['columns'] ?> g-4" >
-        <?php while ($loop->have_posts()) :
-                $loop->the_post(); 
-                $reserchgate = $this->the_personal_meta('researchgate');
-                $google_scholar = $this->the_personal_meta('google_scholar');
-                $orcid = $this->the_personal_meta('orcid');
-                $linkedin = $this->the_personal_meta('linkedin');
-                $facebook = $this->the_personal_meta('facebook');
-                $twitter = $this->the_personal_meta('twitter');
-                $email = $this->the_personal_meta('email');
-                $unidad_de_investigacion = $this->the_personal_meta('unidad_de_investigacion');
-                $rol = $this->the_personal_meta('rol_unidad_de_investigacion');
-                $grado_alcanzado = $this->the_personal_meta('grado_alcanzado');
-                $biografia = $this->the_personal_meta('biografia');
-                $categorias = wp_get_post_terms(get_the_ID(), 'categorias', array("personal"));
-                
-            $image = get_the_post_thumbnail_url();
-            $path_image_top = !empty($image) ? $image : plugins_url() . "/wp-personal/assets/images/blank-profile.png";
-            ?>
+<div class="">
+    <div class="row row-cols-1 row-cols-md-<?php echo esc_attr( $args['atts']['columns'] ); ?> g-4">
+        <?php foreach ( $args['personales'] as $p ) : ?>
             <div class="col">
-            <div class="card">
-                <a href="<?php echo get_permalink(get_the_ID()) ?>">
-                    <div class="card-img-top" style="background-image: url('<?php echo $path_image_top ?>'); ">
+                <div class="card">
+                    
+                    <a href="<?php echo esc_url( $p['permalink'] ); ?>">
+                        <div class="card-img-top" style="background-image: url('<?php echo esc_url( $p['image'] ); ?>');"></div>
+                    </a>
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="<?php echo esc_url( $p['permalink'] ); ?>" title="<?php echo esc_attr( $p['title'] ); ?>" rel="bookmark">
+                                <?php echo esc_html( $p['title'] ); ?>
+                            </a>
+                        </h5>
+                        <div class="card-text small mb-2"><?php echo esc_html( $p['grado_alcanzado'] ); ?></div>
+                        <div class="card-text small mb-2"><?php echo esc_html( $p['rol'] ); ?></div>
+                        <p class="card-text small"><?php echo esc_html( $p['unidad'] ); ?></p>
+                    </div>      
+                    
+                    <div class="card-footer">
+                        <div class="footer-redes">
+                            <?php if ( ! empty( $p['social_media'] ) ) : ?>
+                                <?php foreach ( $p['social_media'] as $platform => $url ) : ?>
+                                    <?php if ( ! empty( $url ) ) : ?>
+                                        <a href="<?php echo esc_url( $url ); ?>" target="_blank">
+                                            <img class="wp-image-16" src="<?php echo plugins_url() . '/wp-personal/assets/images/' . esc_attr( $platform ) . '.png'; ?>" alt="<?php echo esc_attr( $platform ); ?>" width="20" height="20">
+                                        </a>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                   
-                </a>
 
-                <div class="card-body">
-                    <h5 class="card-title">    <?php the_title('<a href="' . get_permalink() . '" title="' . the_title_attribute('echo=0') . '" rel="bookmark">', '</a>'); ?></h5>
-                    <div class="card-text small mb-2"><?php echo $grado_alcanzado ?></div>
-                    <div class="card-text small mb-2"><?php echo $rol ?></div>
-                    <p class="card-text small"><?php echo $unidad_de_investigacion ?></p>
-                </div>
-                <div class="card-footer">
-                    <div class="footer-redes">
-                        <?php if (!empty($google_scholar)): ?>
-                            <a href="<?php echo $google_scholar; ?>" target="_blank"><img
-                                        class=" wp-image-16"
-                                        src="<?php echo plugins_url() . "/wp-personal/assets/images/google_scholar.png" ?>"
-                                        alt="google_scholar" width="20" height="20" scale="0"></a>
-                        <?php endif; ?>
-                        <?php if (!empty($reserchgate)): ?><a href="<?php echo $reserchgate; ?>" target="_blank"><img
-                                    class=" wp-image-17"
-                                    src="<?php echo plugins_url() . "/wp-personal/assets/images/research-gate.png" ?>"
-                                    alt="research-gate" width="20" height="20"></a>
-                        <?php endif; ?>
-                        <?php if (!empty($orcid)): ?><a href="<?php echo $orcid; ?>" target="_blank"><img
-                                    class=" wp-image-19"
-                                    src="<?php echo plugins_url() . "/wp-personal/assets/images/orcid.gif" ?>"
-                                    alt="orcid" width="20" height="20" scale="0"> </a>
-                        <?php endif; ?>
-                        <?php if (!empty($linkedin)): ?><a href="<?php echo $linkedin; ?>" target="_blank"><img
-                                    class=" wp-image-19"
-                                    src="<?php echo plugins_url() . "/wp-personal/assets/images/linkedin.png" ?>"
-                                    alt="orcid" width="20" height="20" scale="0"> </a>
-                        <?php endif; ?>
-                        <?php if (!empty($facebook)): ?><a href="<?php echo $facebook; ?>" target="_blank"><img
-                                    class=" wp-image-19"
-                                    src="<?php echo plugins_url() . "/wp-personal/assets/images/facebook.jpg" ?>"
-                                    alt="facebook" width="20" height="20" scale="0"> </a>
-                        <?php endif; ?>
-                        <?php if (!empty($twitter)): ?><a href="<?php echo $twitter; ?>" target="_blank"><img
-                                    class=" wp-image-19"
-                                    src="<?php echo plugins_url() . "/wp-personal/assets/images/twitter.png" ?>"
-                                    alt="twitter" width="20" height="20" scale="0"> </a>
-                        <?php endif; ?>
-                        <?php if (!empty($email)): ?><a href="mailto:<?php echo $email; ?>" target="_blank"><img
-                                    src="<?php echo plugins_url() . "/wp-personal/assets/images/mailto.gif" ?>"
-                                    alt="Mail" width="16" scale="0"></a>
-                        <?php endif; ?>
-                        <?php if (!empty($curriculum_vitae)): ?><a href="<?php echo $curriculum_vitae['url']; ?>"
-                                                                   target="_blank"><img
-                                    src="<?php echo plugins_url() . "/wp-personal/assets/images/cv.png" ?>"
-                                    alt="CV" width="16" scale="0"></a>
-                        <?php endif; ?>
-                    </div>
                 </div>
             </div>
-            </div>
-        <?php endwhile; 
-        wp_reset_postdata();
-        ?>
+        <?php endforeach; ?>
     </div>
 </div>
-
