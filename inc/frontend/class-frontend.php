@@ -240,8 +240,9 @@ class Frontend
         ob_start();
 
         load_template( $template_path, false, array(
-            'personales' => $personas,
-            'atts'       => $atts,
+            'personas'      => $personas,
+            'columns'    => $atts['columns'],
+            'title'      => $atts['title'],
         ));
 
         return ob_get_clean();

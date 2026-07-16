@@ -4,11 +4,15 @@
  * @var array $args Datos inyectados de forma segura desde el controlador.
  */
 ?>
-<h3><?php echo esc_html( $args['atts']['title'] ); ?></h3>
+<h3><?php 
+if (isset($args['title']) && !empty($args['title'])) {
+    echo esc_html( $args['title'] );
+}
+?></h3>
 
 <div class="">
-    <div class="row row-cols-1 row-cols-md-<?php echo esc_attr( $args['atts']['columns'] ); ?> g-4">
-        <?php foreach ( $args['personales'] as $p ) : ?>
+    <div class="row row-cols-1 row-cols-md-<?php echo esc_attr( $args['columns'] ); ?> g-4">
+        <?php foreach ( $args['personas'] as $p ) : ?>
             <div class="col">
                 <div class="card">
                     
