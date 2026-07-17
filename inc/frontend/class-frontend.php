@@ -68,7 +68,7 @@ class Frontend
     /**
      * Muestra la vista single del post type personal
      */
-    public function single_personal_template($content) {
+    public function show_single_personal_template($content) {
         global $post;
 
         $assets_url = \Personal\PLUGIN_NAME_URL . 'assets/images/';
@@ -189,29 +189,93 @@ class Frontend
     }
 
     /**
-     * Muestra un listado de posts del post type personal
-     */
-    public function list_personal_template($atts = array()) {
-
-        $atts = shortcode_atts(array(
-                'category_id' => '',
-                'title' => '',
-                'columns' => 3,
-        ), $atts);
+    * Normaliza los atributos del shortcode y construye los argumentos para WP_Query.
+    * @param  array $atts Atributos crudos pasados por el usuario en el shortcode.
+    * @return array Argumentos listos para instanciar \WP_Query.
+    */
+    private function prepare_query_args( array $atts ) : array {
+        
+        $parsed_atts = shortcode_atts( array(
+            'category_id' => '',
+            'title'       => '',
+            'columns'     => 3,
+        ), $atts );
 
         $args = array(
-            'post_type' => 'personal',
+            'post_type'      => 'personal',
             'posts_per_page' => 50
         );
 
-        if (!empty($atts['category_id'])) {
-            $args['tax_query'] =
+        if ( ! empty( $parsed_atts['category_id'] ) ) {
+            $args['tax_query'] = array(
                 array(
-                    array(
-                        'terms' => $atts['category_id'],
-                        'taxonomy' => 'categorias',
-                    ));
+                    'terms'    => $parsed_atts['category_id'],
+                    'taxonomy' => 'categorias',
+                )
+            );
         }
+
+        return $args;
+    }
+
+    /**
+     * Obtiene los enlaces a redes sociales de un post del tipo personal.
+     * @param  int $post_id ID del post personal.
+     * @return array        Array asociativo con los enlaces a redes sociales.
+     */
+    public function get_personal_social_media( $post_id ) {
+        $social_media = array(
+            'google_scholar' => get_post_meta($post_id, "google_scholar", true),
+            'research-gate' => get_post_meta($post_id, "researchgate", true),
+            'orcid' => get_post_meta($post_id, "orcid", true),
+            'linkedin' => get_post_meta($post_id, "linkedin", true),
+            'facebook' => get_post_meta($post_id, "facebook", true),
+            'twitter' => get_post_meta($post_id, "twitter", true),
+            'instagram' => get_post_meta($post_id, "instagram", true),
+        );
+
+        return $social_media;
+    }
+
+    public function get_personal_cv_url( $post_id ) {
+        $cv = get_post_meta($post_id, 'curriculum_vitae', true);
+        if (!empty($cv) && isset($cv['url'])) {
+            return $cv['url'];
+        }
+        return '';
+    }
+
+    /**
+     * Retorno información de un post del tipo personal en un array asociativo.
+     * @param  int $post_id ID del post personal.
+     * @return array        Array asociativo con la información del post personal.
+     */
+    public function build_personal_data( $post_id ) {
+        $image = get_the_post_thumbnail_url($post_id, 'medium');
+        $terms = get_the_terms( $post_id, 'categorias' );
+        $social_media = $this->get_personal_social_media($post_id);
+        $cv = $this->get_personal_cv_url($post_id);
+        $social_media['cv'] = $cv;
+
+        return array(
+            'id'              => $post_id,
+            'permalink'       => get_permalink($post_id),
+            'title'           => get_the_title(),
+            'image'           => !empty($image) ? $image : plugins_url() . "/wp-personal/assets/images/blank-profile.png",
+            'grado_alcanzado' => get_post_meta($post_id, 'grado_alcanzado', true),
+            'rol'             => !empty($terms) ? $terms[0]->name : '',
+            'unidad'          => get_post_meta($post_id, 'unidad_de_investigacion', true),
+            'social_media'    => $social_media,
+        );
+    }
+
+    /**
+     * Muestra un listado de posts del post type personal
+     */
+    public function show_list_personal_template($atts = array()) {
+
+        // Se preparan los argumentos para WP_Query a partir de los atributos del shortcode
+        $args = $this->prepare_query_args( $atts );
 
         $loop = new \WP_Query($args);
         $personas = array();
@@ -219,38 +283,10 @@ class Frontend
         if ($loop->have_posts()) {
             while ( $loop->have_posts() ) {
                 $loop->the_post();
+                
                 $post_id = get_the_ID();
-                $image = get_the_post_thumbnail_url($post_id, 'medium');
                 
-                $social_media = array(
-                    'google_scholar' => $this->the_personal_meta('google_scholar'),
-                    'research-gate' => $this->the_personal_meta('researchgate'),
-                    'orcid' => $this->the_personal_meta('orcid'),
-                    'linkedin' => $this->the_personal_meta('linkedin'),
-                    'facebook' => $this->the_personal_meta('facebook'),
-                    'twitter' => $this->the_personal_meta('twitter'),
-                    'instagram' => $this->the_personal_meta('instagram'),
-                );
-
-                $cv = get_post_meta($post_id, 'curriculum_vitae', true);
-                if (!empty($cv) && isset($cv['url'])) {
-                    $social_media['cv'] = $cv['url'];
-                }
-
-                $terms = get_the_terms( $post_id, 'categorias' );
-                
-                $personas[] = array(
-                    'id'               => $post_id,
-                    'permalink'        => get_permalink($post_id),
-                    'title'            => get_the_title(),
-                    'image'            => !empty($image) ? $image : plugins_url() . "/wp-personal/assets/images/blank-profile.png",
-                    'grado_alcanzado'  => $this->the_personal_meta('grado_alcanzado'),
-                    'rol'              => !empty($terms) ? $terms[0]->name : '',
-                    'unidad'           => $this->the_personal_meta('unidad_de_investigacion'),
-                    'social_media'     => $social_media,
-                    'email'            => $this->the_personal_meta('email'),
-                    'curriculum_vitae' => $this->the_personal_meta('curriculum_vitae'),
-                );
+                $personas[] = $this->build_personal_data($post_id);
 
             }
             wp_reset_postdata();
