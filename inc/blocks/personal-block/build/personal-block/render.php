@@ -54,6 +54,8 @@ if ($loop->have_posts()) {
             'instagram' => get_post_meta($post_id, "instagram", true),
         );
 
+        $terms = get_the_terms( $post_id, 'categorias' );
+
         $cv = get_post_meta($post_id, 'curriculum_vitae', true);
         if (!empty($cv) && isset($cv['url'])) {
             $social_media['cv'] = $cv['url'];
@@ -64,7 +66,7 @@ if ($loop->have_posts()) {
             'title'           => get_the_title(),
             'image'           => !empty($image) ? $image : plugins_url() . "/wp-personal/assets/images/blank-profile.png",
             'grado_alcanzado' => get_post_meta($post_id, 'grado_alcanzado', true),
-            'rol'             => get_post_meta($post_id, 'rol_unidad_de_investigacion', true),
+            'rol'             => !empty($terms) ? $terms[0]->name : '',
             'unidad'          => get_post_meta($post_id, 'unidad_de_investigacion', true),
             'social_media'    => $social_media,
         );

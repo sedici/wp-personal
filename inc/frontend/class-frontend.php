@@ -40,6 +40,8 @@ class Frontend
 
         wp_enqueue_style($this->plugin_name . '-single', plugin_dir_url(__FILE__) . 'css/single-personal.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/single-personal.css'), 'all');
 
+        wp_enqueue_style('list-' . $this->plugin_name, plugin_dir_url(__FILE__) . 'css/list-personal.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/list-personal.css'), 'all');
+
     }
 
     /**
@@ -180,6 +182,7 @@ class Frontend
     }
 
     public function list_personal($atts = array()) {
+
         $atts = shortcode_atts(array(
                 'category_id' => '',
                 'title' => '',
@@ -219,22 +222,30 @@ class Frontend
                     'instagram' => $this->the_personal_meta('instagram'),
                 );
 
+                $cv = get_post_meta($post_id, 'curriculum_vitae', true);
+                if (!empty($cv) && isset($cv['url'])) {
+                    $social_media['cv'] = $cv['url'];
+                }
+
+                $terms = get_the_terms( $post_id, 'categorias' );
+                
                 $personas[] = array(
                     'id'               => $post_id,
                     'permalink'        => get_permalink($post_id),
                     'title'            => get_the_title(),
                     'image'            => !empty($image) ? $image : plugins_url() . "/wp-personal/assets/images/blank-profile.png",
                     'grado_alcanzado'  => $this->the_personal_meta('grado_alcanzado'),
-                    'rol'              => $this->the_personal_meta('rol_unidad_de_investigacion'),
+                    'rol'              => !empty($terms) ? $terms[0]->name : '',
                     'unidad'           => $this->the_personal_meta('unidad_de_investigacion'),
                     'social_media'     => $social_media,
                     'email'            => $this->the_personal_meta('email'),
                     'curriculum_vitae' => $this->the_personal_meta('curriculum_vitae'),
                 );
+
             }
             wp_reset_postdata();
         }
-        
+
         $template_path = plugin_dir_path(__FILE__) . 'views/list-personal.php';
 
         ob_start();
