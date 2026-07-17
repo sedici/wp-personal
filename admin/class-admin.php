@@ -134,7 +134,7 @@ class Admin
     public function show_terms()
     {
 
-        include_once dirname(__DIR__) . '/admin/views/wp-personal-shortcode-generator-view.php';
+        include_once dirname(__DIR__) . '/admin/views/personal-shortcode-generator-view.php';
 
     }
 
