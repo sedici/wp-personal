@@ -1,102 +1,69 @@
 <?php
-$args = array('post_type' => 'personal','posts_per_page' => 50);
-if (!empty($atts['category_id'])) {
-    $args['tax_query'] =
-        array(
-            array(
-                'terms' => $atts['category_id'],
-                'taxonomy' => 'categorias',
-
-            ));
-}
-
-$loop = new WP_Query($args);
+/**
+ * Vista para listar el personal - Versión Optimizada Minimalista
+ * @var array $args Datos inyectados de forma segura desde el controlador.
+ */
 ?>
 
-<h3> <?php echo $atts['title'] ?></h3>
-<div class=" ">
-    <div class="row row-cols-1 row-cols-md-<?php echo $atts['columns'] ?> g-4" >
-        <?php while ($loop->have_posts()) :
-                $loop->the_post(); 
-                $reserchgate = $this->the_personal_meta('researchgate');
-                $google_scholar = $this->the_personal_meta('google_scholar');
-                $orcid = $this->the_personal_meta('orcid');
-                $linkedin = $this->the_personal_meta('linkedin');
-                $facebook = $this->the_personal_meta('facebook');
-                $twitter = $this->the_personal_meta('twitter');
-                $email = $this->the_personal_meta('email');
-                $unidad_de_investigacion = $this->the_personal_meta('unidad_de_investigacion');
-                $rol = $this->the_personal_meta('rol_unidad_de_investigacion');
-                $grado_alcanzado = $this->the_personal_meta('grado_alcanzado');
-                $biografia = $this->the_personal_meta('biografia');
-                $categorias = wp_get_post_terms(get_the_ID(), 'categorias', array("personal"));
-                
-            $image = get_the_post_thumbnail_url();
-            $path_image_top = !empty($image) ? $image : \Personal\PLUGIN_NAME_URL . "assets/images/blank-profile.png";
-            ?>
-            <div class="col">
-            <div class="card">
-                <a href="<?php echo get_permalink(get_the_ID()) ?>">
-                    <div class="card-img-top" style="background-image: url('<?php echo $path_image_top ?>'); ">
-                    </div>
-                   
-                </a>
+<div class="personal-directory-container">
+    
+    <?php if ( isset( $args['title'] ) && ! empty( $args['title'] ) ) : ?>
+        <h2 class="personal-directory-main-title">
+            <?php echo esc_html( $args['title'] ); ?>
+        </h2>
+    <?php endif; ?>
 
-                <div class="card-body">
-                    <h5 class="card-title">    <?php the_title('<a href="' . get_permalink() . '" title="' . the_title_attribute('echo=0') . '" rel="bookmark">', '</a>'); ?></h5>
-                    <div class="card-text small mb-2"><?php echo $grado_alcanzado ?></div>
-                    <div class="card-text small mb-2"><?php echo $rol ?></div>
-                    <p class="card-text small"><?php echo $unidad_de_investigacion ?></p>
-                </div>
-                <div class="card-footer">
-                    <div class="footer-redes">
-                        <?php if (!empty($google_scholar)): ?>
-                            <a href="<?php echo $google_scholar; ?>" target="_blank"><img
-                                        class=" wp-image-16"
-                                        src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/google_scholar.png" ?>"
-                                        alt="google_scholar" width="20" height="20" scale="0"></a>
+    <!-- Grilla adaptativa basada en el atributo dinámico de columnas -->
+    <div class="personal-directory-grid" style="--grid-columns: <?php echo esc_attr( $args['columns'] ); ?>;">
+        
+        <?php foreach ( $args['personas'] as $p ) : ?>
+            <article class="personal-directory-card">
+                
+                <!-- Contenedor de la Imagen Cuadrada (Proporción 1:1) -->
+                <a href="<?php echo esc_url( $p['permalink'] ); ?>" class="personal-directory-card-link">
+                    <div class="personal-directory-avatar" style="background-image: url('<?php echo esc_url( $p['image'] ); ?>');"></div>
+                </a>
+                
+                <!-- Cuerpo de Información -->
+                <div class="personal-directory-card-body">
+                    <h3 class="personal-directory-card-name">
+                        <a href="<?php echo esc_url( $p['permalink'] ); ?>">
+                            <?php echo esc_html( $p['title'] ); ?>
+                        </a>
+                    </h3>
+                    
+                    <?php if ( ! empty( $p['rol'] ) ) : ?>
+                        <p class="personal-directory-card-role">
+                            <?php echo esc_html( $p['rol'] ); ?>
+                        </p>
+                    <?php endif; ?>
+                    
+                    <div class="personal-directory-card-details">
+                        <?php if ( ! empty( $p['grado_alcanzado'] ) ) : ?>
+                            <p class="personal-directory-card-degree"><?php echo esc_html( $p['grado_alcanzado'] ); ?></p>
                         <?php endif; ?>
-                        <?php if (!empty($reserchgate)): ?><a href="<?php echo $reserchgate; ?>" target="_blank"><img
-                                    class=" wp-image-17"
-                                    src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/research-gate.png" ?>"
-                                    alt="research-gate" width="20" height="20"></a>
-                        <?php endif; ?>
-                        <?php if (!empty($orcid)): ?><a href="<?php echo $orcid; ?>" target="_blank"><img
-                                    class=" wp-image-19"
-                                    src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/orcid.gif" ?>"
-                                    alt="orcid" width="20" height="20" scale="0"> </a>
-                        <?php endif; ?>
-                        <?php if (!empty($linkedin)): ?><a href="<?php echo $linkedin; ?>" target="_blank"><img
-                                    class=" wp-image-19"
-                                    src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/linkedin.png" ?>"
-                                    alt="orcid" width="20" height="20" scale="0"> </a>
-                        <?php endif; ?>
-                        <?php if (!empty($facebook)): ?><a href="<?php echo $facebook; ?>" target="_blank"><img
-                                    class=" wp-image-19"
-                                    src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/facebook.jpg" ?>"
-                                    alt="facebook" width="20" height="20" scale="0"> </a>
-                        <?php endif; ?>
-                        <?php if (!empty($twitter)): ?><a href="<?php echo $twitter; ?>" target="_blank"><img
-                                    class=" wp-image-19"
-                                    src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/twitter.png" ?>"
-                                    alt="twitter" width="20" height="20" scale="0"> </a>
-                        <?php endif; ?>
-                        <?php if (!empty($email)): ?><a href="mailto:<?php echo $email; ?>" target="_blank"><img
-                                    src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/mailto.gif" ?>"
-                                    alt="Mail" width="16" scale="0"></a>
-                        <?php endif; ?>
-                        <?php if (!empty($curriculum_vitae)): ?><a href="<?php echo $curriculum_vitae['url']; ?>"
-                                                                   target="_blank"><img
-                                    src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/cv.png" ?>"
-                                    alt="CV" width="16" scale="0"></a>
+                        
+                        <?php if ( ! empty( $p['unidad'] ) ) : ?>
+                            <p class="personal-directory-card-unit"><?php echo esc_html( $p['unidad'] ); ?></p>
                         <?php endif; ?>
                     </div>
+                    
+                    <!-- Fila de Redes Sociales con Colores Originales Nativos -->
+                    <?php if ( ! empty( $p['social_media'] ) ) : ?>
+                        <div class="personal-directory-card-socials">
+                            <?php foreach ( $p['social_media'] as $platform => $url ) : ?>
+                                <?php if ( ! empty( $url ) ) : ?>
+                                    <a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener noreferrer">
+                                        <img src="<?php echo plugins_url() . '/wp-personal/assets/images/' . esc_attr( $platform ) . '.png'; ?>" alt="<?php echo esc_attr( $platform ); ?>" width="16" height="16">
+                                    </a>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
-            </div>
-            </div>
-        <?php endwhile; 
-        wp_reset_postdata();
-        ?>
+
+            </article>
+        <?php endforeach; ?>
+
     </div>
 </div>
-

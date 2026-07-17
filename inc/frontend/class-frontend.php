@@ -40,6 +40,8 @@ class Frontend
 
         wp_enqueue_style($this->plugin_name . '-single', plugin_dir_url(__FILE__) . 'css/single-personal.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/single-personal.css'), 'all');
 
+        wp_enqueue_style('list-' . $this->plugin_name, plugin_dir_url(__FILE__) . 'css/list-personal.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/list-personal.css'), 'all');
+
     }
 
     /**
@@ -183,25 +185,82 @@ class Frontend
         return (is_single() and get_post_type() == 'personal') ? '' : $html;
     }
 
+    public function list_personal_template($atts = array()) {
 
-    public function register_shortcodes()
-    {
-        add_shortcode('list-personal', array($this, 'list_personal'));
-
-    }
-
-    public function list_personal($atts = array())
-    {
         $atts = shortcode_atts(array(
-            'category_id' => '',
-            'title' => '',
-            'columns' => 3,
+                'category_id' => '',
+                'title' => '',
+                'columns' => 3,
         ), $atts);
 
+        $args = array(
+            'post_type' => 'personal',
+            'posts_per_page' => 50
+        );
+
+        if (!empty($atts['category_id'])) {
+            $args['tax_query'] =
+                array(
+                    array(
+                        'terms' => $atts['category_id'],
+                        'taxonomy' => 'categorias',
+                    ));
+        }
+
+        $loop = new \WP_Query($args);
+        $personas = array();
+
+        if ($loop->have_posts()) {
+            while ( $loop->have_posts() ) {
+                $loop->the_post();
+                $post_id = get_the_ID();
+                $image = get_the_post_thumbnail_url($post_id, 'medium');
+                
+                $social_media = array(
+                    'google_scholar' => $this->the_personal_meta('google_scholar'),
+                    'research-gate' => $this->the_personal_meta('researchgate'),
+                    'orcid' => $this->the_personal_meta('orcid'),
+                    'linkedin' => $this->the_personal_meta('linkedin'),
+                    'facebook' => $this->the_personal_meta('facebook'),
+                    'twitter' => $this->the_personal_meta('twitter'),
+                    'instagram' => $this->the_personal_meta('instagram'),
+                );
+
+                $cv = get_post_meta($post_id, 'curriculum_vitae', true);
+                if (!empty($cv) && isset($cv['url'])) {
+                    $social_media['cv'] = $cv['url'];
+                }
+
+                $terms = get_the_terms( $post_id, 'categorias' );
+                
+                $personas[] = array(
+                    'id'               => $post_id,
+                    'permalink'        => get_permalink($post_id),
+                    'title'            => get_the_title(),
+                    'image'            => !empty($image) ? $image : plugins_url() . "/wp-personal/assets/images/blank-profile.png",
+                    'grado_alcanzado'  => $this->the_personal_meta('grado_alcanzado'),
+                    'rol'              => !empty($terms) ? $terms[0]->name : '',
+                    'unidad'           => $this->the_personal_meta('unidad_de_investigacion'),
+                    'social_media'     => $social_media,
+                    'email'            => $this->the_personal_meta('email'),
+                    'curriculum_vitae' => $this->the_personal_meta('curriculum_vitae'),
+                );
+
+            }
+            wp_reset_postdata();
+        }
+
+        $template_path = plugin_dir_path(__FILE__) . 'views/list-personal.php';
+
         ob_start();
-        include('views/list-personal.php');
-        $content = ob_get_clean();
-        return $content;
+
+        load_template( $template_path, false, array(
+            'personas'      => $personas,
+            'columns'    => $atts['columns'],
+            'title'      => $atts['title'],
+        ));
+
+        return ob_get_clean();
     }
 
     public function remove_personal_title( $title, $id ) {

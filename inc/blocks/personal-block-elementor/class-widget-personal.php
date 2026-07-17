@@ -156,8 +156,7 @@ class Widget_Personal extends \Elementor\Widget_Base
      * @since 1.0.0
      * @access protected
      */
-    protected function render()
-    {
+    protected function render() {
         $settings = $this->get_settings_for_display();
 
         // Map settings to attributes expected by the view/block logic
@@ -193,23 +192,55 @@ class Widget_Personal extends \Elementor\Widget_Base
         // Execute query
         $loop = new \WP_Query($args);
 
+        
         if ($loop->have_posts()) {
-            echo '<div ' . $this->get_render_attribute_string('wrapper') . '>';
-            // \Personal\PLUGIN_NAME_DIR is defined in the main plugin file
-            if (defined('\Personal\PLUGIN_NAME_DIR')) {
-                include \Personal\PLUGIN_NAME_DIR . 'inc/frontend/views/list-personal-in-order.php';
-            } else {
-                // Fallback if constant not defined? Should shouldn't happen if loaded correctly.
-                // Assuming relative path from this file: ../../inc/frontend/views/...
-                // But this file is in personal-block-elementor/
-                // So ../inc/...
-                include plugin_dir_path(dirname(__FILE__)) . 'inc/frontend/views/list-personal-in-order.php';
+            while ($loop->have_posts()) {
+                $loop->the_post();
+                $post_id = get_the_ID();
+                $image = get_the_post_thumbnail_url($post_id, 'medium');
+
+                // Mapeo dinámico de redes sociales idéntico al de list-personal
+                $social_media = array(
+                    'google_scholar' => get_post_meta($post_id, "google_scholar", true),
+                    'research-gate' => get_post_meta($post_id, "researchgate", true),
+                    'orcid' => get_post_meta($post_id, "orcid", true),
+                    'linkedin' => get_post_meta($post_id, "linkedin", true),
+                    'facebook' => get_post_meta($post_id, "facebook", true),
+                    'twitter' => get_post_meta($post_id, "twitter", true),
+                    'instagram' => get_post_meta($post_id, "instagram", true),
+                );
+
+                $terms = get_the_terms( $post_id, 'categorias' );
+
+                $cv = get_post_meta($post_id, 'curriculum_vitae', true);
+                if (!empty($cv) && isset($cv['url'])) {
+                    $social_media['cv'] = $cv['url'];
+                }
+                $personas[] = array(
+                    'id'              => $post_id,
+                    'permalink'       => get_permalink($post_id),
+                    'title'           => get_the_title(),
+                    'image'           => !empty($image) ? $image : plugins_url() . "/wp-personal/assets/images/blank-profile.png",
+                    'grado_alcanzado' => get_post_meta($post_id, 'grado_alcanzado', true),
+                    'rol'             => !empty($terms) ? $terms[0]->name : '',
+                    'unidad'          => get_post_meta($post_id, 'unidad_de_investigacion', true),
+                    'social_media'    => $social_media,
+                );
             }
+            wp_reset_postdata();
+        }
+
+        if (!empty($personas)) {
+            echo '<div ' . $this->get_render_attribute_string('wrapper') . '>';
+            $template_path = \Personal\PLUGIN_NAME_DIR . 'inc/frontend/views/list-personal.php';
+            
+            load_template($template_path, false, array(
+                'personas' => $personas,
+                'columns'    => isset($attributes['columns']) ? $attributes['columns'] : 3,
+            ));
             echo '</div>';
         } else {
             echo '<p>' . esc_html__('No hay personal para mostrar', 'personal-block') . '</p>';
         }
-
-        wp_reset_postdata();
     }
 }
