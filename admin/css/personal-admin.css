@@ -155,3 +155,38 @@ label {
 .elemento-categoria-tabla th {
     background-color: #f2f2f2;
 }
+/* ==========================================================================
+   Tooltip informativo en los campos del metabox (ej: HERA)
+   ========================================================================== */
+
+.personal-tooltip {
+    position: relative;
+    color: #2271b1;
+    cursor: help;
+}
+
+.personal-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50%;
+    bottom: 125%;
+    transform: translateX(-50%);
+    width: 320px;
+    background: #1d2327;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 10px 12px;
+    border-radius: 4px;
+    white-space: normal;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 1000;
+}
+
+.personal-tooltip:hover::after {
+    visibility: visible;
+    opacity: 1;
+}

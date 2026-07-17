@@ -33,9 +33,21 @@
         $personal = get_post($idpersonal);
 
         if ($personal->post_type == 'personal') {
+            // HERA solo puede habilitarse si el ORCID está completo.
+            if (empty($_POST['orcid'])) {
+                unset($_POST['hera_enabled']);
+            }
             $inputs = $this->getInputsPersonal();
             foreach ($inputs as $input) {
 
+                // Los checkbox no llegan en $_POST cuando están desmarcados,
+                // por eso se guardan de forma explícita. Solo si el formulario
+                // del metabox fue enviado (evita borrarlos en quick edit/autosave).
+                if (isset($input['type']) and $input['type'] == 'checkbox') {
+                    if (isset($_POST['meta_box_nonce']))
+                        update_post_meta($idpersonal, $input['name'], isset($_POST[$input['name']]) ? '1' : '');
+                    continue;
+                }
                 if (isset($input['name']) and isset($_POST[$input['name']]))
                     update_post_meta($idpersonal, $input['name'], $_POST[$input['name']]);
                 if (isset($input['repositories'])) {
@@ -100,7 +112,7 @@
             $field = self::REPO_FIELD_NAMES[$key] ?? $key;
             $repository_inputs[] = array(
                 'class' => '',
-                'label'=> '<img src="' . plugins_url() . '/wp-personal/assets/images/' . $key . '.png" height="32"> ' . ucwords(str_replace('-', ' ', $key)),
+                'label'=> '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/' . $key . '.png" height="32"> ' . ucwords(str_replace('-', ' ', $key)),
                 'name' => $field,
                 'type' => 'text',
                 'instructions' => 'Debe completar con el nombre EXACTO del perfil dentro del repostirio, por ejemplo: Villareal,Gonzalo Luján',
@@ -112,7 +124,7 @@
         $this->inputs_personal = array(
             array(
                 'class' => '',
-                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/email.png" height="32"> Email ',
+                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/email.png" height="32"> Email ',
                 'name' => 'email',
                 'type' => 'email',
                 'instructions' => 'Correo electrónico',
@@ -121,7 +133,7 @@
             ),
             array(
                 'class' => '',
-                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/tel.png" height="32">	Teléfono',
+                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/tel.png" height="32">	Teléfono',
                 'name' => 'telefono',
                 'type' => 'text',
                 'instructions' => 'Teléfono',
@@ -143,7 +155,7 @@
             ),
             array(
                 'key' => 'field_59dd235252524',
-                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/grado_alcanzado.png" height="32">	 Grado Alcanzado',
+                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/grado_alcanzado.png" height="32">	 Grado Alcanzado',
                 'name' => 'grado_alcanzado',
                 'type' => 'text',
                 'instructions' => 'Grado alcanzado',
@@ -156,7 +168,7 @@
             ),
             array(
                 'key' => 'field_59dd238952525',
-                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/google_scholar.png" width="32" height="32"> Google Scholar ',
+                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/google_scholar.png" width="32" height="32"> Google Scholar ',
                 'name' => 'google_scholar',
                 'type' => 'url',
                 'instructions' => 'http://scholar.google.com/citations?user=xxxxxx',
@@ -169,7 +181,7 @@
             ),
             array(
                 'key' => 'field_59dd241852526',
-                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/orcid.gif" width="32" height="32"> ORCID',
+                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/orcid.gif" width="32" height="32"> ORCID',
                 'name' => 'orcid',
                 'type' => 'url',
                 'instructions' => 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
@@ -181,8 +193,18 @@
                 'maxlength' => '',
             ),
             array(
+                'key' => 'field_hera_enabled',
+                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/hera.png" width="32" height="32"> Habilitar Consulta en HERA',
+                'name' => 'hera_enabled',
+                'type' => 'checkbox',
+                'instructions' => 'Requiere que el campo ORCID esté completo.',
+                'tooltip' => 'HERA (Herramienta de Enriquecimiento de Recursos Académicos) es un desarrollo que permite generar un reporte bibliométrico a partir de un identificador persistente (DOI, ISSN u ORCID). Al activar esta opción, se agregará un enlace al reporte de HERA asociado al ORCID de este perfil.',
+                'default_value' => '',
+                'placeholder' => '',
+            ),
+            array(
                 'key' => 'field_59dd244f52527',
-                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/research-gate.png" width="32" height="32"> ResearchGate',
+                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/research-gate.png" width="32" height="32"> ResearchGate',
                 'name' => 'researchgate',
                 'type' => 'url',
                 'instructions' => 'https://www.researchgate.net/profile/xxxxxxx',
@@ -195,7 +217,7 @@
             ),
             array(
                 'key' => 'field_59dd244f534434',
-                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/linkedin.png" width="32" height="32"> Linkedin',
+                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/linkedin.png" width="32" height="32"> Linkedin',
                 'name' => 'linkedin',
                 'type' => 'url',
                 'instructions' => 'https://www.linkedin.com/in/xxxxxxx',
@@ -208,7 +230,7 @@
             ),
             array(
                 'key' => 'field_59dd244f5343',
-                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/facebook.jpg" width="32" height="32"> Facebook',
+                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/facebook.jpg" width="32" height="32"> Facebook',
                 'name' => 'facebook',
                 'type' => 'url',
                 'instructions' => 'https://www.facebook.com/xxxxxxx',
@@ -221,7 +243,7 @@
             ),
             array(
                 'key' => 'field_59dd244f5344',
-                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/instagram.png" width="32" height="32"> Instagram',
+                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/instagram.png" width="32" height="32"> Instagram',
                 'name' => 'instagram',
                 'type' => 'url',
                 'instructions' => 'https://www.instagram.com/xxxxxxx',
@@ -234,7 +256,7 @@
             ),
             array(
                 'key' => 'field_59dd244f5434334',
-                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/twitter.png" width="32" height="32"> Twitter',
+                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/twitter.png" width="32" height="32"> Twitter',
                 'name' => 'X',
                 'type' => 'url',
                 'instructions' => 'https://twitter.com/xxxxxxx',
@@ -247,7 +269,7 @@
             ),
             array(
                 'key' => 'field_59dd25596cb02',
-                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/biography.png" height="32">	Biografía',
+                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/biography.png" height="32">	Biografía',
                 'name' => 'biografia',
                 'type' => 'textarea',
                 /*'size'=>'15',
@@ -257,7 +279,7 @@
             ),
             array(
                 'key' => 'field_59dd25736cb03',
-                'label' => '<img src="' . plugins_url() . '/wp-personal/assets/images/cv.png" height="32">	Curriculum Vitae',
+                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/cv.png" height="32">	Curriculum Vitae',
                 'name' => 'curriculum_vitae',
                 'type' => 'file',
                 'save_format' => 'object',

@@ -115,6 +115,25 @@
     box-sizing: border-box;
 }
 
+.personal-hera-btn {
+    grid-column: 1;
+    grid-row: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #f1776d;
+    color: #ffffff !important;
+    text-align: center;
+    padding: 10px 15px;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 3px;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
 .personal-badge-label {
     font-size: 11px;
     text-transform: uppercase;
@@ -299,9 +318,15 @@
         margin-top: 5px;
     }
 
-    .personal-body-info {
+    .personal-hera-btn {
         grid-column: 1;
         grid-row: 5;
+        margin-top: 5px;
+    }
+
+    .personal-body-info {
+        grid-column: 1;
+        grid-row: 6;
         border-top: 1px solid #e2e8f0;
         padding-top: 25px;
     }

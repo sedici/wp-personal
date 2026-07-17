@@ -54,6 +54,12 @@ if ( ! defined( 'ABSPATH' ) ) {
                         Descargar CV completo
                 </a>
             <?php endif; ?>
+
+            <?php if ( ! empty( $args['hera_url'] ) ) : ?>
+                <a href="<?php echo esc_url( $args['hera_url'] ); ?>" target="_blank" rel="noopener noreferrer" class="personal-hera-btn">
+                        Ver Reporte En HERA
+                </a>
+            <?php endif; ?>
         </div>
 
         <div class="personal-main-content">

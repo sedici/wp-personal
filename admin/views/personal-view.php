@@ -64,21 +64,31 @@ function print_input($value)
     
     $name          = esc_attr($value['name']);
     $label         = isset($value['label']) ? wp_kses_post($value['label']) : "";
+    $tooltip       = isset($value['tooltip']) ? esc_attr($value['tooltip']) : "";
 
     $input = "<div class='personal-field-row'>";
-    
+
     $input .= "<div class='personal-label-col'>";
-    $input .= "  <label for='{$name}' style='display: flex; align-items: center; gap: 8px;'><strong>{$label}</strong></label>";
+    $input .= "  <label for='{$name}' style='display: flex; align-items: center; gap: 8px;'><strong>{$label}</strong>";
+    if (!empty($tooltip)) {
+        $input .= "<span class='personal-tooltip dashicons dashicons-info-outline' data-tooltip='{$tooltip}'></span>";
+    }
+    $input .= "</label>";
     if (!empty($instructions)) {
         $input .= "  <p class='description'>{$instructions}</p>";
     }
     $input .= "</div>";
 
    $input .= "<div class='personal-input-col'>";
-   $input .= ($html_type === 'textarea') 
-        ? "  <textarea id='{$name}' name='{$name}' placeholder='{$placeholder}' class='regular-text personal-input' rows='5'>{$default_value}</textarea>"
-        : "  <input type='{$html_type}' id='{$name}' name='{$name}' placeholder='{$placeholder}' value='{$default_value}' class='regular-text personal-input'>";
-        
+   if ($html_type === 'textarea') {
+        $input .= "  <textarea id='{$name}' name='{$name}' placeholder='{$placeholder}' class='regular-text personal-input' rows='5'>{$default_value}</textarea>";
+   } elseif ($html_type === 'checkbox') {
+        $checked = ($default_value === '1') ? 'checked' : '';
+        $input .= "  <input type='checkbox' id='{$name}' name='{$name}' value='1' class='personal-input personal-input-checkbox' {$checked}>";
+   } else {
+        $input .= "  <input type='{$html_type}' id='{$name}' name='{$name}' placeholder='{$placeholder}' value='{$default_value}' class='regular-text personal-input'>";
+   }
+
     $input .= "</div>";
 
     $input .= "</div>";

@@ -222,7 +222,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // --- 5. Bloquear el botón de "Actualizar/Publicar" si hay errores ---
+    // --- 5. HERA: el checkbox solo se puede habilitar con un ORCID cargado ---
+    const heraCheckbox = document.getElementById('hera_enabled');
+    const orcidInput = document.getElementById('orcid');
+
+    if (heraCheckbox && orcidInput) {
+        function toggleHeraCheckbox() {
+            const hasOrcid = orcidInput.value.trim() !== '';
+            heraCheckbox.disabled = !hasOrcid;
+            if (!hasOrcid) {
+                heraCheckbox.checked = false;
+            }
+        }
+
+        toggleHeraCheckbox();
+        orcidInput.addEventListener('input', toggleHeraCheckbox);
+    }
+
+    // --- 6. Bloquear el botón de "Actualizar/Publicar" si hay errores ---
     
     if (postForm) {
         postForm.addEventListener('submit', function(event) {

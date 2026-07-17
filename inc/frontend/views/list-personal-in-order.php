@@ -29,7 +29,7 @@ $columns = isset($attributes['columns']) ? $attributes['columns'] : 3;
                 $categorias = wp_get_post_terms(get_the_ID(), 'categorias', array("personal"));
 
             $image = get_the_post_thumbnail_url();
-            $path_image_top = !empty($image) ? $image : plugins_url() . "/wp-personal/assets/images/blank-profile.png";
+            $path_image_top = !empty($image) ? $image : \Personal\PLUGIN_NAME_URL . "assets/images/blank-profile.png";
             ?>
             <div class="col">
             <div class="card">
@@ -50,41 +50,41 @@ $columns = isset($attributes['columns']) ? $attributes['columns'] : 3;
                         <?php if (!empty($google_scholar)): ?>
                             <a href="<?php echo $google_scholar; ?>" target="_blank"><img
                                         class=" wp-image-16"
-                                        src="<?php echo plugins_url() . "/wp-personal/assets/images/google_scholar.png" ?>"
+                                        src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/google_scholar.png" ?>"
                                         alt="google_scholar" width="20" height="20" scale="0"></a>
                         <?php endif; ?>
                         <?php if (!empty($reserchgate)): ?><a href="<?php echo $reserchgate; ?>" target="_blank"><img
                                     class=" wp-image-17"
-                                    src="<?php echo plugins_url() . "/wp-personal/assets/images/research-gate.png" ?>"
+                                    src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/research-gate.png" ?>"
                                     alt="research-gate" width="20" height="20"></a>
                         <?php endif; ?>
                         <?php if (!empty($orcid)): ?><a href="<?php echo $orcid; ?>" target="_blank"><img
                                     class=" wp-image-19"
-                                    src="<?php echo plugins_url() . "/wp-personal/assets/images/orcid.gif" ?>"
+                                    src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/orcid.gif" ?>"
                                     alt="orcid" width="20" height="20" scale="0"> </a>
                         <?php endif; ?>
                         <?php if (!empty($linkedin)): ?><a href="<?php echo $linkedin; ?>" target="_blank"><img
                                     class=" wp-image-19"
-                                    src="<?php echo plugins_url() . "/wp-personal/assets/images/linkedin.png" ?>"
+                                    src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/linkedin.png" ?>"
                                     alt="orcid" width="20" height="20" scale="0"> </a>
                         <?php endif; ?>
                         <?php if (!empty($facebook)): ?><a href="<?php echo $facebook; ?>" target="_blank"><img
                                     class=" wp-image-19"
-                                    src="<?php echo plugins_url() . "/wp-personal/assets/images/facebook.jpg" ?>"
+                                    src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/facebook.jpg" ?>"
                                     alt="facebook" width="20" height="20" scale="0"> </a>
                         <?php endif; ?>
                         <?php if (!empty($twitter)): ?><a href="<?php echo $twitter; ?>" target="_blank"><img
                                     class=" wp-image-19"
-                                    src="<?php echo plugins_url() . "/wp-personal/assets/images/twitter.png" ?>"
+                                    src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/twitter.png" ?>"
                                     alt="twitter" width="20" height="20" scale="0"> </a>
                         <?php endif; ?>
                         <?php if (!empty($email)): ?><a href="mailto:<?php echo $email; ?>" target="_blank"><img
-                                    src="<?php echo plugins_url() . "/wp-personal/assets/images/mailto.gif" ?>"
+                                    src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/mailto.gif" ?>"
                                     alt="Mail" width="16" scale="0"></a>
                         <?php endif; ?>
                         <?php if (!empty($curriculum_vitae)): ?><a href="<?php echo $curriculum_vitae['url']; ?>"
                                                                    target="_blank"><img
-                                    src="<?php echo plugins_url() . "/wp-personal/assets/images/cv.png" ?>"
+                                    src="<?php echo \Personal\PLUGIN_NAME_URL . "assets/images/cv.png" ?>"
                                     alt="CV" width="16" scale="0"></a>
                         <?php endif; ?>
                     </div>
