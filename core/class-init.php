@@ -153,11 +153,13 @@ class Init
         $plugin_public = new Frontend\Frontend($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
         // Registra el hook para la vista del template personal
         $this->loader->add_filter('the_content', $plugin_public, 'single_personal_template');
-        $this->loader->add_action('init', $plugin_public, 'register_shortcodes');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
         $this->loader->add_filter('post_thumbnail_html', $plugin_public, 'wordpress_hide_feature_image', 10,3);
         $this->loader->add_filter('the_title', $plugin_public, 'remove_personal_title', 10, 2);
+
+        $shortcode = new Frontend\Shortcode();
+        $this->loader->add_action('init', $shortcode, 'register_shortcodes');
 
 
     }

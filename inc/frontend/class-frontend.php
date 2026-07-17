@@ -174,13 +174,6 @@ class Frontend
         return (is_single() and get_post_type() == 'personal') ? '' : $html;
     }
 
-
-    public function register_shortcodes()
-    {
-        add_shortcode('list-personal', array($this, 'list_personal'));
-
-    }
-
     public function list_personal($atts = array()) {
 
         $atts = shortcode_atts(array(

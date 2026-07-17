@@ -66,7 +66,7 @@ class Admin
             __('Generar shortcode', $this->plugin_text_domain), //menu title
             'manage_options', //capability
             'get-personal-tag-id', //menu_slug
-            array($this, 'show_terms')// página que va a manejar la sección
+            array($this, 'show_shortcode_generator_view')// página que va a manejar la sección
         );
 
 
@@ -131,11 +131,9 @@ class Admin
     }
 
 
-    public function show_terms()
+    public function show_shortcode_generator_view()
     {
-
         include_once dirname(__DIR__) . '/admin/views/personal-shortcode-generator-view.php';
-
     }
 
     public function show_csv_importer_view()
