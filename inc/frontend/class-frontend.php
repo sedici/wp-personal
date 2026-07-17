@@ -65,6 +65,9 @@ class Frontend
     }
 
 
+    /**
+     * Muestra la vista single del post type personal
+     */
     public function single_personal_template($content) {
         global $post;
 
@@ -174,6 +177,9 @@ class Frontend
         return (is_single() and get_post_type() == 'personal') ? '' : $html;
     }
 
+    /**
+     * Muestra un listado de posts del post type personal
+     */
     public function list_personal_template($atts = array()) {
 
         $atts = shortcode_atts(array(
@@ -252,6 +258,9 @@ class Frontend
         return ob_get_clean();
     }
 
+    /**
+     * Elimina el título por defecto del post type personal en la vista single
+     */
     public function remove_personal_title( $title, $id ) {
         global $post;
         if ( is_singular( 'personal' )  and $id == get_the_ID() ) return '';

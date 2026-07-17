@@ -5,10 +5,10 @@ class CPT_personal
 {
     public function __construct(){}
 
-/**
+    /**
      * Registra el Post Type Personal
+     * @return void
      */
-
     public function cptui_register_my_cpts_personal()
     {
         /**
@@ -85,7 +85,10 @@ class CPT_personal
     }
 
 
-
+    /**
+     * Registra la taxonomia Lineas de investigacion para el Post Type Personal
+     * @return void
+     */
     public function cptui_register_my_taxes_lineas_de_investigacion()
     {
         /**
@@ -173,6 +176,9 @@ class CPT_personal
 
     }
 
+    /**
+     * Obtiene y retorna los terminos de la taxonomia categorias asociados al menos a un post del post type personal 
+     */
     public function get_personal_terms()
     {
 
