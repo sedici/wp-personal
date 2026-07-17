@@ -174,7 +174,7 @@ class Frontend
         return (is_single() and get_post_type() == 'personal') ? '' : $html;
     }
 
-    public function list_personal($atts = array()) {
+    public function list_personal_template($atts = array()) {
 
         $atts = shortcode_atts(array(
                 'category_id' => '',
