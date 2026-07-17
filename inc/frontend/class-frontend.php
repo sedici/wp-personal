@@ -71,7 +71,7 @@ class Frontend
     public function single_personal_template($content) {
         global $post;
 
-        $assets_url = plugins_url() . '/wp-personal/assets/images/';
+        $assets_url = \Personal\PLUGIN_NAME_URL . 'assets/images/';
 
         $template_path = plugin_dir_path(__DIR__) . 'frontend/views/single-personal.php';
         
@@ -142,11 +142,21 @@ class Frontend
             }
         }
 
-        // 3. Imagen Destacada o Fallback
+        // 3. Enlace al reporte de HERA: se extrae el identificador ORCID de la
+        // URL completa guardada en el campo meta (https://orcid.org/xxxx-...).
+        $hera_url = '';
+        if ( $this->the_personal_meta('hera_enabled') === '1' ) {
+            $orcid_link = $this->the_personal_meta('orcid');
+            if ( ! empty($orcid_link) && preg_match('/(\d{4}-\d{4}-\d{4}-\d{3}[\dXx])/', $orcid_link, $matches) ) {
+                $hera_url = 'https://hera.sedici.unlp.edu.ar/?orcid=' . $matches[1];
+            }
+        }
+
+        // 4. Imagen Destacada o Fallback
         $thumb = get_the_post_thumbnail_url($post->ID, 'medium');
         $imagen_perfil = !empty($thumb) ? $thumb : $assets_url . 'blank-profile.png';
 
-        // 4. Renderizado limpio mediante buffer
+        // 5. Renderizado limpio mediante buffer
         ob_start();
         load_template( $template_path, false, [
             'nombre' => $post->post_title,
@@ -160,6 +170,7 @@ class Frontend
             'categorias' => wp_get_post_terms($post->ID, 'categorias', ["personal"]),
             'lineas_investigación' => wp_get_post_terms($post->ID, 'lineas_de_investigacion', ["personal"]),
             'redes' => $redes_activas,
+            'hera_url' => $hera_url,
             'publicaciones' => $publicaciones_shortcodes,
             'dspace_activo' => shortcode_exists('dspace_search')
         ] );
