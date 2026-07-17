@@ -5,12 +5,18 @@ use Personal as PP;
 
 class Shortcode {
 
+    /**
+     * Registra el shortocde del plugin
+     */
     public function register_shortcodes()
     {   
         $frontend = new Frontend(PP\PLUGIN_NAME, PP\PLUGIN_VERSION, PP\PLUGIN_TEXT_DOMAIN);
         add_shortcode('list-personal', array($frontend, 'list_personal_template'));
     }
 
+    /**
+     * Genera un shortcode a partir de los datos de un formulario enviado por ajax
+     */
     public function generate_shortcode_personal()
     {
 
