@@ -64,6 +64,109 @@ class Frontend
         return get_post_meta(get_the_ID(), $name, true);
     }
 
+     /**
+     * Filtra y formatea las redes sociales activas a partir de los metadatos.
+    * 
+    * @param  array $social_media Array asociativo con las redes de get_personal_social_media.
+    * @return array               Array de redes activas con claves: url, img y alt.
+    */
+    private function get_active_social_media($social_media) {
+        $assets_url = \Personal\PLUGIN_NAME_URL . 'assets/images/';
+    
+        $redes_config = array(
+            'google_scholar' => array( 'img' => 'google_scholar.png', 'alt' => 'Google Scholar' ),
+            'research-gate'  => array( 'img' => 'research-gate.png',  'alt' => 'ResearchGate' ),
+            'orcid'          => array( 'img' => 'orcid.png',          'alt' => 'ORCID' ),
+            'linkedin'       => array( 'img' => 'linkedin.png',       'alt' => 'LinkedIn' ),
+            'facebook'       => array( 'img' => 'facebook.png',       'alt' => 'Facebook' ),
+            'twitter'        => array( 'img' => 'twitter.png',        'alt' => 'Twitter' ),
+            'instagram'      => array( 'img' => 'instagram.png',      'alt' => 'Instagram' ),
+        );
+
+        $redes_activas = array();
+        foreach ( $social_media as $key => $url_perfil ) {
+            if ( ! empty( $url_perfil ) && isset( $redes_config[$key] ) ) {
+                $redes_activas[] = array(
+                    'url' => $url_perfil,
+                    'img' => $assets_url . $redes_config[$key]['img'],
+                    'alt' => $redes_config[$key]['alt']
+                );
+            }
+        }
+
+        return $redes_activas;
+
+    }
+
+    /**
+     * Obtiene los shortcodes para las publicaciones de los repositorios configurados.
+    * 
+    * @param  int $post_id ID del post personal.
+    * @return array        Listado de shortcodes formateados con label y shortcode.
+    */
+    private function get_publications_shortcodes( $post_id ) {
+        $repos_fijos = array(
+            'sedici'  => array( 'label' => 'SEDICI',  'domain' => 'sedici' ),
+            'cic'     => array( 'label' => 'CIC',     'domain' => 'cic-digital' ),
+            'conicet' => array( 'label' => 'CONICET', 'domain' => 'conicet' ),
+        );
+
+        $publicaciones_shortcodes = array();
+        foreach ( $repos_fijos as $meta_key => $repo ) {
+            $author_id = get_post_meta( $post_id, $meta_key, true );
+            if ( ! empty( $author_id ) ) {
+                $publicaciones_shortcodes[] = array(
+                    'label' => sprintf( "Producción científica en %s", $repo['label'] ),
+                    'shortcode' => sprintf(
+                        '[dspace_search repo="%s" author="%s" showabstract="false" size="20"]',
+                        esc_attr( $repo['domain'] ),
+                        esc_attr( $author_id )
+                    )
+                );
+            }
+        }
+
+        return $publicaciones_shortcodes;
+    }
+
+    /**
+     * Genera la URL del reporte de HERA si está habilitado y posee un ORCID válido.
+    * 
+    * @param  int $post_id ID del post personal.
+    * @return string       URL del reporte de HERA o string vacío si no aplica.
+    */
+    private function get_hera_url($post_id) {
+        if ( get_post_meta($post_id, 'hera_enabled', true) === '1' ) {
+            $orcid_link = get_post_meta($post_id, 'orcid', true);
+            if ( ! empty($orcid_link) && preg_match('/(\d{4}-\d{4}-\d{4}-\d{3}[\dXx])/', $orcid_link, $matches) ) {
+                return 'https://hera.sedici.unlp.edu.ar/?orcid=' . $matches[1];
+            }
+        }
+        return '';
+    }
+
+    /**
+    * Construye un array completo con la información personal para la vista individual.
+    * 
+    * @param  int $post_id ID del post personal.
+    * @return array        Array asociativo con la información detallada del personal.
+    */
+    public function build_single_personal_data( $post_id ) : array {
+        $assets_url = \Personal\PLUGIN_NAME_URL . 'assets/images/';
+        return array(
+            'nombre'                  => get_post_field( 'post_title', $post_id ),
+            'imagen_perfil'           => get_the_post_thumbnail_url($post_id, 'medium') ?: $assets_url . 'blank-profile.png',
+            'email'                   => get_post_meta($post_id, 'email', true),
+            'telefono'                => get_post_meta($post_id, 'telefono', true),
+            'unidad_de_investigacion' => get_post_meta($post_id, 'unidad_de_investigacion', true),
+            'rol'                     => get_post_meta($post_id, 'rol_unidad_de_investigacion', true),
+            'grado_alcanzado'         => get_post_meta($post_id, 'grado_alcanzado', true),
+            'biografia'               => get_post_meta($post_id, 'biografia', true),
+            'categorias'              => wp_get_post_terms($post_id, 'categorias', array("personal")),
+            'lineas_investigacion'    => wp_get_post_terms($post_id, 'lineas_de_investigacion', array("personal")),
+        );
+    }
+
 
     /**
      * Muestra la vista single del post type personal
@@ -72,106 +175,31 @@ class Frontend
         global $post;
 
         $assets_url = \Personal\PLUGIN_NAME_URL . 'assets/images/';
-
         $template_path = plugin_dir_path(__DIR__) . 'frontend/views/single-personal.php';
         
         // Compruebo que post no sea nulo
         if ( ! is_a($post, 'WP_Post') || $post->post_type !== 'personal' ) {
             return $content;
         }
-
-        // 1. Preparación de Redes Sociales (Mapeo dinámico)
-
-        $redes_mapeo = [
-        'google_scholar' => ['img' => 'google_scholar.png', 'alt' => 'Google Scholar'],
-        'researchgate' => ['img' => 'research-gate.png', 'alt' => 'ResearchGate'],
-        'orcid' => ['img' => 'orcid.gif', 'alt' => 'ORCID'],
-        'linkedin' => ['img' => 'linkedin.png', 'alt' => 'LinkedIn'],
-        'facebook' => ['img' => 'facebook.jpg', 'alt' => 'Facebook'],
-        'twitter' => ['img' => 'twitter.png', 'alt' => 'Twitter'],
-        'instagram' => ['img' => 'instagram.png', 'alt' => 'Instagram'],
-        ];
-
-        $redes_activas = [];
-        foreach ( $redes_mapeo as $meta_key => $info ) {
-            $url_perfil = $this->the_personal_meta($meta_key);
-            
-            if ( ! empty($url_perfil) ) {
-                $redes_activas[] = [
-                'url' => $url_perfil,
-                'img' => $assets_url . $info['img'],
-                'alt' => $info['alt']
-                ];
-            }
+        
+        $social_media = $this->get_personal_social_media($post->ID);
+        $redes_activas = $this->get_active_social_media($social_media);
+        
+        $cv_url = $this->get_personal_cv_url($post->ID);
+        if ( ! empty($cv_url) ) {
+            $redes_activas[] = array(
+                'url' => $cv_url,
+                'img' => $assets_url . 'cv.png',
+                'alt' => 'Curriculum Vitae'
+            );
         }
 
-        // Inyección del CV si existe
-
-        $cv = $this->the_personal_meta('curriculum_vitae');
-        if ( ! empty($cv) && isset($cv['url']) ) {
-            $redes_activas[] = [
-            'url' => $cv['url'],
-            'img' => $assets_url . 'cv.png',
-            'alt' => 'Curriculum Vitae'
-            ];
-        }
-
-        // 2. Preparación de Publicaciones: cada campo meta guarda el nombre de
-        // autor de la persona en ese repositorio, y las publicaciones las
-        // resuelve el shortcode [dspace_search] del plugin wp-dspace-v2.
-        // La clave es el campo meta histórico; 'domain' es el slug con el que
-        // el repositorio está registrado en wp-dspace-v2.
-        $repos_fijos = [
-            'sedici'  => ['label' => 'SEDICI',  'domain' => 'sedici'],
-            'cic'     => ['label' => 'CIC',     'domain' => 'cic-digital'],
-            'conicet' => ['label' => 'CONICET', 'domain' => 'conicet'],
-        ];
-
-        $publicaciones_shortcodes = [];
-        foreach ( $repos_fijos as $meta_key => $repo ) {
-            $author_id = $this->the_personal_meta($meta_key);
-            if ( ! empty($author_id) ) {
-                $publicaciones_shortcodes[] = [
-                    'label' => "Producción científica en {$repo['label']}",
-                    'shortcode' => sprintf(
-                    '[dspace_search repo="%s" author="%s" showabstract="false" size="20"]',
-                    esc_attr( $repo['domain'] ),
-                    esc_attr( $author_id )
-                    )
-                ];
-            }
-        }
-
-        // 3. Enlace al reporte de HERA: se extrae el identificador ORCID de la
-        // URL completa guardada en el campo meta (https://orcid.org/xxxx-...).
-        $hera_url = '';
-        if ( $this->the_personal_meta('hera_enabled') === '1' ) {
-            $orcid_link = $this->the_personal_meta('orcid');
-            if ( ! empty($orcid_link) && preg_match('/(\d{4}-\d{4}-\d{4}-\d{3}[\dXx])/', $orcid_link, $matches) ) {
-                $hera_url = 'https://hera.sedici.unlp.edu.ar/?orcid=' . $matches[1];
-            }
-        }
-
-        // 4. Imagen Destacada o Fallback
-        $thumb = get_the_post_thumbnail_url($post->ID, 'medium');
-        $imagen_perfil = !empty($thumb) ? $thumb : $assets_url . 'blank-profile.png';
-
-        // 5. Renderizado limpio mediante buffer
         ob_start();
         load_template( $template_path, false, [
-            'nombre' => $post->post_title,
-            'imagen_perfil' => $imagen_perfil,
-            'email' => $this->the_personal_meta('email'),
-            'telefono' => $this->the_personal_meta('telefono'),
-            'unidad_de_investigacion' => $this->the_personal_meta('unidad_de_investigacion'),
-            'rol' => $this->the_personal_meta('rol_unidad_de_investigacion'),
-            'grado_alcanzado' => $this->the_personal_meta('grado_alcanzado'),
-            'biografia' => $this->the_personal_meta('biografia'),
-            'categorias' => wp_get_post_terms($post->ID, 'categorias', ["personal"]),
-            'lineas_investigación' => wp_get_post_terms($post->ID, 'lineas_de_investigacion', ["personal"]),
-            'redes' => $redes_activas,
-            'hera_url' => $hera_url,
-            'publicaciones' => $publicaciones_shortcodes,
+            'personal'      => $this->build_single_personal_data($post->ID),
+            'redes'         => $redes_activas,
+            'hera_url'      => $this->get_hera_url($post->ID),
+            'publicaciones' => $this->get_publications_shortcodes($post->ID),
             'dspace_activo' => shortcode_exists('dspace_search')
         ] );
 

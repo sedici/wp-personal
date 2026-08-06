@@ -15,21 +15,21 @@ if ( ! defined( 'ABSPATH' ) ) {
         
         <div class="personal-sidebar">
             <div class="personal-avatar">
-                <img src="<?php echo esc_url( $args['imagen_perfil'] ); ?>" alt="Foto de <?php echo esc_attr( $args['nombre'] ); ?>">
+                <img src="<?php echo esc_url( $args['personal']['imagen_perfil'] ); ?>" alt="Foto de <?php echo esc_attr( $args['personal']['nombre'] ); ?>">
             </div>
 
             <div class="personal-contact-box">
                 <h3>Contacto</h3>
                 
-                <?php if ( ! empty( $args['telefono'] ) ) : ?>
+                <?php if ( ! empty( $args['personal']['telefono'] ) ) : ?>
                     <p class="contact-item tel">
-                        <a href="tel:<?php echo esc_attr( $args['telefono'] ); ?>"><?php echo esc_html( $args['telefono'] ); ?></a>
+                        <a href="tel:<?php echo esc_attr( $args['personal']['telefono'] ); ?>"><?php echo esc_html( $args['personal']['telefono'] ); ?></a>
                     </p>
                 <?php endif; ?>
 
-                <?php if ( ! empty( $args['email'] ) ) : ?>
+                <?php if ( ! empty( $args['personal']['email'] ) ) : ?>
                     <p class="contact-item email">
-                        <a href="mailto:<?php echo esc_attr( $args['email'] ); ?>"><?php echo esc_html( $args['email'] ); ?></a>
+                        <a href="mailto:<?php echo esc_attr( $args['personal']['email'] ); ?>"><?php echo esc_html( $args['personal']['email'] ); ?></a>
                     </p>
                 <?php endif; ?>
 
@@ -66,21 +66,21 @@ if ( ! defined( 'ABSPATH' ) ) {
             
             <div class="personal-header-info">
                 <span class="personal-badge-label">Perfil Académico</span>
-                <h1 class="personal-fullname"><?php echo esc_html( $args['nombre'] ); ?></h1>
+                <h1 class="personal-fullname"><?php echo esc_html( $args['personal']['nombre'] ); ?></h1>
                 
-                <?php if ( ! empty( $args['grado_alcanzado'] ) ) : ?>
-                    <h3 class="personal-degree-label"> <?php echo esc_html( $args['grado_alcanzado'] ); ?></h3>
+                <?php if ( ! empty( $args['personal']['grado_alcanzado'] ) ) : ?>
+                    <h3 class="personal-degree-label"> <?php echo esc_html( $args['personal']['grado_alcanzado'] ); ?></h3>
                 <?php endif; ?>
 
                 <div class="personal-metadata-block">
-                    <?php if ( ! empty( $args['grid_unidad'] ) || ! empty( $args['unidad_de_investigacion'] ) ) : ?>
-                        <p><strong>Unidades de investigación :</strong> <?php echo esc_html( $args['unidad_de_investigacion'] ); ?></p>
+                    <?php if ( ! empty( $args['personal']['unidad_de_investigacion'] ) || ! empty( $args['personal']['unidad_de_investigacion'] ) ) : ?>
+                        <p><strong>Unidades de investigación :</strong> <?php echo esc_html( $args['personal']['unidad_de_investigacion'] ); ?></p>
                     <?php endif; ?>
 
-                    <?php if ( ! empty( $args['categorias'] ) ) : ?>
+                    <?php if ( ! empty( $args['personal']['categorias'] ) ) : ?>
                         <p>
                             <strong>Rol dentro de la UID : </strong> 
-                            <?php foreach ( $args['categorias'] as $index => $cat ) : ?>
+                            <?php foreach ( $args['personal']['categorias'] as $index => $cat ) : ?>
                                 <?php if ( $index > 0 ) echo ', '; ?>
                                 <span class="personal-role-inline"><?php echo esc_html( $cat->name ); ?></span>
                             <?php endforeach; ?>
@@ -90,20 +90,20 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
 
             <div class="personal-body-info">
-                <?php if ( ! empty( $args['lineas_investigación'] ) ) : ?>
+                <?php if ( ! empty( $args['personal']['lineas_investigacion'] ) ) : ?>
                     <div class="personal-lines-section">
                         <h2>Líneas de investigación</h2>
                         <ul class="personal-bullets-list">
-                            <?php foreach ( $args['lineas_investigación'] as $linea ) : ?>
+                            <?php foreach ( $args['personal']['lineas_investigacion'] as $linea ) : ?>
                                 <li><?php echo esc_html( $linea->name ); ?></li>
                             <?php endforeach; ?>
                         </ul>
                     </div>
                 <?php endif; ?>
 
-                <?php if ( ! empty( $args['biografia'] ) ) : ?>
+                <?php if ( ! empty( $args['personal']['biografia'] ) ) : ?>
                     <div class="personal-biography-body">
-                        <?php echo nl2br( $args['biografia'] ); ?>
+                        <?php echo nl2br( $args['personal']['biografia'] ); ?>
                     </div>
                 <?php endif; ?>
             </div>
