@@ -217,18 +217,13 @@ class Frontend
     }
 
     /**
-    * Normaliza los atributos del shortcode y construye los argumentos para WP_Query.
-    * @param  array $atts Atributos crudos pasados por el usuario en el shortcode.
-    * @return array Argumentos listos para instanciar \WP_Query.
-    */
-    private function prepare_query_args( array $atts ) : array {
+     * Normaliza los atributos parseados y construye los argumentos para WP_Query.
+     * 
+     * @param  array $parsed_atts Atributos ya procesados con valores por defecto.
+     * @return array Argumentos listos para instanciar \WP_Query.
+     */
+    private function prepare_query_args( array $parsed_atts ) : array {
         
-        $parsed_atts = shortcode_atts( array(
-            'category_id' => '',
-            'title'       => '',
-            'columns'     => 3,
-        ), $atts );
-
         $args = array(
             'post_type'      => 'personal',
             'posts_per_page' => 50
@@ -302,8 +297,15 @@ class Frontend
      */
     public function show_list_personal_template($atts = array()) {
 
-        // Se preparan los argumentos para WP_Query a partir de los atributos del shortcode
-        $args = $this->prepare_query_args( $atts );
+        $atts = (array) $atts;
+
+        $parsed_atts = shortcode_atts( array(
+            'category_id' => '',
+            'title'       => '',
+            'columns'     => 3,
+        ), $atts );
+
+        $args = $this->prepare_query_args( $parsed_atts );
 
         $loop = new \WP_Query($args);
         $personas = array();
@@ -326,8 +328,8 @@ class Frontend
 
         load_template( $template_path, false, array(
             'personas'      => $personas,
-            'columns'    => $atts['columns'],
-            'title'      => $atts['title'],
+            'columns'    => $parsed_atts['columns'],
+            'title'      => $parsed_atts['title'],
         ));
 
         return ob_get_clean();

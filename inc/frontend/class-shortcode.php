@@ -11,7 +11,7 @@ class Shortcode {
     public function register_shortcodes()
     {   
         $frontend = new Frontend(PP\PLUGIN_NAME, PP\PLUGIN_VERSION, PP\PLUGIN_TEXT_DOMAIN);
-        add_shortcode('list-personal', array($frontend, 'list_personal_template'));
+        add_shortcode('list-personal', array($frontend, 'show_list_personal_template'));
     }
 
     /**
