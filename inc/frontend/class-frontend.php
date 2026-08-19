@@ -23,7 +23,7 @@ class Frontend
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->plugin_text_domain = $plugin_text_domain;
-        $this->cpt_personal = new CPT_Personal($plugin_name, $version, $plugin_text_domain);
+        $this->cpt_personal = new CPT_Personal();
 
     }
 
@@ -62,7 +62,7 @@ class Frontend
 
     /**
      * Muestra la vista single del post type personal
-     */
+    */
     public function show_single_personal_template($content) {
         global $post;
 
