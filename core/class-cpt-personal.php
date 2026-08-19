@@ -177,6 +177,15 @@ class CPT_personal
     }
 
     /**
+     * @param string $name nombre del campo meta a obtener
+     * @return retorna el valor del campo meta
+     */
+    private function the_personal_meta($name)
+    {
+        return get_post_meta(get_the_ID(), $name, true);
+    }
+
+    /**
      * Obtiene y retorna los terminos de la taxonomia categorias asociados al menos a un post del post type personal 
      */
     public function get_personal_terms()
@@ -233,5 +242,161 @@ class CPT_personal
 
         return $terms_array;
     }
+
+    /**
+     * Filtra y formatea las redes sociales activas a partir de los metadatos.
+    * 
+    * @param  array $social_media Array asociativo con las redes de get_personal_social_media.
+    * @return array               Array de redes activas con claves: url, img y alt.
+    */
+    public function get_active_social_media($social_media) {
+        $assets_url = \Personal\PLUGIN_NAME_URL . 'assets/images/';
+    
+        $redes_config = array(
+            'google_scholar' => array( 'img' => 'google_scholar.png', 'alt' => 'Google Scholar' ),
+            'research-gate'  => array( 'img' => 'research-gate.png',  'alt' => 'ResearchGate' ),
+            'orcid'          => array( 'img' => 'orcid.png',          'alt' => 'ORCID' ),
+            'linkedin'       => array( 'img' => 'linkedin.png',       'alt' => 'LinkedIn' ),
+            'facebook'       => array( 'img' => 'facebook.png',       'alt' => 'Facebook' ),
+            'twitter'        => array( 'img' => 'twitter.png',        'alt' => 'Twitter' ),
+            'instagram'      => array( 'img' => 'instagram.png',      'alt' => 'Instagram' ),
+        );
+
+        $redes_activas = array();
+        foreach ( $social_media as $key => $url_perfil ) {
+            if ( ! empty( $url_perfil ) && isset( $redes_config[$key] ) ) {
+                $redes_activas[] = array(
+                    'url' => $url_perfil,
+                    'img' => $assets_url . $redes_config[$key]['img'],
+                    'alt' => $redes_config[$key]['alt']
+                );
+            }
+        }
+
+        return $redes_activas;
+
+    }
+
+    /**
+     * Obtiene los enlaces a redes sociales de un post del tipo personal.
+     * @param  int $post_id ID del post personal.
+     * @return array        Array asociativo con los enlaces a redes sociales.
+     */
+    public function get_personal_social_media( $post_id ) {
+        $social_media = array(
+            'google_scholar' => get_post_meta($post_id, "google_scholar", true),
+            'research-gate' => get_post_meta($post_id, "researchgate", true),
+            'orcid' => get_post_meta($post_id, "orcid", true),
+            'linkedin' => get_post_meta($post_id, "linkedin", true),
+            'facebook' => get_post_meta($post_id, "facebook", true),
+            'twitter' => get_post_meta($post_id, "twitter", true),
+            'instagram' => get_post_meta($post_id, "instagram", true),
+        );
+
+        return $social_media;
+    }
+
+    public function get_personal_cv_url( $post_id ) {
+        $cv = get_post_meta($post_id, 'curriculum_vitae', true);
+        if (!empty($cv) && isset($cv['url'])) {
+            return $cv['url'];
+        }
+        return '';
+    }
+
+    /**
+     * Retorno información de un post del tipo personal en un array asociativo.
+     * @param  int $post_id ID del post personal.
+     * @return array        Array asociativo con la información del post personal.
+     */
+    public function build_personal_data( $post_id ) {
+        $image = get_the_post_thumbnail_url($post_id, 'medium');
+        $terms = get_the_terms( $post_id, 'categorias' );
+        $social_media = $this->get_personal_social_media($post_id);
+        $cv = $this->get_personal_cv_url($post_id);
+        $social_media['cv'] = $cv;
+
+        return array(
+            'id'              => $post_id,
+            'permalink'       => get_permalink($post_id),
+            'title'           => get_the_title(),
+            'image'           => !empty($image) ? $image : plugins_url() . "/wp-personal/assets/images/blank-profile.png",
+            'grado_alcanzado' => get_post_meta($post_id, 'grado_alcanzado', true),
+            'rol'             => !empty($terms) ? $terms[0]->name : '',
+            'unidad'          => get_post_meta($post_id, 'unidad_de_investigacion', true),
+            'social_media'    => $social_media,
+        );
+    }
+
+    /**
+    * Construye un array completo con la información personal para la vista individual.
+    * 
+    * @param  int $post_id ID del post personal.
+    * @return array        Array asociativo con la información detallada del personal.
+    */
+    public function build_single_personal_data( $post_id ) : array {
+        $assets_url = \Personal\PLUGIN_NAME_URL . 'assets/images/';
+        return array(
+            'nombre'                  => get_post_field( 'post_title', $post_id ),
+            'imagen_perfil'           => get_the_post_thumbnail_url($post_id, 'medium') ?: $assets_url . 'blank-profile.png',
+            'email'                   => get_post_meta($post_id, 'email', true),
+            'telefono'                => get_post_meta($post_id, 'telefono', true),
+            'unidad_de_investigacion' => get_post_meta($post_id, 'unidad_de_investigacion', true),
+            'rol'                     => get_post_meta($post_id, 'rol_unidad_de_investigacion', true),
+            'grado_alcanzado'         => get_post_meta($post_id, 'grado_alcanzado', true),
+            'biografia'               => get_post_meta($post_id, 'biografia', true),
+            'categorias'              => wp_get_post_terms($post_id, 'categorias', array("personal")),
+            'lineas_investigacion'    => wp_get_post_terms($post_id, 'lineas_de_investigacion', array("personal")),
+        );
+    }
+
+    /**
+     * Genera la URL del reporte de HERA si está habilitado y posee un ORCID válido.
+    * 
+    * @param  int $post_id ID del post personal.
+    * @return string       URL del reporte de HERA o string vacío si no aplica.
+    */
+    public function get_hera_url($post_id) {
+        if ( get_post_meta($post_id, 'hera_enabled', true) === '1' ) {
+            $orcid_link = get_post_meta($post_id, 'orcid', true);
+            if ( ! empty($orcid_link) && preg_match('/(\d{4}-\d{4}-\d{4}-\d{3}[\dXx])/', $orcid_link, $matches) ) {
+                return 'https://hera.sedici.unlp.edu.ar/?orcid=' . $matches[1];
+            }
+        }
+        return '';
+    }
+
+    /**
+     * Obtiene los shortcodes para las publicaciones de los repositorios configurados.
+    * 
+    * @param  int $post_id ID del post personal.
+    * @return array        Listado de shortcodes formateados con label y shortcode.
+    */
+    public function get_publications_shortcodes( $post_id ) {
+        $repos_fijos = array(
+            'sedici'  => array( 'label' => 'SEDICI',  'domain' => 'sedici' ),
+            'cic'     => array( 'label' => 'CIC',     'domain' => 'cic-digital' ),
+            'conicet' => array( 'label' => 'CONICET', 'domain' => 'conicet' ),
+        );
+
+        $publicaciones_shortcodes = array();
+        foreach ( $repos_fijos as $meta_key => $repo ) {
+            $author_id = get_post_meta( $post_id, $meta_key, true );
+            if ( ! empty( $author_id ) ) {
+                $publicaciones_shortcodes[] = array(
+                    'label' => sprintf( "Producción científica en %s", $repo['label'] ),
+                    'shortcode' => sprintf(
+                        '[dspace_search repo="%s" author="%s" showabstract="false" size="20"]',
+                        esc_attr( $repo['domain'] ),
+                        esc_attr( $author_id )
+                    )
+                );
+            }
+        }
+
+        return $publicaciones_shortcodes;
+    }
+
+
 
 }
