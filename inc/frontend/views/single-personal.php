@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         
         <div class="personal-sidebar">
             <div class="personal-avatar">
-                <img src="<?php echo esc_url( $args['personal']['imagen_perfil'] ); ?>" alt="Foto de <?php echo esc_attr( $args['personal']['nombre'] ); ?>">
+                <img src="<?php echo esc_url( $args['personal']['image'] ); ?>" alt="Foto de <?php echo esc_attr( $args['personal']['title'] ); ?>">
             </div>
 
             <div class="personal-contact-box">
@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <?php if ( ! empty( $args['redes'] ) ) : ?>
                     <div class="personal-social-row">
                         <?php foreach ( $args['redes'] as $red ) : 
-                            if ( strpos( strtolower( $red['alt'] ), 'cv' ) !== false || strpos( strtolower( $red['alt'] ), 'curriculum' ) !== false ) {
+                            if ( strtolower( $red['alt'] ) === 'curriculum vitae' ) {
                                 $cv_btn = $red;
                                 continue;
                             }
@@ -66,15 +66,15 @@ if ( ! defined( 'ABSPATH' ) ) {
             
             <div class="personal-header-info">
                 <span class="personal-badge-label">Perfil Académico</span>
-                <h1 class="personal-fullname"><?php echo esc_html( $args['personal']['nombre'] ); ?></h1>
+                <h1 class="personal-fullname"><?php echo esc_html( $args['personal']['title'] ); ?></h1>
                 
                 <?php if ( ! empty( $args['personal']['grado_alcanzado'] ) ) : ?>
                     <h3 class="personal-degree-label"> <?php echo esc_html( $args['personal']['grado_alcanzado'] ); ?></h3>
                 <?php endif; ?>
 
                 <div class="personal-metadata-block">
-                    <?php if ( ! empty( $args['personal']['unidad_de_investigacion'] ) || ! empty( $args['personal']['unidad_de_investigacion'] ) ) : ?>
-                        <p><strong>Unidades de investigación :</strong> <?php echo esc_html( $args['personal']['unidad_de_investigacion'] ); ?></p>
+                    <?php if ( ! empty( $args['personal']['unidad'] ) ) : ?>
+                        <p><strong>Unidad de investigación :</strong> <?php echo esc_html( $args['personal']['unidad'] ); ?></p>
                     <?php endif; ?>
 
                     <?php if ( ! empty( $args['personal']['categorias'] ) ) : ?>

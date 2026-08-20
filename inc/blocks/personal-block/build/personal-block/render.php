@@ -34,42 +34,15 @@ if (!empty($attributes['categories'])) {
     );
 }
 
-// Execute the query. get_post_meta(get_the_ID(), $name, true);
+// Execute the query.
 $loop = new WP_Query($args);
+$cpt_personal = new \Personal\Core\CPT_personal();
+$personas = [];
 
 if ($loop->have_posts()) {
     while ($loop->have_posts()) {
         $loop->the_post();
-        $post_id = get_the_ID();
-        $image = get_the_post_thumbnail_url($post_id, 'medium');
-
-        // Mapeo dinámico de redes sociales idéntico al de list-personal
-        $social_media = array(
-            'google_scholar' => get_post_meta($post_id, "google_scholar", true),
-            'research-gate' => get_post_meta($post_id, "researchgate", true),
-            'orcid' => get_post_meta($post_id, "orcid", true),
-            'linkedin' => get_post_meta($post_id, "linkedin", true),
-            'facebook' => get_post_meta($post_id, "facebook", true),
-            'twitter' => get_post_meta($post_id, "twitter", true),
-            'instagram' => get_post_meta($post_id, "instagram", true),
-        );
-
-        $terms = get_the_terms( $post_id, 'categorias' );
-
-        $cv = get_post_meta($post_id, 'curriculum_vitae', true);
-        if (!empty($cv) && isset($cv['url'])) {
-            $social_media['cv'] = $cv['url'];
-        }
-        $personas[] = array(
-            'id'              => $post_id,
-            'permalink'       => get_permalink($post_id),
-            'title'           => get_the_title(),
-            'image'           => !empty($image) ? $image : plugins_url() . "/wp-personal/assets/images/blank-profile.png",
-            'grado_alcanzado' => get_post_meta($post_id, 'grado_alcanzado', true),
-            'rol'             => !empty($terms) ? $terms[0]->name : '',
-            'unidad'          => get_post_meta($post_id, 'unidad_de_investigacion', true),
-            'social_media'    => $social_media,
-        );
+        $personas[] = $cpt_personal->get_all_personal_data(get_the_ID());
     }
     wp_reset_postdata();
 }

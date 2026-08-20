@@ -14,8 +14,6 @@ class CPT_personal
         /**
          * Post Type: Personal.
          */
-
-
         $labels = array(
             "name" => __("Personal", ""),
             "singular_name" => __("Persona", ""),
@@ -176,13 +174,98 @@ class CPT_personal
 
     }
 
+    public function get_email($post_id) {
+        return get_post_meta($post_id, 'email', true);
+    }
+
+    public function get_telefono($post_id) {
+        return get_post_meta($post_id, 'telefono', true);
+    }
+
+    public function get_unidad_investigacion($post_id) { 
+        return get_post_meta($post_id, 'unidad_de_investigacion', true); 
+    }
+
+    public function get_grado_alcanzado($post_id) { 
+        return get_post_meta($post_id, 'grado_alcanzado', true); 
+    }
+
+    public function is_hera_enabled($post_id) {
+        return get_post_meta($post_id, 'hera_enabled', true) === '1';
+    }
+
     /**
-     * @param string $name nombre del campo meta a obtener
-     * @return retorna el valor del campo meta
-     */
-    private function the_personal_meta($name)
-    {
-        return get_post_meta(get_the_ID(), $name, true);
+     * Genera la URL del reporte de HERA si está habilitado y posee un ORCID válido.
+    * 
+    * @param  int $post_id ID del post personal.
+    * @return string       URL del reporte de HERA o string vacío si no aplica.
+    */
+    public function get_hera_url($post_id) {
+        if ( get_post_meta($post_id, 'hera_enabled', true) === '1' ) {
+            $orcid_link = get_post_meta($post_id, 'orcid', true);
+            if ( ! empty($orcid_link) && preg_match('/(\d{4}-\d{4}-\d{4}-\d{3}[\dXx])/', $orcid_link, $matches) ) {
+                return 'https://hera.sedici.unlp.edu.ar/?orcid=' . $matches[1];
+            }
+        }
+        return '';
+    }
+
+    /* Getter social media */
+
+    public function get_google_scholar($post_id) { 
+        return get_post_meta($post_id, 'google_scholar', true); 
+    }
+
+    public function get_orcid($post_id) { 
+        return get_post_meta($post_id, 'orcid', true); 
+    }
+
+    public function get_research_gate($post_id) { 
+        return get_post_meta($post_id, 'researchgate', true); 
+    }
+
+    public function get_linkedin($post_id) { 
+        return get_post_meta($post_id, 'linkedin', true); 
+    }
+
+    public function get_facebook($post_id) { 
+        return get_post_meta($post_id, 'facebook', true); 
+    }
+
+    public function get_instagram($post_id) { 
+        return get_post_meta($post_id, 'instagram', true); 
+    }
+
+    public function get_twitter($post_id) { 
+        return get_post_meta($post_id, 'X', true); 
+    }
+
+    public function get_biografia($post_id) { 
+        return get_post_meta($post_id, 'biografia', true); 
+    }
+
+    public function get_personal_cv_url( $post_id ) {
+        $cv = get_post_meta($post_id, 'curriculum_vitae', true);
+        if (!empty($cv) && isset($cv['url'])) {
+            return $cv['url'];
+        }
+        return '';
+    }
+
+    public function get_categorias($post_id) { 
+        return get_the_terms($post_id, 'categorias'); 
+    }
+
+    public function get_lineas_investigacion($post_id) { 
+        return get_the_terms($post_id, 'lineas_de_investigacion'); 
+    }
+
+    public function get_orden($post_id) { 
+        return get_post_field('menu_order', $post_id); 
+    }
+
+    public function get_imagen_destacada_url($post_id, $size = 'medium') { 
+        return get_the_post_thumbnail_url($post_id, $size); 
     }
 
     /**
@@ -296,76 +379,6 @@ class CPT_personal
         return $social_media;
     }
 
-    public function get_personal_cv_url( $post_id ) {
-        $cv = get_post_meta($post_id, 'curriculum_vitae', true);
-        if (!empty($cv) && isset($cv['url'])) {
-            return $cv['url'];
-        }
-        return '';
-    }
-
-    /**
-     * Retorno información de un post del tipo personal en un array asociativo.
-     * @param  int $post_id ID del post personal.
-     * @return array        Array asociativo con la información del post personal.
-     */
-    public function build_personal_data( $post_id ) {
-        $image = get_the_post_thumbnail_url($post_id, 'medium');
-        $terms = get_the_terms( $post_id, 'categorias' );
-        $social_media = $this->get_personal_social_media($post_id);
-        $cv = $this->get_personal_cv_url($post_id);
-        $social_media['cv'] = $cv;
-
-        return array(
-            'id'              => $post_id,
-            'permalink'       => get_permalink($post_id),
-            'title'           => get_the_title(),
-            'image'           => !empty($image) ? $image : plugins_url() . "/wp-personal/assets/images/blank-profile.png",
-            'grado_alcanzado' => get_post_meta($post_id, 'grado_alcanzado', true),
-            'rol'             => !empty($terms) ? $terms[0]->name : '',
-            'unidad'          => get_post_meta($post_id, 'unidad_de_investigacion', true),
-            'social_media'    => $social_media,
-        );
-    }
-
-    /**
-    * Construye un array completo con la información personal para la vista individual.
-    * 
-    * @param  int $post_id ID del post personal.
-    * @return array        Array asociativo con la información detallada del personal.
-    */
-    public function build_single_personal_data( $post_id ) : array {
-        $assets_url = \Personal\PLUGIN_NAME_URL . 'assets/images/';
-        return array(
-            'nombre'                  => get_post_field( 'post_title', $post_id ),
-            'imagen_perfil'           => get_the_post_thumbnail_url($post_id, 'medium') ?: $assets_url . 'blank-profile.png',
-            'email'                   => get_post_meta($post_id, 'email', true),
-            'telefono'                => get_post_meta($post_id, 'telefono', true),
-            'unidad_de_investigacion' => get_post_meta($post_id, 'unidad_de_investigacion', true),
-            'rol'                     => get_post_meta($post_id, 'rol_unidad_de_investigacion', true),
-            'grado_alcanzado'         => get_post_meta($post_id, 'grado_alcanzado', true),
-            'biografia'               => get_post_meta($post_id, 'biografia', true),
-            'categorias'              => wp_get_post_terms($post_id, 'categorias', array("personal")),
-            'lineas_investigacion'    => wp_get_post_terms($post_id, 'lineas_de_investigacion', array("personal")),
-        );
-    }
-
-    /**
-     * Genera la URL del reporte de HERA si está habilitado y posee un ORCID válido.
-    * 
-    * @param  int $post_id ID del post personal.
-    * @return string       URL del reporte de HERA o string vacío si no aplica.
-    */
-    public function get_hera_url($post_id) {
-        if ( get_post_meta($post_id, 'hera_enabled', true) === '1' ) {
-            $orcid_link = get_post_meta($post_id, 'orcid', true);
-            if ( ! empty($orcid_link) && preg_match('/(\d{4}-\d{4}-\d{4}-\d{3}[\dXx])/', $orcid_link, $matches) ) {
-                return 'https://hera.sedici.unlp.edu.ar/?orcid=' . $matches[1];
-            }
-        }
-        return '';
-    }
-
     /**
      * Obtiene los shortcodes para las publicaciones de los repositorios configurados.
     * 
@@ -398,5 +411,50 @@ class CPT_personal
     }
 
 
+    /**
+      * Retorna un array consolidado con todos los datos del personal.
+      * 
+      * @param  int $post_id ID del post personal.
+      * @return array        Array asociativo con la información completa del personal.
+      */
+     public function get_all_personal_data( $post_id ) : array {
+        $assets_url = \Personal\PLUGIN_NAME_URL . 'assets/images/';
+            
+        // Obtener datos sociales crudos y procesarlos
+        $social_media_raw = $this->get_personal_social_media($post_id);
+        $redes_activas    = $this->get_active_social_media($social_media_raw);
+        
+        // Agregar el CV a las redes activas si existe
+        $cv_url = $this->get_personal_cv_url($post_id);
+        if ( ! empty($cv_url) ) {
+            $redes_activas[] = array(
+                'url' => $cv_url,
+                'img' => $assets_url . 'cv.png',
+                'alt' => 'Curriculum Vitae'
+            );
+        }
 
+        return array(
+            'id'              => $post_id,
+            'title'          => get_the_title($post_id),
+            'permalink'       => get_permalink($post_id),
+            'image'   => $this->get_imagen_destacada_url($post_id, 'medium') ?: $assets_url . 'blank-profile.png',
+            
+            'email'           => $this->get_email($post_id),
+            'telefono'        => $this->get_telefono($post_id),
+            
+            'unidad'          => $this->get_unidad_investigacion($post_id),
+            'rol'             => $this->get_grado_alcanzado($post_id), // Ajustar si es necesario
+            'grado_alcanzado' => $this->get_grado_alcanzado($post_id),
+            'biografia'       => $this->get_biografia($post_id),
+            
+            'categorias'           => $this->get_categorias($post_id),
+            'lineas_investigacion' => $this->get_lineas_investigacion($post_id),
+            
+            'social_media'    => $redes_activas,
+            
+            'hera_url'        => $this->get_hera_url($post_id),
+            'publicaciones'   => $this->get_publications_shortcodes($post_id),
+        );
+    }
 }

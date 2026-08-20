@@ -66,7 +66,6 @@ class Frontend
     public function show_single_personal_template($content) {
         global $post;
 
-        $assets_url = \Personal\PLUGIN_NAME_URL . 'assets/images/';
         $template_path = plugin_dir_path(__DIR__) . 'frontend/views/single-personal.php';
         
         // Compruebo que post no sea nulo
@@ -74,24 +73,15 @@ class Frontend
             return $content;
         }
         
-        $social_media = $this->cpt_personal->get_personal_social_media($post->ID);
-        $redes_activas = $this->cpt_personal->get_active_social_media($social_media);
-        
-        $cv_url = $this->cpt_personal->get_personal_cv_url($post->ID);
-        if ( ! empty($cv_url) ) {
-            $redes_activas[] = array(
-                'url' => $cv_url,
-                'img' => $assets_url . 'cv.png',
-                'alt' => 'Curriculum Vitae'
-            );
-        }
+        // Obtener todos los datos centralizados
+        $personal_data = $this->cpt_personal->get_all_personal_data($post->ID);
 
         ob_start();
         load_template( $template_path, false, [
-            'personal'      => $this->cpt_personal->build_single_personal_data($post->ID),
-            'redes'         => $redes_activas,
-            'hera_url'      => $this->cpt_personal->get_hera_url($post->ID),
-            'publicaciones' => $this->cpt_personal->get_publications_shortcodes($post->ID),
+            'personal'      => $personal_data,
+            'redes'         => $personal_data['social_media'],
+            'hera_url'      => $personal_data['hera_url'],
+            'publicaciones' => $personal_data['publicaciones'],
             'dspace_activo' => shortcode_exists('dspace_search')
         ] );
 
@@ -157,7 +147,7 @@ class Frontend
                 
                 $post_id = get_the_ID();
                 
-                $personas[] = $this->cpt_personal->build_personal_data($post_id);
+                $personas[] = $this->cpt_personal->get_all_personal_data($post_id);
 
             }
             wp_reset_postdata();

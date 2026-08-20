@@ -49,10 +49,10 @@
                     <!-- Fila de Redes Sociales con Colores Originales Nativos -->
                     <?php if ( ! empty( $p['social_media'] ) ) : ?>
                         <div class="personal-list-card-socials">
-                            <?php foreach ( $p['social_media'] as $platform => $url ) : ?>
-                                <?php if ( ! empty( $url ) ) : ?>
-                                    <a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener noreferrer">
-                                        <img src="<?php echo plugins_url() . '/wp-personal/assets/images/' . esc_attr( $platform ) . '.png'; ?>" alt="<?php echo esc_attr( $platform ); ?>" width="16" height="16">
+                            <?php foreach ( $p['social_media'] as $platform => $red ) : ?>
+                                <?php if ( ! empty( $red['url'] ) ) : ?>
+                                    <a href="<?php echo esc_url( $red['url'] ); ?>" target="_blank" rel="noopener noreferrer">
+                                        <img src="<?php echo esc_url($red['img']); ?>" alt="<?php echo esc_attr( $red['alt'] ); ?>" width="16" height="16">
                                     </a>
                                 <?php endif; ?>
                             <?php endforeach; ?>
