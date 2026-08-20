@@ -5,52 +5,50 @@
  */
 ?>
 
-<div class="personal-directory-container">
+<div class="personal-list-container">
     
     <?php if ( isset( $args['title'] ) && ! empty( $args['title'] ) ) : ?>
-        <h2 class="personal-directory-main-title">
+        <h2 class="personal-list-main-title">
             <?php echo esc_html( $args['title'] ); ?>
         </h2>
     <?php endif; ?>
 
-    <!-- Grilla adaptativa basada en el atributo dinámico de columnas -->
-    <div class="personal-directory-grid" style="--grid-columns: <?php echo esc_attr( $args['columns'] ); ?>;">
+    <div class="personal-list-grid" style="--grid-columns: <?php echo esc_attr( $args['columns'] ); ?>;">
         
         <?php foreach ( $args['personas'] as $p ) : ?>
-            <article class="personal-directory-card">
+            <article class="personal-list-card">
                 
-                <!-- Contenedor de la Imagen Cuadrada (Proporción 1:1) -->
-                <a href="<?php echo esc_url( $p['permalink'] ); ?>" class="personal-directory-card-link">
-                    <div class="personal-directory-avatar" style="background-image: url('<?php echo esc_url( $p['image'] ); ?>');"></div>
+                <a href="<?php echo esc_url( $p['permalink'] ); ?>" class="personal-list-card-link">
+                    <div class="personal-list-avatar" style="background-image: url('<?php echo esc_url( $p['image'] ); ?>');"></div>
                 </a>
                 
                 <!-- Cuerpo de Información -->
-                <div class="personal-directory-card-body">
-                    <h3 class="personal-directory-card-name">
-                        <a href="<?php echo esc_url( $p['permalink'] ); ?>">
+                <div class="personal-list-card-body">
+                    <h3 class="personal-list-card-name">
+                        <a id="personal-card-title" href="<?php echo esc_url( $p['permalink'] ); ?>">
                             <?php echo esc_html( $p['title'] ); ?>
                         </a>
                     </h3>
                     
                     <?php if ( ! empty( $p['rol'] ) ) : ?>
-                        <p class="personal-directory-card-role">
+                        <p class="personal-list-card-role">
                             <?php echo esc_html( $p['rol'] ); ?>
                         </p>
                     <?php endif; ?>
                     
-                    <div class="personal-directory-card-details">
+                    <div class="personal-list-card-details">
                         <?php if ( ! empty( $p['grado_alcanzado'] ) ) : ?>
-                            <p class="personal-directory-card-degree"><?php echo esc_html( $p['grado_alcanzado'] ); ?></p>
+                            <p class="personal-list-card-degree"><?php echo esc_html( $p['grado_alcanzado'] ); ?></p>
                         <?php endif; ?>
                         
                         <?php if ( ! empty( $p['unidad'] ) ) : ?>
-                            <p class="personal-directory-card-unit"><?php echo esc_html( $p['unidad'] ); ?></p>
+                            <p class="personal-list-card-unit"><?php echo esc_html( $p['unidad'] ); ?></p>
                         <?php endif; ?>
                     </div>
                     
                     <!-- Fila de Redes Sociales con Colores Originales Nativos -->
                     <?php if ( ! empty( $p['social_media'] ) ) : ?>
-                        <div class="personal-directory-card-socials">
+                        <div class="personal-list-card-socials">
                             <?php foreach ( $p['social_media'] as $platform => $url ) : ?>
                                 <?php if ( ! empty( $url ) ) : ?>
                                     <a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener noreferrer">
