@@ -1,7 +1,7 @@
 <?php
 
 namespace Personal\Inc\Frontend;
-use Personal\Core\CPT_Personal;
+use Personal\Core\Personal_Model;
 /**
  *
  * Carga la vista pública del complemento
@@ -16,15 +16,11 @@ class Frontend
 
     private $plugin_text_domain;
 
-    private $cpt_personal;
-
     public function __construct($plugin_name, $version, $plugin_text_domain)
     {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->plugin_text_domain = $plugin_text_domain;
-        $this->cpt_personal = new CPT_Personal();
-
     }
 
     /**
@@ -65,6 +61,7 @@ class Frontend
     */
     public function show_single_personal_template($content) {
         global $post;
+        $cpt_personal = new Personal_Model($post->ID);
 
         $template_path = plugin_dir_path(__DIR__) . 'frontend/views/single-personal.php';
         
@@ -74,7 +71,7 @@ class Frontend
         }
         
         // Obtener todos los datos centralizados
-        $personal_data = $this->cpt_personal->get_all_personal_data($post->ID);
+        $personal_data = $this->cpt_personal->get_all_personal_data();
 
         ob_start();
         load_template( $template_path, false, [
@@ -145,9 +142,9 @@ class Frontend
             while ( $loop->have_posts() ) {
                 $loop->the_post();
                 
-                $post_id = get_the_ID();
+                $cpt_personal = new Personal_Model(get_the_ID());
                 
-                $personas[] = $this->cpt_personal->get_all_personal_data($post_id);
+                $personas[] = $cpt_personal->get_all_personal_data();
 
             }
             wp_reset_postdata();
