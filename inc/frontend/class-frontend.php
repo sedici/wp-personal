@@ -71,7 +71,7 @@ class Frontend
         }
         
         // Obtener todos los datos centralizados
-        $personal_data = $this->cpt_personal->get_all_personal_data();
+        $personal_data = $cpt_personal->get_all_personal_data();
 
         ob_start();
         load_template( $template_path, false, [
