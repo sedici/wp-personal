@@ -1,32 +1,38 @@
 <?php
-  namespace Personal\Admin;
+namespace Personal\Admin;
 
-  class Metaboxes
-    {
-
-        private $inputs_personal;
-
-        /**
-         * Mapa slug del repositorio en wp-dspace-v2 => nombre del campo meta.
-         * Los campos meta conservan los nombres históricos ('cic', etc.) para
-         * que los posts existentes y el import/export CSV sigan funcionando.
-         */
-        private const REPO_FIELD_NAMES = [
-            'cic-digital' => 'cic',
-        ];
-
-        public function __construct(){}
-
-
+/**
+ * Clase Metaboxes
+ * 
+ * Gestiona la configuración, renderizado y guardado de los campos personalizados (metaboxes)
+ * para el Custom Post Type 'personal'.
+ */
+class Metaboxes
+{
     /**
-     * Formulario custom post
+     * Almacena la configuración de los campos del formulario de personal.
+     * @var array
      */
-    public function render($post)
-    {
-        include_once('views/wp-personal-view.php');
-    }
+    private $inputs_personal;
+
     /**
-     * Guarda los campos personalizados del post
+     * Mapa slug del repositorio en wp-dspace-v2 => nombre del campo meta.
+     * Los campos meta conservan los nombres históricos ('cic', etc.) para
+     * que los posts existentes y el import/export CSV sigan funcionando.
+     */
+    private const REPO_FIELD_NAMES = [
+        'cic-digital' => 'cic',
+    ];
+
+    /**
+     * Constructor de la clase.
+     */
+    public function __construct() {}
+
+    /**
+     * Guarda y actualiza los campos personalizados en la base de datos (Post Meta)
+     * cuando se publica o actualiza un post de tipo 'personal'.
+     * @param int $idpersonal ID del post que se está guardando.
      */
     public function save($idpersonal)
     {
@@ -37,33 +43,48 @@
             if (empty($_POST['orcid'])) {
                 unset($_POST['hera_enabled']);
             }
+            
             $inputs = $this->getInputsPersonal();
             foreach ($inputs as $input) {
 
                 // Los checkbox no llegan en $_POST cuando están desmarcados,
                 // por eso se guardan de forma explícita. Solo si el formulario
                 // del metabox fue enviado (evita borrarlos en quick edit/autosave).
-                if (isset($input['type']) and $input['type'] == 'checkbox') {
-                    if (isset($_POST['meta_box_nonce']))
+                if (isset($input['type']) && $input['type'] == 'checkbox') {
+                    if (isset($_POST['meta_box_nonce'])) {
                         update_post_meta($idpersonal, $input['name'], isset($_POST[$input['name']]) ? '1' : '');
+                    }
                     continue;
                 }
-                if (isset($input['name']) and isset($_POST[$input['name']]))
+                
+                // Guarda campos estándar
+                if (isset($input['name']) && isset($_POST[$input['name']])) {
                     update_post_meta($idpersonal, $input['name'], $_POST[$input['name']]);
+                }
+                
+                // Guarda campos de repositorios dinámicos si existen
                 if (isset($input['repositories'])) {
                     foreach ($input['repositories'] as $repository) {
-                        if (isset($_POST[$repository['name']]))
+                        if (isset($_POST[$repository['name']])) {
                             update_post_meta($idpersonal, $repository['name'], $_POST[$repository['name']]);
+                        }
                     }
                 }
             }
+
+            // Procesamiento de la subida del Curriculum Vitae (PDF)
             if (!empty($_FILES['curriculum_vitae']['name'])) {
                 $supported_types = array('application/pdf');
                 $arr_file_type = wp_check_filetype(basename($_FILES['curriculum_vitae']['name']));
                 $uploaded_type = $arr_file_type['type'];
 
                 if (in_array($uploaded_type, $supported_types)) {
-                    $upload = wp_upload_bits($_FILES['curriculum_vitae']['name'], null, file_get_contents($_FILES['curriculum_vitae']['tmp_name']));
+                    $upload = wp_upload_bits(
+                        $_FILES['curriculum_vitae']['name'], 
+                        null, 
+                        file_get_contents($_FILES['curriculum_vitae']['tmp_name'])
+                    );
+                    
                     if (isset($upload['error']) && $upload['error'] != 0) {
                         wp_die('There was an error uploading your file. The error is: ' . $upload['error']);
                     } else {
@@ -76,7 +97,14 @@
         }
     }
 
-
+    /**
+     * Retorna la configuración estructurada de todos los campos personalizados.
+     * 
+     * Si la propiedad privada `$inputs_personal` no ha sido inicializada,
+     * invoca el método correspondiente para estructurarla.
+     * 
+     * @return array Configuración de los campos.
+     */
     public function getInputsPersonal()
     {
         if (empty($this->inputs_personal)) {
@@ -85,27 +113,44 @@
         return $this->inputs_personal;
     }
 
-
+    /**
+     * Callback invocado por WordPress para dibujar el contenido interno del metabox.
+     * Incluye el archivo de vista que renderiza los campos del formulario.
+     * 
+     * @param WP_Post $post Objeto del post actual de WordPress.
+     */
     public function personal_display_callback($post)
     {
         include_once('views/personal-view.php');
     }
 
     /**
-     * Agrega los campos personalizados para el custom post.
+     * Registra el panel meta (Metabox) "Información del personal" dentro de la pantalla
+     * de edición del Custom Post Type 'personal' en el panel de administración.
      */
     public function register()
     {
-        add_meta_box('personal_meta', __('Información del personal', 'personal'), array($this, 'personal_display_callback'), 'personal');
+        add_meta_box(
+            'personal_meta', 
+            __('Información del personal', 'personal'), 
+            array($this, 'personal_display_callback'), 
+            'personal'
+        );
     }
 
-
-  private function initializeInputsPersonal()
+    /**
+     * Inicializa y define el esquema completo de los campos del formulario de Personal.
+     * 
+     * Construye una lista detallada con tipos de inputs, etiquetas, instrucciones, placeholders
+     * e iconos descriptivos. Además, incorpora de forma dinámica los repositorios registrados
+     * (por ejemplo, dspace) mediante filtros de WordPress.
+     */
+    private function initializeInputsPersonal()
     {
-
+        // Obtiene los repositorios adicionales registrados por el plugin wp-dspace-v2
         $repositories = apply_filters('wp_dspace_registered_repositories', []);
 
-        $repository_inputs= [];
+        $repository_inputs = [];
         foreach ($repositories as $key => $repository) {
             // El input guarda en el campo meta histórico, pero ícono y label
             // se derivan del slug del repositorio.
@@ -121,6 +166,7 @@
             );
         }
 
+        // Definición estática del resto de los campos de información personal y redes sociales
         $this->inputs_personal = array(
             array(
                 'class' => '',
@@ -289,9 +335,5 @@
                 'repositories' => $repository_inputs,
             ),   
         );
-        
     }
-
-
-
-    }
+}
