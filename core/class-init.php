@@ -10,6 +10,7 @@ use Personal\Admin\CSV_Handler as CSV_Handler;
 use Personal\Core\Internationalization_i18n as Internationalization_i18n;
 use Personal\Core\Loader as Loader;
 use Personal\Core\CPT_personal as CPT_personal;
+use Personal\Inc\Frontend\Shortcode as Shortcode;
 
 
 
@@ -109,14 +110,15 @@ class Init
         $admin = new Admin($this->plugin_name, $this->version, $this->plugin_text_domain);
 
 
+
         $this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_scripts');
         $this->loader->add_action('admin_menu',            $admin, 'add_plugin_admin_menu');
         $this->loader->add_action('post_edit_form_tag',    $admin, 'update_edit_form');
 
-
+        $shortcode = new Shortcode();
         //Shortcode generator (AJAX para el admin, no el shortcode público)
-        $this->loader->add_action('wp_ajax_generate_shortcode_personal', $admin, 'generate_shortcode_personal');
+        $this->loader->add_action('wp_ajax_generate_shortcode_personal', $shortcode, 'generate_shortcode_personal');
 
         //Metaboxes
         $metaboxes = new Metaboxes();
