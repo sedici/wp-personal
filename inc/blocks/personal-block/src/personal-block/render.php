@@ -50,7 +50,7 @@ if ($loop->have_posts()) {
 // Check if there are posts to display.
 if (!empty($personas)) {
     echo '<div ' . get_block_wrapper_attributes() . '>';
-    $template_path = \Personal\PLUGIN_NAME_DIR . 'inc/frontend/views/list-personal.php';
+    $template_path = \Personal\PLUGIN_NAME_DIR . 'inc/frontend/views/list-personal-metabox.php';
     
     // Inyectamos de forma segura usando load_template
     load_template($template_path, false, array(

@@ -131,6 +131,7 @@ class Frontend
             'category_id' => '',
             'title'       => '',
             'columns'     => 3,
+            'layout'     => 'metabox',
         ), $atts );
 
         $args = $this->prepare_query_args( $parsed_atts );
@@ -150,17 +151,21 @@ class Frontend
             wp_reset_postdata();
         }
 
-        $template_path = plugin_dir_path(__FILE__) . 'views/list-personal.php';
+        
+        $template_path = plugin_dir_path(__FILE__) . 'views/list-personal-' . $parsed_atts['layout'] . '.php';
+        $fallback_path = plugin_dir_path(__FILE__) . 'views/list-personal-metabox.php';
+        $template = file_exists($template_path) ? $template_path : $fallback_path;
 
         ob_start();
 
-        load_template( $template_path, false, array(
+        load_template( $template , false, array(
             'personas'      => $personas,
             'columns'    => $parsed_atts['columns'],
             'title'      => $parsed_atts['title'],
         ));
 
         return ob_get_clean();
+                
     }
 
     /**

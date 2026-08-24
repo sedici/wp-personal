@@ -1,0 +1,11 @@
+.personal-list-text {
+    font-size: 1em;
+    line-height: 1.6;
+}
+.personal-list-text a {
+    text-decoration: none;
+    color: #0073aa;
+}
+.personal-list-text a:hover {
+    text-decoration: underline;
+}
