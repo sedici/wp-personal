@@ -12,8 +12,8 @@
     background-color: #f9f9f9;
 }
 .personal-list-table a {
-    text-decoration: none;
-    color: #0073aa;
+    text-decoration: none !important;
+    color: inherit;
 }
 .personal-list-table a:hover {
     text-decoration: underline;

@@ -34,13 +34,13 @@ class Frontend
             //queue up your bootstrap
             wp_enqueue_style($style, plugin_dir_url(__FILE__) . 'css/bootstrap.min.css', array(), $this->version, 'all');
         }
-        // Versionamos con filemtime para que el navegador no sirva assets
-        // cacheados después de un cambio.
+        
         wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/personal-frontend.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/personal-frontend.css'), 'all');
-
         wp_enqueue_style($this->plugin_name . '-single', plugin_dir_url(__FILE__) . 'css/single-personal.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/single-personal.css'), 'all');
-
-        wp_enqueue_style('list-' . $this->plugin_name, plugin_dir_url(__FILE__) . 'css/list-personal.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/list-personal.css'), 'all');
+        
+        wp_enqueue_style($this->plugin_name . '-list-metabox', plugin_dir_url(__FILE__) . 'css/list-personal-metabox.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/list-personal-metabox.css'), 'all');
+        wp_enqueue_style($this->plugin_name . '-list-text', plugin_dir_url(__FILE__) . 'css/list-personal-text.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/list-personal-text.css'), 'all');
+        wp_enqueue_style($this->plugin_name . '-list-table', plugin_dir_url(__FILE__) . 'css/list-personal-table.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/list-personal-table.css'), 'all');
 
     }
 
