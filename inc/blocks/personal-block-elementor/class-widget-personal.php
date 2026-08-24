@@ -1,5 +1,7 @@
 <?php
 namespace Personal\Elementor;
+use Personal\Core\Personal_Model;
+
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
@@ -191,13 +193,13 @@ class Widget_Personal extends \Elementor\Widget_Base
 
         // Execute query
         $loop = new \WP_Query($args);
-        $cpt_personal = new \Personal\Core\CPT_personal();
         $personas = [];
 
         if ($loop->have_posts()) {
             while ($loop->have_posts()) {
                 $loop->the_post();
-                $personas[] = $cpt_personal->get_all_personal_data(get_the_ID());
+                $cpt_personal = new Personal_Model(get_the_ID());
+                $personas[] = $cpt_personal->get_all_personal_data();
             }
             wp_reset_postdata();
         }
