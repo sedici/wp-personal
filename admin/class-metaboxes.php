@@ -142,198 +142,96 @@ class Metaboxes
      * Inicializa y define el esquema completo de los campos del formulario de Personal.
      * 
      * Construye una lista detallada con tipos de inputs, etiquetas, instrucciones, placeholders
-     * e iconos descriptivos. Además, incorpora de forma dinámica los repositorios registrados
-     * (por ejemplo, dspace) mediante filtros de WordPress.
+     * e iconos descriptivos a partir del archivo JSON metaboxes-config.json. Además, incorpora de
+     * forma dinámica los repositorios registrados (por ejemplo, dspace) mediante filtros de WordPress.
      */
     private function initializeInputsPersonal()
     {
-        // Obtiene los repositorios adicionales registrados por el plugin wp-dspace-v2
-        $repositories = apply_filters('wp_dspace_registered_repositories', []);
+        $json_file = __DIR__ . '/metaboxes-config.json';
+        $json_fields = [];
+        if (file_exists($json_file)) {
+            $json_data = file_get_contents($json_file);
+            $json_fields = json_decode($json_data, true) ?: [];
+        }
 
+        $inputs = [];
+        $existing_names = [];
+
+        foreach ($json_fields as $field) {
+            // Asegurar campos mínimos requeridos por las vistas y prevenir PHP notices
+            $field['class']         = $field['class'] ?? '';
+            $field['placeholder']   = $field['placeholder'] ?? '';
+            $field['default_value'] = $field['default_value'] ?? '';
+
+            // Dinámicamente asignar el nombre del sitio para la unidad de investigación
+            if ($field['name'] === 'unidad_de_investigacion' && empty($field['default_value'])) {
+                $field['default_value'] = get_bloginfo('name');
+            }
+
+            // Construir la etiqueta con imagen si tiene icono
+            if (!empty($field['icon'])) {
+                $field['label'] = '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/' . $field['icon'] . '" height="32"> ' . $field['label'];
+            }
+
+            $inputs[] = $field;
+            $existing_names[] = $field['name'];
+        }
+
+        // Obtiene los repositorios adicionales registrados dinámicamente por el plugin wp-dspace-v2
+        $repositories = apply_filters('wp_dspace_registered_repositories', []);
         $repository_inputs = [];
+
         foreach ($repositories as $key => $repository) {
-            // El input guarda en el campo meta histórico, pero ícono y label
-            // se derivan del slug del repositorio.
-            $field = self::REPO_FIELD_NAMES[$key] ?? $key;
+            $field_name = self::REPO_FIELD_NAMES[$key] ?? $key;
+
+            // Evitar duplicar repositorios si ya están definidos estáticamente en el JSON
+            if (in_array($field_name, $existing_names)) {
+                continue;
+            }
+
             $repository_inputs[] = array(
-                'class' => '',
-                'label'=> '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/' . $key . '.png" height="32"> ' . ucwords(str_replace('-', ' ', $key)),
-                'name' => $field,
-                'type' => 'text',
-                'instructions' => 'Debe completar con el nombre EXACTO del perfil dentro del repostirio, por ejemplo: Villareal,Gonzalo Luján',
+                'class'         => '',
+                'label'         => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/' . $key . '.png" height="32"> ' . ucwords(str_replace('-', ' ', $key)),
+                'name'          => $field_name,
+                'type'          => 'text',
+                'instructions'  => 'Debe completar con el nombre EXACTO del perfil dentro del repostirio, por ejemplo: Villareal,Gonzalo Luján',
                 'default_value' => '',
-                'placeholder' => '',
+                'placeholder'   => '',
             );
         }
 
-        // Definición estática del resto de los campos de información personal y redes sociales
-        $this->inputs_personal = array(
-            array(
-                'class' => '',
-                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/email.png" height="32"> Email ',
-                'name' => 'email',
-                'type' => 'email',
-                'instructions' => 'Correo electrónico',
-                'default_value' => '',
-                'placeholder' => 'Email',
-            ),
-            array(
-                'class' => '',
-                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/tel.png" height="32">	Teléfono',
-                'name' => 'telefono',
-                'type' => 'text',
-                'instructions' => 'Teléfono',
-                'default_value' => '',
-                'placeholder' => '0221-11111111',
-            ),
-            array(
-                'key' => 'field_59dd232d52523',
-                'label' => 'Unidad de investigación',
-                'name' => 'unidad_de_investigacion',
-                'type' => 'text',
-                'instructions' => 'Unidad de investigación a la que pertenece',
-                'default_value' => get_bloginfo('name'),  // Es el nombre del sitio 
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd235252524',
-                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/grado_alcanzado.png" height="32">	 Grado Alcanzado',
-                'name' => 'grado_alcanzado',
-                'type' => 'text',
-                'instructions' => 'Grado alcanzado',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd238952525',
-                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/google_scholar.png" width="32" height="32"> Google Scholar ',
-                'name' => 'google_scholar',
-                'type' => 'url',
-                'instructions' => 'http://scholar.google.com/citations?user=xxxxxx',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd241852526',
-                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/orcid.gif" width="32" height="32"> ORCID',
-                'name' => 'orcid',
-                'type' => 'url',
-                'instructions' => 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_hera_enabled',
-                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/hera.png" width="32" height="32"> Habilitar Consulta en HERA',
-                'name' => 'hera_enabled',
-                'type' => 'checkbox',
-                'instructions' => 'Requiere que el campo ORCID esté completo.',
-                'tooltip' => 'HERA (Herramienta de Enriquecimiento de Recursos Académicos) es un desarrollo que permite generar un reporte bibliométrico a partir de un identificador persistente (DOI, ISSN u ORCID). Al activar esta opción, se agregará un enlace al reporte de HERA asociado al ORCID de este perfil.',
-                'default_value' => '',
-                'placeholder' => '',
-            ),
-            array(
-                'key' => 'field_59dd244f52527',
-                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/research-gate.png" width="32" height="32"> ResearchGate',
-                'name' => 'researchgate',
-                'type' => 'url',
-                'instructions' => 'https://www.researchgate.net/profile/xxxxxxx',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd244f534434',
-                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/linkedin.png" width="32" height="32"> Linkedin',
-                'name' => 'linkedin',
-                'type' => 'url',
-                'instructions' => 'https://www.linkedin.com/in/xxxxxxx',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd244f5343',
-                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/facebook.jpg" width="32" height="32"> Facebook',
-                'name' => 'facebook',
-                'type' => 'url',
-                'instructions' => 'https://www.facebook.com/xxxxxxx',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd244f5344',
-                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/instagram.png" width="32" height="32"> Instagram',
-                'name' => 'instagram',
-                'type' => 'url',
-                'instructions' => 'https://www.instagram.com/xxxxxxx',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd244f5434334',
-                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/twitter.png" width="32" height="32"> Twitter',
-                'name' => 'X',
-                'type' => 'url',
-                'instructions' => 'https://twitter.com/xxxxxxx',
-                'default_value' => '',
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-                'formatting' => 'html',
-                'maxlength' => '',
-            ),
-            array(
-                'key' => 'field_59dd25596cb02',
-                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/biography.png" height="32">	Biografía',
-                'name' => 'biografia',
-                'type' => 'textarea',
-                /*'size'=>'15',
-                'maxlength' =>'30',*/
-                'default_value' => '',
-                'media_upload' => 'no',
-            ),
-            array(
-                'key' => 'field_59dd25736cb03',
-                'label' => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/cv.png" height="32">	Curriculum Vitae',
-                'name' => 'curriculum_vitae',
-                'type' => 'file',
-                'save_format' => 'object',
-                'library' => 'all',
-            ),
-            array(
+        // Si existen repositorios dinámicos adicionales, los agregamos bajo la estructura agrupada esperada por las vistas
+        if (!empty($repository_inputs)) {
+            $inputs[] = array(
                 'repositories' => $repository_inputs,
-            ),   
-        );
+            );
+        }
+
+        $this->inputs_personal = $inputs;
+    }
+
+    /**
+     * Retorna la configuración de un metabox específico por su nombre (name).
+     * 
+     * @param string $name Nombre del metabox a buscar.
+     * @return array Datos del metabox o un array vacío si no se encuentra.
+     */
+    public function get_field(string $name): array
+    {
+        $inputs = $this->getInputsPersonal();
+        foreach ($inputs as $input) {
+            if (isset($input['name']) && $input['name'] === $name) {
+                return $input;
+            }
+            // También busca dentro de los repositorios dinámicos agrupados si los hubiera
+            if (isset($input['repositories'])) {
+                foreach ($input['repositories'] as $repository) {
+                    if (isset($repository['name']) && $repository['name'] === $name) {
+                        return $repository;
+                    }
+                }
+            }
+        }
+        return [];
     }
 }

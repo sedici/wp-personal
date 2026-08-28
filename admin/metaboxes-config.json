@@ -1,0 +1,288 @@
+[
+  {
+    "name": "nombre_apellido",
+    "type": "text",
+    "label": "Nombre y Apellido",
+    "icon": "",
+    "instructions": "Nombre completo del personal",
+    "placeholder": "",
+    "validation": {
+      "required": true,
+      "sanitize_callback": "sanitize_text_field",
+      "validate_type": "not_empty",
+      "pattern": "",
+      "error_message": "El nombre no debe ser vacio"
+    }
+  },
+  {
+    "name": "email",
+    "type": "email",
+    "label": "Email",
+    "icon": "email.png",
+    "instructions": "Correo electrónico",
+    "placeholder": "Email",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "sanitize_email",
+      "validate_type": "email",
+      "pattern": "",
+      "error_message": "El formato del email no es valido."
+    }
+  },
+  {
+    "name": "telefono",
+    "type": "text",
+    "label": "Teléfono",
+    "icon": "tel.png",
+    "instructions": "Teléfono",
+    "placeholder": "0221-11111111",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "sanitize_text_field",
+      "validate_type": "regex",
+      "pattern": "/^[\\d\\+\\-\\(\\)\\s]+$/",
+      "error_message": "El teléfono contiene caracteres no permitidos."
+    }
+  },
+  {
+    "name": "unidad_de_investigacion",
+    "type": "text",
+    "label": "Unidad de investigación",
+    "icon": "",
+    "instructions": "Unidad de investigación a la que pertenece",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "sanitize_text_field",
+      "validate_type": "not_url",
+      "pattern": "/^(http|www)/i",
+      "error_message": "La unidad de investigacion no puede ser un enlace"
+    }
+  },
+  {
+    "name": "rol_unidad_de_investigacion",
+    "type": "text",
+    "label": "Rol en unidad de investigación",
+    "icon": "",
+    "instructions": "Cargo o rol en la unidad de investigación",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "sanitize_text_field",
+      "validate_type": "not_url",
+      "pattern": "/^(http|www)/i",
+      "error_message": "El rol de la unidad de investigacion no puede ser un enlace"
+    }
+  },
+  {
+    "name": "grado_alcanzado",
+    "type": "text",
+    "label": "Grado Alcanzado",
+    "icon": "grado_alcanzado.png",
+    "instructions": "Grado alcanzado",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "sanitize_text_field",
+      "validate_type": "not_url",
+      "pattern": "/^(http|www)/i",
+      "error_message": "El grado alcanzado no puede ser un enlace"
+    }
+  },
+  {
+    "name": "google_scholar",
+    "type": "url",
+    "label": "Google Scholar",
+    "icon": "google_scholar.png",
+    "instructions": "http://scholar.google.com/citations?user=xxxxxx",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "esc_url_raw",
+      "validate_type": "url",
+      "pattern": "",
+      "error_message": "El enlace a google scholar no es valido"
+    }
+  },
+  {
+    "name": "orcid",
+    "type": "url",
+    "label": "ORCID",
+    "icon": "orcid.gif",
+    "instructions": "https://orcid.org/xxxx-xxxx-xxxx-xxxx",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "esc_url_raw",
+      "validate_type": "url",
+      "pattern": "",
+      "error_message": "El enlace del orcid no es valido"
+    }
+  },
+  {
+    "name": "hera_enabled",
+    "type": "checkbox",
+    "label": "Habilitar Consulta en HERA",
+    "icon": "hera.png",
+    "instructions": "Requiere que el campo ORCID esté completo.",
+    "tooltip": "HERA (Herramienta de Enriquecimiento de Recursos Académicos) es un desarrollo que permite generar un reporte bibliométrico a partir de un identificador persistente (DOI, ISSN u ORCID). Al activar esta opción, se agregará un enlace al reporte de HERA asociado al ORCID de este perfil.",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "sanitize_text_field",
+      "validate_type": "boolean",
+      "pattern": "",
+      "error_message": ""
+    }
+  },
+  {
+    "name": "researchgate",
+    "type": "url",
+    "label": "ResearchGate",
+    "icon": "research-gate.png",
+    "instructions": "https://www.researchgate.net/profile/xxxxxxx",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "esc_url_raw",
+      "validate_type": "url",
+      "pattern": "",
+      "error_message": "El enlace a researchgate no es valido"
+    }
+  },
+  {
+    "name": "linkedin",
+    "type": "url",
+    "label": "Linkedin",
+    "icon": "linkedin.png",
+    "instructions": "https://www.linkedin.com/in/xxxxxxx",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "esc_url_raw",
+      "validate_type": "url",
+      "pattern": "",
+      "error_message": "El enlace a linkedin no es valido"
+    }
+  },
+  {
+    "name": "facebook",
+    "type": "url",
+    "label": "Facebook",
+    "icon": "facebook.jpg",
+    "instructions": "https://www.facebook.com/xxxxxxx",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "esc_url_raw",
+      "validate_type": "url",
+      "pattern": "",
+      "error_message": "El enlace a facebook no es valido"
+    }
+  },
+  {
+    "name": "instagram",
+    "type": "url",
+    "label": "Instagram",
+    "icon": "instagram.png",
+    "instructions": "https://www.instagram.com/xxxxxxx",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "esc_url_raw",
+      "validate_type": "url",
+      "pattern": "",
+      "error_message": "El enlace a instagram no es valido"
+    }
+  },
+  {
+    "name": "twitter",
+    "type": "url",
+    "label": "Twitter",
+    "icon": "twitter.png",
+    "instructions": "https://twitter.com/xxxxxxx",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "esc_url_raw",
+      "validate_type": "url",
+      "pattern": "",
+      "error_message": "El enlace a twitter no es valido"
+    }
+  },
+  {
+    "name": "biografia",
+    "type": "textarea",
+    "label": "Biografía",
+    "icon": "biography.png",
+    "instructions": "",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "wp_kses_post",
+      "validate_type": "any",
+      "pattern": "",
+      "error_message": ""
+    }
+  },
+  {
+    "name": "curriculum_vitae",
+    "type": "file",
+    "label": "Curriculum Vitae",
+    "icon": "cv.png",
+    "instructions": "",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "wp_check_filetype",
+      "validate_type": "pdf",
+      "pattern": "",
+      "error_message": "The file type that you've uploaded is not a PDF."
+    }
+  },
+  {
+    "name": "sedici",
+    "type": "text",
+    "label": "SEDICI",
+    "icon": "sedici.png",
+    "instructions": "Debe completar con el nombre EXACTO del perfil dentro del repositorio, por ejemplo: Villareal,Gonzalo Luján",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "sanitize_text_field",
+      "validate_type": "any",
+      "pattern": "",
+      "error_message": ""
+    }
+  },
+  {
+    "name": "cic",
+    "type": "text",
+    "label": "CIC Digital",
+    "icon": "cic-digital.png",
+    "instructions": "Debe completar con el nombre EXACTO del perfil dentro del repositorio, por ejemplo: Villareal,Gonzalo Luján",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "sanitize_text_field",
+      "validate_type": "any",
+      "pattern": "",
+      "error_message": ""
+    }
+  },
+  {
+    "name": "conicet",
+    "type": "text",
+    "label": "CONICET",
+    "icon": "conicet.png",
+    "instructions": "Debe completar con el nombre EXACTO del perfil dentro del repositorio, por ejemplo: Villareal,Gonzalo Luján",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "sanitize_text_field",
+      "validate_type": "any",
+      "pattern": "",
+      "error_message": ""
+    }
+  }
+]
