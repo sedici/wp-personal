@@ -2,6 +2,7 @@
 
 namespace Personal\Inc\Frontend;
 use Personal\Core\Personal_Model;
+use Personal\Core\Dspace_Bridge;
 /**
  *
  * Carga la vista pública del complemento
@@ -73,13 +74,14 @@ class Frontend
         // Obtener todos los datos centralizados
         $personal_data = $cpt_personal->get_all_personal_data();
 
+
         ob_start();
         load_template( $template_path, false, [
             'personal'      => $personal_data,
             'redes'         => $personal_data['social_media'],
             'hera_url'      => $personal_data['hera_url'],
             'publicaciones' => $personal_data['publicaciones'],
-            'dspace_activo' => shortcode_exists('dspace_search')
+            'dspace_activo' => Dspace_Bridge::is_active()
         ] );
 
         return ob_get_clean();

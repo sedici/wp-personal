@@ -1,5 +1,6 @@
 <?php
 namespace Personal\Core;
+use Personal\Core\Dspace_Bridge;
 
 /**
  * Clase que representa el modelo de datos de un post del tipo personal.
@@ -170,17 +171,14 @@ class Personal_Model {
             'conicet' => array( 'label' => 'CONICET', 'domain' => 'conicet' ),
         );
 
+        
         $publicaciones_shortcodes = array();
         foreach ( $repos_fijos as $meta_key => $repo ) {
             $author_id = get_post_meta( $this->post_id, $meta_key, true );
             if ( ! empty( $author_id ) ) {
                 $publicaciones_shortcodes[] = array(
                     'label' => sprintf( "Producción científica en %s", $repo['label'] ),
-                    'shortcode' => sprintf(
-                        '[dspace_search repo="%s" author="%s" showabstract="false" size="20"]',
-                        esc_attr( $repo['domain'] ),
-                        esc_attr( $author_id )
-                    )
+                    'shortcode' => Dspace_Bridge::build_wp_dspace_shortcode( $repo['domain'], $author_id )
                 );
             }
         }
