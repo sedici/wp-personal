@@ -42,7 +42,7 @@ class Dspace_Bridge {
         }
         else if($tag == 'get_publications') {
             return sprintf(
-                '[%s repo="%s" author="%s" show_author="true" date="true" showabstract="false" size="20"]',
+                '[%s repo="%s" author="%s" group_date="true" show_author="true" date="true" showabstract="false" size="20"]',
                 esc_attr( $tag ),
                 esc_attr( $repo_domain ),
                 esc_attr( $author_id )

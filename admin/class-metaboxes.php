@@ -74,6 +74,11 @@ class Metaboxes
 
             // Procesamiento de la subida del Curriculum Vitae (PDF)
             if (!empty($_FILES['curriculum_vitae']['name'])) {
+
+                if ($_FILES['curriculum_vitae']['error'] !== UPLOAD_ERR_OK) {
+                    wp_die('Error al subir el archivo. Código de error: ' . $_FILES['curriculum_vitae']['error']);
+                }
+
                 $supported_types = array('application/pdf');
                 $arr_file_type = wp_check_filetype(basename($_FILES['curriculum_vitae']['name']));
                 $uploaded_type = $arr_file_type['type'];
@@ -86,12 +91,12 @@ class Metaboxes
                     );
                     
                     if (isset($upload['error']) && $upload['error'] != 0) {
-                        wp_die('There was an error uploading your file. The error is: ' . $upload['error']);
+                        wp_die('Ocurrio un error subiendo el archivo. El error es: ' . $upload['error']);
                     } else {
                         update_post_meta($idpersonal, 'curriculum_vitae', $upload);
                     }
                 } else {
-                    wp_die("The file type that you've uploaded is not a PDF.");
+                    wp_die("El tipo de archivo que subiste no es un PDF.");
                 }
             }
         }
