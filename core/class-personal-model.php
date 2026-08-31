@@ -14,6 +14,10 @@ class Personal_Model {
         $this->post_id = $post_id;
     }
 
+    public function get_nombre() {
+        return get_post_field('post_title', $this->post_id);
+    }
+
     public function get_email() {
         return get_post_meta($this->post_id, 'email', true);
     }
@@ -211,7 +215,7 @@ class Personal_Model {
 
         return array(
             'id'              => $this->post_id,
-            'title'          => get_the_title($this->post_id),
+            'title'          => $this->get_nombre(),
             'permalink'       => get_permalink($this->post_id),
             'image'   => $this->get_imagen_destacada_url('medium') ?: $assets_url . 'blank-profile.png',
             
