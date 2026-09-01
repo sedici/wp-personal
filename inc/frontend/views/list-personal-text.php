@@ -1,7 +1,7 @@
 <?php
 /**
- * Vista para listar el personal - Formato Texto (Nombre; Nombre)
- * @var array $args Datos inyectados de forma segura desde el controlador.
+ * Vista para listar el personal - Formato Texto
+ * @var array $args Datos de personas inyectados desde la clase Frontend.
  */
 
 // Registrar CSS específico de esta vista si fuera necesario (opcional)

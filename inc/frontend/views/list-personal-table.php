@@ -1,7 +1,7 @@
 <?php
 /**
  * Vista para listar el personal - Formato Tabla
- * @var array $args Datos inyectados de forma segura desde el controlador.
+ * @var array $args Datos de personas inyectados desde la clase Frontend.
  */
 ?>
 <div class="personal-list-table-container">

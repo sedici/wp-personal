@@ -1,7 +1,7 @@
 <?php
 /**
- * Vista para listar el personal - Versión Optimizada Minimalista
- * @var array $args Datos inyectados de forma segura desde el controlador.
+ * Vista para listar el personal - Formato Cajas
+ * @var array $args Datos de personas inyectados desde la clase Frontend.
  */
 ?>
 
