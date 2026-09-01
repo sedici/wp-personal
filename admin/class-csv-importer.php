@@ -44,7 +44,14 @@ class Csv_Importer
                 'required' => true,
                 'sanitize' => 'sanitize_text_field',
                 'validate' => function ($value) {
-                    return $value == -1 || empty($ids = $this->get_personal_post_ids()) || in_array($value, $ids);
+                    
+                    // Si es -1, se creará un nuevo post
+                    if ($value == -1) {
+                        return true;
+                    }
+                    // Si es distinto a -1 y existe, se actualizará el post
+                    $ids = $this->get_personal_post_ids();
+                    return !empty($ids) && in_array($value, $ids);
                 },
                 'error' => 'El ID ingresado no existe o no es un ID válido para crear un personal.'
             ],
