@@ -68,7 +68,7 @@ class Csv_Importer
                 'required' => false,
                 'sanitize' => 'sanitize_text_field',
                 'validate' => function ($valor) {
-                    return (!empty($value)) ? preg_match('/^[\d\+\-\(\)\s]+$/', $valor) : true;
+                    return (!empty($valor)) ? preg_match('/^[\d\+\-\(\)\s]+$/', $valor) : true;
                 },
                 'error' => 'El teléfono contiene caracteres no permitidos.'
             ],
