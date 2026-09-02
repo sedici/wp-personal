@@ -34,7 +34,7 @@ foreach ($this->getInputsPersonal() as $item) {
 ?>
 
 <div class="inptuts-personal">
-    <?php wp_nonce_field('mi_meta_box_nonce', 'meta_box_nonce'); ?>
+    <?php wp_nonce_field('personal_nonce_update_cpt', 'meta_box_nonce'); ?>
 
     <?php
     /**

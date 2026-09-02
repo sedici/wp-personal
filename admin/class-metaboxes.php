@@ -24,6 +24,9 @@ class Metaboxes
         'cic-digital' => 'cic',
     ];
 
+    private const NONCE_ACTION = 'personal_nonce_update_cpt';
+    private const NONCE_FIELD_NAME = 'meta_box_nonce';
+
     /**
      * Constructor de la clase.
      */
@@ -34,72 +37,73 @@ class Metaboxes
      * cuando se publica o actualiza un post de tipo 'personal'.
      * @param int $idpersonal ID del post que se está guardando.
      */
-    public function save($idpersonal)
-    {
+        public function save($idpersonal) {
+        
         $personal = get_post($idpersonal);
 
-        if ($personal->post_type == 'personal') {
-            // HERA solo puede habilitarse si el ORCID está completo.
-            if (empty($_POST['orcid'])) {
-                unset($_POST['hera_enabled']);
-            }
-            
-            $inputs = $this->getInputsPersonal();
-            foreach ($inputs as $input) {
+        if (!$personal || $personal->post_type !== 'personal') {
+            return;
+        }
 
-                // Los checkbox no llegan en $_POST cuando están desmarcados,
-                // por eso se guardan de forma explícita. Solo si el formulario
-                // del metabox fue enviado (evita borrarlos en quick edit/autosave).
-                if (isset($input['type']) && $input['type'] == 'checkbox') {
-                    if (isset($_POST['meta_box_nonce'])) {
-                        update_post_meta($idpersonal, $input['name'], isset($_POST[$input['name']]) ? '1' : '');
+        // if our nonce isn't there, or we can't verify it, bail.
+		if ( ! isset( $_POST[self::NONCE_FIELD_NAME] ) || ! wp_verify_nonce( $_POST[self::NONCE_FIELD_NAME] , self::NONCE_ACTION ) ) {
+            error_log("nonce invalido");
+            return;
+		}
+
+        // HERA solo puede habilitarse si el ORCID está completo.
+        if (empty($_POST['orcid'])) {
+            unset($_POST['hera_enabled']);
+        }
+
+        foreach ($this->getInputsPersonal() as $field) {
+            switch ($field['type']) {
+                case 'checkbox':
+                    $resultado = update_post_meta($idpersonal, $field['name'], isset($_POST[$field['name']]) ? '1' : '');
+                    break;
+
+                case 'file':
+                    $resultado = $this->saveFileField($idpersonal, $field['name']);
+                    break;
+
+                default:
+                    if (isset($_POST[$field['name']])) {
+                        $value = call_user_func($field['sanitize_callback'], $_POST[$field['name']]);
+                        $resultado = update_post_meta($idpersonal, $field['name'], $value);
                     }
-                    continue;
-                }
-                
-                // Guarda campos estándar
-                if (isset($input['name']) && isset($_POST[$input['name']])) {
-                    update_post_meta($idpersonal, $input['name'], $_POST[$input['name']]);
-                }
-                
-                // Guarda campos de repositorios dinámicos si existen
-                if (isset($input['repositories'])) {
-                    foreach ($input['repositories'] as $repository) {
-                        if (isset($_POST[$repository['name']])) {
-                            update_post_meta($idpersonal, $repository['name'], $_POST[$repository['name']]);
-                        }
-                    }
-                }
-            }
-
-            // Procesamiento de la subida del Curriculum Vitae (PDF)
-            if (!empty($_FILES['curriculum_vitae']['name'])) {
-
-                if ($_FILES['curriculum_vitae']['error'] !== UPLOAD_ERR_OK) {
-                    wp_die('Error al subir el archivo. Código de error: ' . $_FILES['curriculum_vitae']['error']);
-                }
-
-                $supported_types = array('application/pdf');
-                $arr_file_type = wp_check_filetype(basename($_FILES['curriculum_vitae']['name']));
-                $uploaded_type = $arr_file_type['type'];
-
-                if (in_array($uploaded_type, $supported_types)) {
-                    $upload = wp_upload_bits(
-                        $_FILES['curriculum_vitae']['name'], 
-                        null, 
-                        file_get_contents($_FILES['curriculum_vitae']['tmp_name'])
-                    );
-                    
-                    if (isset($upload['error']) && $upload['error'] != 0) {
-                        wp_die('Ocurrio un error subiendo el archivo. El error es: ' . $upload['error']);
-                    } else {
-                        update_post_meta($idpersonal, 'curriculum_vitae', $upload);
-                    }
-                } else {
-                    wp_die("El tipo de archivo que subiste no es un PDF.");
-                }
             }
         }
+    }
+
+    /**
+     * Procesa la subida del Curriculum Vitae (PDF) para el campo indicado.
+     */
+    private function saveFileField($idpersonal, $field_name) {
+        if ($field_name !== 'curriculum_vitae' || empty($_FILES['curriculum_vitae']['name'])) {
+            return;
+        }
+
+        if ($_FILES['curriculum_vitae']['error'] !== UPLOAD_ERR_OK) {
+            wp_die('Error al subir el archivo. Código de error: ' . $_FILES['curriculum_vitae']['error']);
+        }
+
+        $arr_file_type = wp_check_filetype(basename($_FILES['curriculum_vitae']['name']));
+
+        if ($arr_file_type['type'] !== 'application/pdf') {
+            wp_die('El tipo de archivo que subiste no es un PDF.');
+        }
+
+        $upload = wp_upload_bits(
+            $_FILES['curriculum_vitae']['name'],
+            null,
+            file_get_contents($_FILES['curriculum_vitae']['tmp_name'])
+        );
+
+        if (isset($upload['error']) && $upload['error'] != 0) {
+            wp_die('Ocurrió un error subiendo el archivo. El error es: ' . $upload['error']);
+        }
+
+        update_post_meta($idpersonal, $field_name, $upload);
     }
 
     /**
@@ -144,99 +148,95 @@ class Metaboxes
     }
 
     /**
-     * Inicializa y define el esquema completo de los campos del formulario de Personal.
-     * 
-     * Construye una lista detallada con tipos de inputs, etiquetas, instrucciones, placeholders
-     * e iconos descriptivos a partir del archivo JSON metaboxes-config.json. Además, incorpora de
-     * forma dinámica los repositorios registrados (por ejemplo, dspace) mediante filtros de WordPress.
+     * Inicializa y define el esquema completo de los campos del formulario de Personal
+     * Setea en $inputs_personal la lista de campos del CPT personal a partir de metabox-config
      */
     private function initializeInputsPersonal()
     {
-        $json_file = __DIR__ . '/metaboxes-config.json';
-        $json_fields = [];
-        if (file_exists($json_file)) {
-            $json_data = file_get_contents($json_file);
-            $json_fields = json_decode($json_data, true) ?: [];
-        }
+        // Normaliza los campos del JSON y construye la lista de inputs
+        $inputs = array_map(
+            [$this, 'normalizeField'],
+            $this->loadJsonFields()
+        );
 
-        $inputs = [];
-        $existing_names = [];
+        // Obtiene los nombres de los campos existentes
+        $existing_names = array_column($inputs, 'name');
 
-        foreach ($json_fields as $field) {
-            // Asegurar campos mínimos requeridos por las vistas y prevenir PHP notices
-            $field['class']         = $field['class'] ?? '';
-            $field['placeholder']   = $field['placeholder'] ?? '';
-            $field['default_value'] = $field['default_value'] ?? '';
-
-            // Dinámicamente asignar el nombre del sitio para la unidad de investigación
-            if ($field['name'] === 'unidad_de_investigacion' && empty($field['default_value'])) {
-                $field['default_value'] = get_bloginfo('name');
-            }
-
-            // Construir la etiqueta con imagen si tiene icono
-            if (!empty($field['icon'])) {
-                $field['label'] = '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/' . $field['icon'] . '" height="32"> ' . $field['label'];
-            }
-
-            $inputs[] = $field;
-            $existing_names[] = $field['name'];
-        }
-
-        // Obtiene los repositorios adicionales registrados dinámicamente por el plugin wp-dspace-v2
-        $repositories = apply_filters('wp_dspace_registered_repositories', []);
-        $repository_inputs = [];
-
-        foreach ($repositories as $key => $repository) {
-            $field_name = self::REPO_FIELD_NAMES[$key] ?? $key;
-
-            // Evitar duplicar repositorios si ya están definidos estáticamente en el JSON
-            if (in_array($field_name, $existing_names)) {
-                continue;
-            }
-
-            $repository_inputs[] = array(
-                'class'         => '',
-                'label'         => '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/' . $key . '.png" height="32"> ' . ucwords(str_replace('-', ' ', $key)),
-                'name'          => $field_name,
-                'type'          => 'text',
-                'instructions'  => 'Debe completar con el nombre EXACTO del perfil dentro del repostirio, por ejemplo: Villareal,Gonzalo Luján',
-                'default_value' => '',
-                'placeholder'   => '',
-            );
-        }
-
-        // Si existen repositorios dinámicos adicionales, los agregamos bajo la estructura agrupada esperada por las vistas
-        if (!empty($repository_inputs)) {
-            $inputs[] = array(
-                'repositories' => $repository_inputs,
-            );
-        }
+        // Incluye los campos de repositorios
+        $inputs = array_merge($inputs, $this->buildRepositoryFields($existing_names));
 
         $this->inputs_personal = $inputs;
     }
 
     /**
-     * Retorna la configuración de un metabox específico por su nombre (name).
-     * 
-     * @param string $name Nombre del metabox a buscar.
-     * @return array Datos del metabox o un array vacío si no se encuentra.
+     * Lee y decodifica metaboxes-config.json.
      */
-    public function get_field(string $name): array
-    {
-        $inputs = $this->getInputsPersonal();
-        foreach ($inputs as $input) {
-            if (isset($input['name']) && $input['name'] === $name) {
-                return $input;
-            }
-            // También busca dentro de los repositorios dinámicos agrupados si los hubiera
-            if (isset($input['repositories'])) {
-                foreach ($input['repositories'] as $repository) {
-                    if (isset($repository['name']) && $repository['name'] === $name) {
-                        return $repository;
-                    }
-                }
-            }
+    private function loadJsonFields(): array {
+        $json_file = __DIR__ . '/metaboxes-config.json';
+
+        if (!file_exists($json_file)) {
+            return [];
         }
-        return [];
+
+        return json_decode(file_get_contents($json_file), true) ?: [];
+    }
+
+    /**
+     * Normaliza un campo del JSON a la estructura esperada save() y las vistas.
+     */
+    private function normalizeField(array $field): array {
+        $field['class']             = $field['class'] ?? '';
+        $field['placeholder']       = $field['placeholder'] ?? '';
+        $field['default_value']     = $field['default_value'] ?? '';
+        $field['sanitize_callback'] = $field['validation']['sanitize_callback'] ?? 'sanitize_text_field';
+
+        if ($field['name'] === 'unidad_de_investigacion' && empty($field['default_value'])) {
+            $field['default_value'] = get_bloginfo('name');
+        }
+
+        if (!empty($field['icon'])) {
+            $field['label'] = $this->buildIconLabel($field['icon'], $field['label']);
+        }
+
+        return $field;
+    }
+
+    /**
+     * Construye los campos de repositorios con la misma estructura que los demas campos
+     */
+    private function buildRepositoryFields(array $existing_names): array
+    {
+        $repositories = apply_filters('wp_dspace_registered_repositories', []);
+        $fields = [];
+
+        foreach ($repositories as $key => $repository) {
+            $field_name = self::REPO_FIELD_NAMES[$key] ?? $key;
+
+            if (in_array($field_name, $existing_names, true)) {
+                continue;
+            }
+
+            $fields[] = [
+                'name'              => $field_name,
+                'type'              => 'text',
+                'label'             => $this->buildIconLabel($key . '.png', ucwords(str_replace('-', ' ', $key))),
+                'icon'              => $key . '.png',
+                'instructions'      => 'Debe completar con el nombre EXACTO del perfil dentro del repositorio, por ejemplo: Villareal,Gonzalo Luján',
+                'placeholder'       => '',
+                'default_value'     => '',
+                'class'             => '',
+                'sanitize_callback' => 'sanitize_text_field',
+            ];
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Genera el HTML de una etiqueta con ícono.
+     */
+    private function buildIconLabel(string $icon, string $label): string
+    {
+        return '<img src="' . \Personal\PLUGIN_NAME_URL . 'assets/images/' . $icon . '" height="32"> ' . $label;
     }
 }

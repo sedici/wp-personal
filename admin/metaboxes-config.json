@@ -219,7 +219,7 @@
     "placeholder": "",
     "validation": {
       "required": false,
-      "sanitize_callback": "wp_check_filetype",
+      "sanitize_callback": "",
       "pattern": "",
       "error_message": "The file type that you've uploaded is not a PDF."
     }
