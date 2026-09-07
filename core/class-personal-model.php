@@ -118,16 +118,16 @@ class Personal_Model {
     * @return array               Array de redes activas con claves: url, img y alt.
     */
     public function get_active_social_media($social_media) {
-        $assets_url = \Personal\PLUGIN_NAME_URL . 'assets/images/';
+        $assets_url = \Personal\PLUGIN_NAME_URL . 'assets/images/social_icons_black_version/';
     
         $redes_config = array(
-            'google_scholar' => array( 'img' => 'google_scholar.png', 'alt' => 'Google Scholar' ),
-            'research-gate'  => array( 'img' => 'research-gate.png',  'alt' => 'ResearchGate' ),
-            'orcid'          => array( 'img' => 'orcid.png',          'alt' => 'ORCID' ),
-            'linkedin'       => array( 'img' => 'linkedin.png',       'alt' => 'LinkedIn' ),
-            'facebook'       => array( 'img' => 'facebook.png',       'alt' => 'Facebook' ),
-            'twitter'        => array( 'img' => 'twitter.png',        'alt' => 'Twitter' ),
-            'instagram'      => array( 'img' => 'instagram.png',      'alt' => 'Instagram' ),
+            'google_scholar' => array( 'img' => 'google_scholar.svg', 'alt' => 'Google Scholar' ),
+            'research-gate'  => array( 'img' => 'research-gate.svg',  'alt' => 'ResearchGate' ),
+            'orcid'          => array( 'img' => 'orcid.svg',          'alt' => 'ORCID' ),
+            'linkedin'       => array( 'img' => 'linkedin.svg',       'alt' => 'LinkedIn' ),
+            'facebook'       => array( 'img' => 'facebook.svg',       'alt' => 'Facebook' ),
+            'twitter'        => array( 'img' => 'twitter.svg',        'alt' => 'Twitter' ),
+            'instagram'      => array( 'img' => 'instagram.svg',      'alt' => 'Instagram' ),
         );
 
         $redes_activas = array();
