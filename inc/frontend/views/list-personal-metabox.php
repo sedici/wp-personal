@@ -29,6 +29,8 @@
                             <?php echo esc_html( $p['title'] ); ?>
                         </a>
                     </h3>
+
+                    <hr style="border: none; height: 1px; background-color: #666666; margin: 3px;">
                     
                     <?php if ( ! empty( $p['rol'] ) ) : ?>
                         <p class="personal-list-card-role">
