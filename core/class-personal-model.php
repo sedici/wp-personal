@@ -83,6 +83,10 @@ class Personal_Model {
         return get_post_meta($this->post_id, 'X', true); 
     }
 
+    public function get_ficha_conicet() { 
+        return get_post_meta($this->post_id, 'ficha_conicet', true); 
+    }
+
     public function get_biografia() { 
         return get_post_meta($this->post_id, 'biografia', true); 
     }
@@ -109,6 +113,28 @@ class Personal_Model {
 
     public function get_imagen_destacada_url($size = 'medium') { 
         return get_the_post_thumbnail_url($this->post_id, $size); 
+    }
+
+    public function get_active_afiliations() {
+        $assets_url = \Personal\PLUGIN_NAME_URL . 'assets/images/social_icons_black_version/';
+
+        $config = array(
+            'ficha_conicet' => array( 'img' => 'gris_CONICET.svg', 'alt' => 'Conicet' ),
+        );
+
+        $afiliaciones_activas = array();
+        foreach ( $config as $meta_key => $info ) {
+            $url = get_post_meta( $this->post_id, $meta_key, true );
+            if ( ! empty( $url ) ) {
+                $afiliaciones_activas[] = array(
+                    'url' => $url,
+                    'img' => $assets_url . $info['img'],
+                    'alt' => $info['alt']
+                );
+            }
+        }
+
+        return $afiliaciones_activas;
     }
 
     /**
@@ -230,6 +256,7 @@ class Personal_Model {
             'lineas_investigacion' => $this->get_lineas_investigacion(),
             
             'social_media'    => $redes_activas,
+            'afiliaciones'    => $this->get_active_afiliations(),
             
             'hera_url'        => $this->get_hera_url(),
             'publicaciones'   => $this->get_publications_shortcodes(),

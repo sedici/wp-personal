@@ -183,6 +183,20 @@
     }
   },
   {
+    "name": "ficha_conicet",
+    "type": "url",
+    "label": "Ficha CONICET",
+    "icon": "conicet.png",
+    "instructions": "https://bicyt.conicet.gov.ar/fichas/p/xxxxxxx",
+    "placeholder": "",
+    "validation": {
+      "required": false,
+      "sanitize_callback": "esc_url_raw",
+      "pattern": "",
+      "error_message": "El enlace a la ficha en CONICET no es valido"
+    }
+  },
+  {
     "name": "twitter",
     "type": "url",
     "label": "Twitter",

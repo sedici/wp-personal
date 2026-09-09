@@ -61,6 +61,27 @@
     font-size: 15px;
 }
 
+/* Afiliaciones */
+.personal-list-card-afiliaciones {
+    margin: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.personal-list-card-afiliacion-item a {
+    display: block;
+    transition: transform 0.1s ease-in-out;
+}
+
+.personal-list-card-afiliacion-item a:hover {
+    transform: scale(1.1);
+}
+
+.personal-list-card-afiliacion-item img {
+    display: block;
+}
+
 .personal-list-card-name {
     font-family: "Georgia", "Times New Roman", serif;
     font-size: 20px;
@@ -106,7 +127,7 @@
 /* Fila de Iconos de Redes (Sin filtros de grises) */
 .personal-list-card-socials {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     margin-top: auto; /* Empuja las redes al ras inferior */
     padding-top: 8px;
     align-items: center;
