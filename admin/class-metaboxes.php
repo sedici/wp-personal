@@ -79,28 +79,56 @@ class Metaboxes
      * Procesa la subida del Curriculum Vitae (PDF) para el campo indicado.
      */
     private function saveFileField($idpersonal, $field_name) {
+        
+        // Verifica que el campo sea el esperado (curriculum_vitae) y que se haya enviado un archivo en el request
         if ($field_name !== 'curriculum_vitae' || empty($_FILES['curriculum_vitae']['name'])) {
             return;
         }
-
+        
+        // Verifica que el usuario que está guardando tenga permiso real para editar este post
+        if (!current_user_can('edit_post', $idpersonal)) {
+            wp_die(__('No tienes permisos para subir este archivo.'));
+        }
+        
+        // // Verifica que la subida haya llegado sin errores de PHP (tamaño excedido, subida parcial, error de escritura en disco, etc.)
         if ($_FILES['curriculum_vitae']['error'] !== UPLOAD_ERR_OK) {
             wp_die('Error al subir el archivo. Código de error: ' . $_FILES['curriculum_vitae']['error']);
         }
 
-        $arr_file_type = wp_check_filetype(basename($_FILES['curriculum_vitae']['name']));
-
-        if ($arr_file_type['type'] !== 'application/pdf') {
-            wp_die('El tipo de archivo que subiste no es un PDF.');
+        // Verifica si las funciones de manejo de archivos de WordPress (wp_handle_upload, etc.) ya están cargadas.
+        if (!function_exists('wp_handle_upload')) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
         }
 
-        $upload = wp_upload_bits(
-            $_FILES['curriculum_vitae']['name'],
-            null,
-            file_get_contents($_FILES['curriculum_vitae']['tmp_name'])
-        );
+        $upload_overrides = [
+             // No viene del formulario estándar de medios de WP.
+            'test_form' => false,
+            // Solo se permite subir archivos PDF.
+            'mimes' => [
+                'pdf' => 'application/pdf',
+            ],
+        ];
+        
+        // Sube el archivo de forma segura usando la API de WordPress
+        // (valida el tipo real, sanitiza el nombre y mueve el archivo)
+        $upload = wp_handle_upload($_FILES['curriculum_vitae'], $upload_overrides);
 
-        if (isset($upload['error']) && $upload['error'] != 0) {
-            wp_die('Ocurrió un error subiendo el archivo. El error es: ' . $upload['error']);
+        if (isset($upload['error'])) {
+            wp_die('Ocurrió un error subiendo el archivo : ' . esc_html($upload['error']));
+        }
+        
+        // Verifica que el contenido del archivo sea realmente un PDF
+        // (los PDF siempre empiezan con la firma "%PDF-").
+        $handle = @fopen($upload['file'], 'rb');
+        $header = $handle ? fread($handle, 5) : '';
+        if ($handle) {
+            fclose($handle);
+        }
+        
+        // Si la firma no coincide, no es un PDF real: se borra el archivo.
+        if ($header !== '%PDF-') {
+            @unlink($upload['file']);
+            wp_die('El archivo subido no es un PDF válido.');
         }
 
         update_post_meta($idpersonal, $field_name, $upload);
