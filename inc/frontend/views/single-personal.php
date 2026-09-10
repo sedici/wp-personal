@@ -68,6 +68,16 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <span class="personal-badge-label">Perfil Académico</span>
                 <h1 class="personal-fullname"><?php echo esc_html( $args['personal']['title'] ); ?></h1>
                 
+                <?php if ( ! empty( $args['afiliaciones'] ) ) : ?>
+                    <div class="personal-affiliations-row">
+                        <?php foreach ( $args['afiliaciones'] as $afiliacion ) : ?>
+                            <a href="<?php echo esc_url( $afiliacion['url'] ); ?>" target="_blank" rel="noopener noreferrer">
+                                <img src="<?php echo esc_url( $afiliacion['img'] ); ?>" alt="<?php echo esc_attr( $afiliacion['alt'] ); ?>" width="40" height="40">
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+                
                 <?php if ( ! empty( $args['personal']['grado_alcanzado'] ) ) : ?>
                     <h3 class="personal-degree-label"> <?php echo esc_html( $args['personal']['grado_alcanzado'] ); ?></h3>
                 <?php endif; ?>

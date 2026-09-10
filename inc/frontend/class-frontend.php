@@ -79,6 +79,7 @@ class Frontend
         load_template( $template_path, false, [
             'personal'      => $personal_data,
             'redes'         => $personal_data['social_media'],
+            'afiliaciones'  => $personal_data['afiliaciones'],
             'hera_url'      => $personal_data['hera_url'],
             'publicaciones' => $personal_data['publicaciones'],
             'dspace_activo' => Dspace_Bridge::is_active()

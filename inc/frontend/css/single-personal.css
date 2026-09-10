@@ -81,7 +81,15 @@
     display: flex;
     gap: 12px;
     margin: 20px 0 0 0;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+}
+
+.personal-affiliations-row {
+    display: flex;
+    gap: 10px;
+    margin: 0 0 15px 0;
+    flex-wrap: nowrap;
+    align-items: center;
 }
 
 .personal-social-row img {
