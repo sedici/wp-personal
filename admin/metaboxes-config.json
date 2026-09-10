@@ -1,19 +1,5 @@
 [
   {
-    "name": "nombre_apellido",
-    "type": "text",
-    "label": "Nombre y Apellido",
-    "icon": "",
-    "instructions": "Nombre completo del personal",
-    "placeholder": "",
-    "validation": {
-      "required": true,
-      "sanitize_callback": "sanitize_text_field",
-      "pattern": "",
-      "error_message": "El nombre no debe ser vacio"
-    }
-  },
-  {
     "name": "email",
     "type": "email",
     "label": "Email",
