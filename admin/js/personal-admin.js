@@ -265,11 +265,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 // Truco para Gutenberg: destrabar el botón de guardado que queda en "Guardando..."
-                setTimeout(() => {
-                    if (wp && wp.data && wp.data.dispatch) {
-                        wp.data.dispatch('core/editor').enablePublishSidebar();
-                    }
-                }, 500);
+setTimeout(() => {
+    if (typeof wp !== 'undefined' && wp.data && wp.data.dispatch) {
+        wp.data.dispatch('core/editor').enablePublishSidebar();
+    }
+}, 500);
             }
         });
     }
