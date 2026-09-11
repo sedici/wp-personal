@@ -60,19 +60,19 @@ class Frontend
     /**
      * Muestra la vista single del post type personal
     */
-    public function show_single_personal_template($content) {
-        global $post;
-        $cpt_personal = new Personal_Model($post->ID);
+public function show_single_personal_template($content) {
+    global $post;
 
-        $template_path = plugin_dir_path(__DIR__) . 'frontend/views/single-personal.php';
-        
-        // Compruebo que post no sea nulo
-        if ( ! is_a($post, 'WP_Post') || $post->post_type !== 'personal' ) {
-            return $content;
-        }
-        
-        // Obtener todos los datos centralizados
-        $personal_data = $cpt_personal->get_all_personal_data();
+    // Compruebo que post no sea nulo
+    if ( ! is_a($post, 'WP_Post') || $post->post_type !== 'personal' ) {
+        return $content;
+    }
+
+    $cpt_personal  = new Personal_Model($post->ID);
+    $template_path = plugin_dir_path(__DIR__) . 'frontend/views/single-personal.php';
+
+    // Obtener todos los datos centralizados
+    $personal_data = $cpt_personal->get_all_personal_data();
 
 
         ob_start();
