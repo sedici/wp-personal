@@ -79,9 +79,9 @@ class Personal_Model {
         return get_post_meta($this->post_id, 'instagram', true); 
     }
 
-    public function get_twitter() { 
-        return get_post_meta($this->post_id, 'X', true); 
-    }
+public function get_twitter() { 
+    return get_post_meta($this->post_id, 'twitter', true); 
+}
 
     public function get_ficha_conicet() { 
         return get_post_meta($this->post_id, 'ficha_conicet', true); 
