@@ -111,10 +111,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                 <?php endif; ?>
 
-                <?php if ( ! empty( $args['personal']['biografia'] ) ) : ?>
-                    <div class="personal-biography-body">
-                        <?php echo nl2br( $args['personal']['biografia'] ); ?>
-                    </div>
+<?php if ( ! empty( $args['personal']['biografia'] ) ) : ?>
+    <div class="personal-biography-body">
+        <?php echo wp_kses_post( nl2br( $args['personal']['biografia'] ) ); ?>
+    </div>
+<?php endif; ?>
                 <?php endif; ?>
             </div>
 
