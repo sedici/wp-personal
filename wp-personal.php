@@ -1,8 +1,8 @@
 <?php
 /*	
- * Plugin Name: Personal-Plugin	
+ * Plugin Name: WP Personal
  * Plugin URI: https://github.com/sedici/wp-personal
- * Description: 	
+ * Description: Plugin para la gestión del personal de una UID para wordpress	
  * Version: 1.0	
  * Author: SEDICI - Ezequiel Manzur - Maria Marta Vila
  * Author URI: http://sedici.unlp.edu.ar/	

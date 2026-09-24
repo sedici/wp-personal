@@ -116,7 +116,6 @@ if ( ! defined( 'ABSPATH' ) ) {
         <?php echo wp_kses_post( nl2br( $args['personal']['biografia'] ) ); ?>
     </div>
 <?php endif; ?>
-                <?php endif; ?>
             </div>
 
         </div>
