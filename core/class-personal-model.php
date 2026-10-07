@@ -30,6 +30,10 @@ class Personal_Model {
         return get_post_meta($this->post_id, 'unidad_de_investigacion', true); 
     }
 
+    public function get_rol_unidad_investigacion() { 
+        return get_post_meta($this->post_id, 'rol_unidad_de_investigacion', true); 
+    }
+
     public function get_grado_alcanzado() { 
         return get_post_meta($this->post_id, 'grado_alcanzado', true); 
     }
@@ -249,6 +253,7 @@ public function get_twitter() {
             'telefono'        => $this->get_telefono(),
             
             'unidad'          => $this->get_unidad_investigacion(),
+            'rol'             => $this->get_rol_unidad_investigacion(),
             'grado_alcanzado' => $this->get_grado_alcanzado(),
             'biografia'       => $this->get_biografia(),
             
