@@ -11,6 +11,7 @@ class Csv_Importer
     protected int $max_file_size;
     protected array $cpts_to_create;
     protected array $cpts_to_update;
+    protected array $rows_by_email; // Fila del CSV de la que salió cada pendiente, para reportar errores al guardar
 
     protected array $personal_metadata;
 
@@ -31,6 +32,7 @@ class Csv_Importer
         $this->errors = [];
         $this->cpts_to_create = [];
         $this->cpts_to_update = [];
+        $this->rows_by_email = [];
     }
 
     /**
@@ -383,6 +385,7 @@ class Csv_Importer
                 // a la anterior en vez de crear otro personal con el mismo email.
                 $email_key = strtolower($personal['meta_input']['email']);
                 unset($this->cpts_to_create[$email_key], $this->cpts_to_update[$email_key]);
+                $this->rows_by_email[$email_key] = $row_number;
 
                 if ($row_result['create_new_cpt'])
                     $this->cpts_to_create[$email_key] = $personal;
@@ -409,23 +412,35 @@ class Csv_Importer
         // Si hay cpts_to_create, los creo
 
         if (!empty($this->cpts_to_create)) {
-            foreach ($this->cpts_to_create as $personal) {
+            foreach ($this->cpts_to_create as $email_key => $personal) {
                 unset($personal['ID']);
                 $result = wp_insert_post($personal);
                 if ($result !== 0)
                     $count_created++;
+                else
+                    $this->errors[] = [
+                        'row' => $this->rows_by_email[$email_key],
+                        'field' => 'email',
+                        'error' => 'Error al crear el personal con el email : ' . $personal['meta_input']['email'],
+                    ];
             }
         }
 
         // Si hay cpts_to_update, los actualizo
         if (!empty($this->cpts_to_update)) {
-            foreach ($this->cpts_to_update as $personal) {
+            foreach ($this->cpts_to_update as $email_key => $personal) {
                 $result = wp_update_post($personal);
 
                 if ($result !== 0)
                     $count_updated++;
                 else
-                    $this->errors[] = 'Error al actualizar: no se encontro el personal con el email : ' . $personal['meta_input']['email'];
+                    // Mismo formato que los errores de validación, que es lo que esperan el aviso
+                    // de la página y el historial (Csv_Import_Log)
+                    $this->errors[] = [
+                        'row' => $this->rows_by_email[$email_key],
+                        'field' => 'email',
+                        'error' => 'Error al actualizar: no se encontro el personal con el email : ' . $personal['meta_input']['email'],
+                    ];
             }
         }
 
