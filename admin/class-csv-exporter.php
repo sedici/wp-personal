@@ -21,7 +21,6 @@ class Csv_Exporter
 
         // Definir las cabeceras del CSV
         $headers = [
-            'post_id',
             'email',
             'nombre_apellido',
             'telefono',
@@ -53,7 +52,6 @@ class Csv_Exporter
         foreach ($personales as $personal) {
             $id = $personal->ID;
             $data = [
-                $id,
                 get_post_meta($id, 'email', true),
                 $personal->post_title,
                 get_post_meta($id, 'telefono', true),
