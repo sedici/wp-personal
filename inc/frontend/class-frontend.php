@@ -11,6 +11,13 @@ use Personal\Core\Dspace_Bridge;
  */
 class Frontend
 {
+    /** Hojas de estilo de los layouts del listado: handle => archivo en css/ */
+    const LIST_STYLES = array(
+        'personal-list-metabox' => 'list-personal-metabox.css',
+        'personal-list-lista'   => 'list-personal-lista.css',
+        'personal-list-table'   => 'list-personal-table.css',
+    );
+
     private $plugin_name;
 
     private $version;
@@ -39,11 +46,23 @@ class Frontend
         wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/personal-frontend.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/personal-frontend.css'), 'all');
         wp_enqueue_style($this->plugin_name . '-single', plugin_dir_url(__FILE__) . 'css/single-personal.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/single-personal.css'), 'all');
         
-        wp_enqueue_style($this->plugin_name . '-list-metabox', plugin_dir_url(__FILE__) . 'css/list-personal-metabox.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/list-personal-metabox.css'), 'all');
-        wp_enqueue_style($this->plugin_name . '-list-lista', plugin_dir_url(__FILE__) . 'css/list-personal-lista.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/list-personal-lista.css'), 'all');
+        foreach (array_keys(self::LIST_STYLES) as $handle) {
+            wp_enqueue_style($handle);
+        }
         wp_enqueue_style($this->plugin_name . '-list-text', plugin_dir_url(__FILE__) . 'css/list-personal-text.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/list-personal-text.css'), 'all');
-        wp_enqueue_style($this->plugin_name . '-list-table', plugin_dir_url(__FILE__) . 'css/list-personal-table.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/list-personal-table.css'), 'all');
 
+    }
+
+    /**
+     * Registra las hojas de estilo de los layouts del listado. Se registran en init (y no
+     * recién en wp_enqueue_scripts) porque el block.json del bloque de Gutenberg las declara
+     * por handle, así el editor también las carga en la vista previa.
+     */
+    public function register_list_styles()
+    {
+        foreach (self::LIST_STYLES as $handle => $file) {
+            wp_register_style($handle, plugin_dir_url(__FILE__) . 'css/' . $file, array(), filemtime(plugin_dir_path(__FILE__) . 'css/' . $file), 'all');
+        }
     }
 
     /**

@@ -55,7 +55,12 @@ return array(
 		'textdomain' => 'personal-block',
 		'editorScript' => 'file:./index.js',
 		'editorStyle' => 'file:./index.css',
-		'style' => 'file:./style-index.css',
+		'style' => array(
+			'file:./style-index.css',
+			'personal-list-metabox',
+			'personal-list-lista',
+			'personal-list-table'
+		),
 		'render' => 'file:./render.php',
 		'viewScript' => 'file:./view.js'
 	)
