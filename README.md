@@ -62,8 +62,7 @@ Para que el archivo sea procesado correctamente por el importador, el CSV genera
 1. **Formato:** Debe ser un archivo de texto plano con extensión `.csv` (`text/csv`).
 2. **Cantidad de Columnas:** El archivo debe contener **exactamente 16 columnas**.
 3. **Nombres de Cabeceras:** La primera fila del CSV debe contener exactamente estos nombres de columnas:
-   * **`post_id` (Obligatorio):** Identificador único para crear o actualizar un personal. Se indica -1 para crear un nuevo personal
-   * **`email` (Opcional):** Debe ser un correo válido.
+   * **`email` (Obligatorio):** Debe ser un correo válido. Es la clave que usa el importador para decidir si una fila crea un personal nuevo o actualiza uno existente (ver más abajo) — no hace falta indicar ningún ID a mano.
    * **`nombre_apellido` (Obligatorio):** Nombre completo. No puede estar vacío.
    * **`telefono` (Opcional):** Solo admite números, espacios, guiones (`-`), paréntesis y el signo `+`.
    * **`unidad_de_investigacion` (Opcional):** Nombre de la unidad. No puede contener enlaces (`http`/`www`).
@@ -80,6 +79,20 @@ Para que el archivo sea procesado correctamente por el importador, el CSV genera
    * **`researchgate` (Opcional):** Debe ser una URL absoluta y válida.
    * **`biografia` (Opcional):** Resumen profesional. Permite texto enriquecido y formato HTML (`<p>`, `<strong>`, `<a>`).
 
+### Crear vs. actualizar: deduplicación por email
 
+El importador **no necesita que le indiques un ID** de post a actualizar. Por cada fila, `Csv_Importer::find_existing_personal_id()` busca si ya existe un personal:
+
+1. Por **`email`** (meta `email`) — si hay match, esa fila **actualiza** ese personal.
+2. Si no hay match por email, se busca por **`nombre_apellido`** exacto (por si el email cambió entre una importación y otra).
+3. Si no hay match por ninguno de los dos, se **crea** un personal nuevo.
+
+Esto permite el flujo típico de un formulario de Google: la respuesta cae a un CSV que siempre exportás/reimportás completo (no solo las filas nuevas), y cada vez que se reimporta:
+
+- las filas que ya estaban cargadas **actualizan** su registro en vez de duplicarlo,
+- las filas nuevas de esa semana se **crean**,
+- y no hace falta llevar un control manual de qué fila corresponde a qué post.
+
+**Igual que en el importador de revistas de HERA, el update pisa los campos sin comparar contra el valor actual**: si el CSV trae una columna vacía para un personal que ya tenía ese dato cargado (por ejemplo, alguien completó el teléfono a mano desde el admin y el form de Google no pide teléfono), esa reimportación lo deja vacío. No hay merge selectivo.
 
 ## Licencia
