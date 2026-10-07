@@ -90,12 +90,13 @@
     line-height: 1.3;
 }
 
-#personal-card-title {
+/* !important: el tema subraya los links del contenido con un selector más específico */
+.personal-list-card-name a.personal-card-title {
     color: #000000;
-    text-decoration: none;
+    text-decoration: none !important;
 }
 
-#personal-card-title:hover {
+.personal-list-card-name a.personal-card-title:hover {
     color: #2b6cb0;
 }
 

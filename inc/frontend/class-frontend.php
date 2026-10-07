@@ -40,6 +40,7 @@ class Frontend
         wp_enqueue_style($this->plugin_name . '-single', plugin_dir_url(__FILE__) . 'css/single-personal.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/single-personal.css'), 'all');
         
         wp_enqueue_style($this->plugin_name . '-list-metabox', plugin_dir_url(__FILE__) . 'css/list-personal-metabox.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/list-personal-metabox.css'), 'all');
+        wp_enqueue_style($this->plugin_name . '-list-lista', plugin_dir_url(__FILE__) . 'css/list-personal-lista.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/list-personal-lista.css'), 'all');
         wp_enqueue_style($this->plugin_name . '-list-text', plugin_dir_url(__FILE__) . 'css/list-personal-text.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/list-personal-text.css'), 'all');
         wp_enqueue_style($this->plugin_name . '-list-table', plugin_dir_url(__FILE__) . 'css/list-personal-table.css', array(), filemtime(plugin_dir_path(__FILE__) . 'css/list-personal-table.css'), 'all');
 

@@ -1,3 +1,6 @@
+.personal-list-table-scroll {
+    overflow-x: auto;
+}
 .personal-list-table {
     width: 100%;
     border-collapse: collapse;
@@ -7,6 +10,7 @@
     padding: 10px;
     border-bottom: 1px solid #ddd;
     text-align: left;
+    vertical-align: middle;
 }
 .personal-list-table th {
     background-color: #f9f9f9;
@@ -17,4 +21,30 @@
 }
 .personal-list-table a:hover {
     text-decoration: underline;
+}
+.personal-list-table-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+.personal-list-table-avatar {
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover;
+    background-color: #f7fafc;
+}
+.personal-list-table-icons {
+    white-space: nowrap;
+}
+.personal-list-table-icons a {
+    display: inline-flex;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+.personal-list-table-icons img {
+    display: block;
+    object-fit: contain;
 }

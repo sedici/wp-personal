@@ -1,0 +1,98 @@
+/* Listado de personal - Formato Lista (una fila por persona) */
+.personal-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.personal-lista-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.personal-lista-item:first-child {
+    border-top: 1px solid #e2e8f0;
+}
+
+.personal-lista-avatar {
+    flex: 0 0 64px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #f7fafc;
+}
+
+/* Base 0: el texto se acomoda al lado de la foto en vez de saltar a otra línea */
+.personal-lista-body {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.personal-lista-name {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0;
+}
+
+/* !important: el tema subraya los links del contenido con un selector más específico */
+.personal-lista-name a {
+    color: #000000;
+    text-decoration: none !important;
+}
+
+.personal-lista-name a:hover {
+    color: #2b6cb0;
+}
+
+.personal-lista-meta,
+.personal-lista-contacto {
+    margin: 4px 0 0 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #4a5568;
+}
+
+.personal-lista-icons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.personal-lista-icons a {
+    display: inline-flex;
+    transition: transform 0.1s ease-in-out;
+}
+
+.personal-lista-icons a:hover {
+    transform: scale(1.1);
+}
+
+.personal-lista-icons img {
+    display: block;
+    object-fit: contain;
+}
+
+/* En pantallas angostas los íconos bajan debajo del nombre */
+@media (max-width: 576px) {
+    .personal-lista-item {
+        flex-wrap: wrap;
+    }
+
+    .personal-lista-icons {
+        flex-basis: 100%;
+    }
+
+    /* Alineados con el texto: ancho de la foto (64px) + separación (16px) */
+    .personal-lista-avatar ~ .personal-lista-icons {
+        padding-left: 80px;
+    }
+}
