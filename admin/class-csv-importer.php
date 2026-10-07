@@ -11,6 +11,7 @@ class Csv_Importer
     protected int $max_file_size;
     protected array $cpts_to_create;
     protected array $cpts_to_update;
+    protected array $rows_by_email; // Fila del CSV de la que salió cada pendiente, para reportar errores al guardar
 
     protected array $personal_metadata;
 
@@ -22,7 +23,7 @@ class Csv_Importer
 
     public function __construct($csv_file)
     {
-        $this->num_columns_expected = 17;
+        $this->num_columns_expected = 16;
         $this->max_file_size = 2 * 1024 * 1024;
         $this->csv_read_config = [];
         $this->csv_file = $csv_file;
@@ -31,6 +32,7 @@ class Csv_Importer
         $this->errors = [];
         $this->cpts_to_create = [];
         $this->cpts_to_update = [];
+        $this->rows_by_email = [];
     }
 
     /**
@@ -40,28 +42,15 @@ class Csv_Importer
     protected function initialize_rules()
     {
         $rules = [
-            'post_id' => [
-                'required' => true,
-                'sanitize' => 'sanitize_text_field',
-                'validate' => function ($value) {
-                    
-                    // Si es -1, se creará un nuevo post
-                    if ($value == -1) {
-                        return true;
-                    }
-                    // Si es distinto a -1 y existe, se actualizará el post
-                    $ids = $this->get_personal_post_ids();
-                    return !empty($ids) && in_array($value, $ids);
-                },
-                'error' => 'El ID ingresado no existe o no es un ID válido para crear un personal.'
-            ],
             'email' => [
-                'required' => false,
+                'required' => true,
                 'sanitize' => 'sanitize_email',
                 'validate' => function ($value) {
-                    return (!empty($value)) ? is_email($value) : true;
+                    return !empty($value) && is_email($value);
                 },
-                'error' => 'El formato del email no es valido.'
+                // El email es la clave para saber si una fila crea un personal nuevo o
+                // actualiza uno existente (ver find_existing_personal_id()), por eso es obligatorio.
+                'error' => 'El email es obligatorio y debe tener un formato válido.'
             ],
             'nombre_apellido' => [
                 'required' => true,
@@ -211,22 +200,43 @@ class Csv_Importer
     }
 
     /**
-     * Obtiene los post_ids del personal cargado
+     * Busca un personal existente por email (clave primaria de deduplicación) y, si no hay
+     * match por email, por título (nombre_apellido) exacto.
+     *
+     * @return int ID del post encontrado, o 0 si no hay match (se debe crear uno nuevo).
      */
-    protected function get_personal_post_ids()
+    protected function find_existing_personal_id($email, $nombre)
     {
-        $args = [
-            'post_type' => 'personal',
-            'posts_per_page' => -1,
-            'post_status' => 'any',
-            'fields' => 'ids',
-        ];
+        if ('' !== $email) {
+            $existing = get_posts([
+                'post_type' => 'personal',
+                'post_status' => 'any',
+                'meta_key' => 'email',
+                'meta_value' => $email,
+                'posts_per_page' => 1,
+                'fields' => 'ids',
+            ]);
 
-        $query = new \WP_Query($args);
+            if (!empty($existing)) {
+                return $existing[0];
+            }
+        }
 
-        $ids = $query->posts;
+        if ('' !== $nombre) {
+            $existing = get_posts([
+                'post_type' => 'personal',
+                'post_status' => 'any',
+                'title' => $nombre,
+                'posts_per_page' => 1,
+                'fields' => 'ids',
+            ]);
 
-        return $ids;
+            if (!empty($existing)) {
+                return $existing[0];
+            }
+        }
+
+        return 0;
     }
 
     /** 
@@ -280,15 +290,15 @@ class Csv_Importer
      *   Mapea los campos del csv a los campos del cpt
      *   @param array $row Array con el contenido de una fila del csv
      *   @param array $headers Array con los nombres de las columnas del csv
+     *   @param int $existing_id ID del personal a actualizar, o 0 si la fila crea uno nuevo
      *   @return array Array con la estructura esperada por la función wp_insert_post
-     * 
+     *
      */
-    protected function map_csv_fields_to_cpt_fields($row, $headers)
+    protected function map_csv_fields_to_cpt_fields($row, $headers, $existing_id = 0)
     {
         $personal = array_combine($headers, $row);
 
         $args = [
-            'ID' => $personal['post_id'],
             'post_title' => $personal['nombre_apellido'],
             'post_type' => 'personal',
             'post_status' => 'publish',
@@ -310,6 +320,10 @@ class Csv_Importer
                 'conicet' => $personal['conicet'],
             ]
         ];
+
+        if ($existing_id) {
+            $args['ID'] = $existing_id;
+        }
 
         return $args;
     }
@@ -363,13 +377,20 @@ class Csv_Importer
 
             } else {
 
-                $personal = $this->map_csv_fields_to_cpt_fields($row, $headers);
+                $personal = $this->map_csv_fields_to_cpt_fields($row, $headers, $row_result['existing_id']);
                 $personal = $this->sanitize_cpt_fields_before_save($personal);
 
+                // Los pendientes se indexan por email: si el mismo email aparece en una fila anterior
+                // de este CSV (p. ej. alguien respondió dos veces el form), la fila más nueva reemplaza
+                // a la anterior en vez de crear otro personal con el mismo email.
+                $email_key = strtolower($personal['meta_input']['email']);
+                unset($this->cpts_to_create[$email_key], $this->cpts_to_update[$email_key]);
+                $this->rows_by_email[$email_key] = $row_number;
+
                 if ($row_result['create_new_cpt'])
-                    array_push($this->cpts_to_create, $personal);
+                    $this->cpts_to_create[$email_key] = $personal;
                 else
-                    array_push($this->cpts_to_update, $personal);
+                    $this->cpts_to_update[$email_key] = $personal;
             }
 
             $row_number++;
@@ -391,23 +412,35 @@ class Csv_Importer
         // Si hay cpts_to_create, los creo
 
         if (!empty($this->cpts_to_create)) {
-            foreach ($this->cpts_to_create as $personal) {
+            foreach ($this->cpts_to_create as $email_key => $personal) {
                 unset($personal['ID']);
                 $result = wp_insert_post($personal);
                 if ($result !== 0)
                     $count_created++;
+                else
+                    $this->errors[] = [
+                        'row' => $this->rows_by_email[$email_key],
+                        'field' => 'email',
+                        'error' => 'Error al crear el personal con el email : ' . $personal['meta_input']['email'],
+                    ];
             }
         }
 
         // Si hay cpts_to_update, los actualizo
         if (!empty($this->cpts_to_update)) {
-            foreach ($this->cpts_to_update as $personal) {
+            foreach ($this->cpts_to_update as $email_key => $personal) {
                 $result = wp_update_post($personal);
 
                 if ($result !== 0)
                     $count_updated++;
                 else
-                    $this->errors[] = 'Error al actualizar: no se encontro el personal con el email : ' . $personal['meta_input']['email'];
+                    // Mismo formato que los errores de validación, que es lo que esperan el aviso
+                    // de la página y el historial (Csv_Import_Log)
+                    $this->errors[] = [
+                        'row' => $this->rows_by_email[$email_key],
+                        'field' => 'email',
+                        'error' => 'Error al actualizar: no se encontro el personal con el email : ' . $personal['meta_input']['email'],
+                    ];
             }
         }
 
@@ -428,6 +461,8 @@ class Csv_Importer
         return [
             'personal_created' => 'Se crearon : ' . $results['personal_created'] . ' perfiles de personal',
             'personal_updated' => 'Se actualizaron : ' . $results['personal_updated'] . ' perfiles de personal',
+            'created_count' => $results['personal_created'],
+            'updated_count' => $results['personal_updated'],
             'errors' => $this->errors,
         ];
     }
@@ -465,11 +500,12 @@ class Csv_Importer
      * @param array $row Array con los datos de la fila
      * @param int $row_number Numero de la fila
      * @param array $headers Array con los headers de la fila
-     * @return array Array con el resultado de la validacion (error, create_new_cpt)
+     * @return array Array con el resultado de la validacion (error, create_new_cpt, existing_id)
      */
     protected function validate_row($row, $row_number, $headers)
     {
-        $row_result = ['error' => false, 'create_new_cpt' => true];
+        $row_result = ['error' => false, 'create_new_cpt' => true, 'existing_id' => 0];
+        $sanitized = [];
 
         for ($i = 0; $i < $this->num_columns_expected; $i++) {
             $header = $headers[$i];
@@ -478,15 +514,7 @@ class Csv_Importer
             // Sanitizo
             $content_sanitized = $this->rules[$header]['sanitize']($content);
             $is_valid = $this->rules[$header]['validate']($content_sanitized);
-
-
-            // Chequeo si el cpt existe (actualizo o lo creo)
-            if ($header == 'post_id' && $is_valid) {
-                if ($content_sanitized != -1) {
-                    $row_result['create_new_cpt'] = false;
-                }
-
-            }
+            $sanitized[$header] = $content_sanitized;
 
             if (!$is_valid) {
                 $row_result['error'] = true;
@@ -497,8 +525,20 @@ class Csv_Importer
                 ];
                 break;
             }
+        }
 
+        // Chequeo si ya existe un personal con ese email (o, en su defecto, ese nombre) para
+        // decidir si esta fila crea uno nuevo o actualiza uno existente.
+        if (!$row_result['error']) {
+            $existing_id = $this->find_existing_personal_id(
+                $sanitized['email'] ?? '',
+                $sanitized['nombre_apellido'] ?? ''
+            );
 
+            if ($existing_id) {
+                $row_result['create_new_cpt'] = false;
+                $row_result['existing_id'] = $existing_id;
+            }
         }
 
         return $row_result;
