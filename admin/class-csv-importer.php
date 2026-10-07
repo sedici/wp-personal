@@ -440,6 +440,8 @@ class Csv_Importer
         return [
             'personal_created' => 'Se crearon : ' . $results['personal_created'] . ' perfiles de personal',
             'personal_updated' => 'Se actualizaron : ' . $results['personal_updated'] . ' perfiles de personal',
+            'created_count' => $results['personal_created'],
+            'updated_count' => $results['personal_updated'],
             'errors' => $this->errors,
         ];
     }

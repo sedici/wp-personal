@@ -118,6 +118,9 @@ class Admin
         try {
             $csv_importer = new Csv_Importer($file);
             $results = $csv_importer->process_csv();
+
+            Csv_Import_Log::record($file['name'], $results['created_count'], $results['updated_count'], $results['errors']);
+
             wp_send_json_success($results);
         } catch (\Exception $e) {
             wp_send_json_error($e->getMessage());
