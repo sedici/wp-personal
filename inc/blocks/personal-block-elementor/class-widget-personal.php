@@ -1,6 +1,6 @@
 <?php
 namespace Personal\Elementor;
-use Personal\Core\Personal_Model;
+use Personal\Inc\Render\Render_Personal;
 
 
 if (!defined('ABSPATH')) {
@@ -132,6 +132,30 @@ class Widget_Personal extends \Elementor\Widget_Base
             ]
         );
 
+        $this->end_controls_section();
+
+        $this->start_controls_section(
+            'layout_section',
+            [
+                'label' => esc_html__('Visualización', 'personal-block'),
+                'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        $this->add_control(
+            'layout',
+            [
+                'label' => esc_html__('Vista', 'personal-block'),
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'default' => 'carta',
+                'options' => [
+                    'carta' => esc_html__('Cartas', 'personal-block'),
+                    'lista' => esc_html__('Lista', 'personal-block'),
+                    'tabla' => esc_html__('Tabla', 'personal-block'),
+                ],
+            ]
+        );
+
         $this->add_control(
             'columns',
             [
@@ -141,6 +165,20 @@ class Widget_Personal extends \Elementor\Widget_Base
                 'max' => 4,
                 'step' => 1,
                 'default' => 3,
+                'condition' => ['layout' => 'carta'],
+            ]
+        );
+
+        $this->add_control(
+            'campos',
+            [
+                'label' => esc_html__('Datos a mostrar', 'personal-block'),
+                'type' => \Elementor\Controls_Manager::SELECT2,
+                'multiple' => true,
+                'options' => Render_Personal::get_campos_labels(),
+                'default' => Render_Personal::CAMPOS_DEFAULT,
+                'description' => esc_html__('El nombre se muestra siempre. Si no elegís ningún dato, se muestra solo el nombre.', 'personal-block'),
+                'label_block' => true,
             ]
         );
 
@@ -150,10 +188,8 @@ class Widget_Personal extends \Elementor\Widget_Base
     /**
      * Render Personal widget output on the frontend.
      *
-     * Written in PHP and used to generate the final HTML.
-     * This method retrieves the widget settings, prepares the WP_Query arguments
-     * (including filtering by category if selected), executes the query,
-     * and includes the view file to display the results.
+     * Delegates the query and the layout choice to Render_Personal, shared with the
+     * Gutenberg block.
      *
      * @since 1.0.0
      * @access protected
@@ -161,60 +197,15 @@ class Widget_Personal extends \Elementor\Widget_Base
     protected function render() {
         $settings = $this->get_settings_for_display();
 
-        // Map settings to attributes expected by the view/block logic
-        $attributes = [
-            'orderBy' => $settings['orderBy'],
-            'categories' => $settings['categories'],
-            'columns' => $settings['columns'],
-        ];
-
-        // Logic copied from personal-block/src/wp-personal-block/render.php
-        $orderBy = $attributes['orderBy'];
-        list($orderby_key, $order_direction) = explode('-', $orderBy);
-
-        // Prepare query arguments
-        $args = array(
-            'post_type' => 'personal',
-            'posts_per_page' => -1, // Show all
-            'orderby' => $orderby_key,
-            'order' => strtoupper($order_direction),
-        );
-
-        // Filter by categories if set
-        if (!empty($attributes['categories'])) {
-            $args['tax_query'] = array(
-                array(
-                    'taxonomy' => 'categorias',
-                    'field' => 'term_id',
-                    'terms' => $attributes['categories'],
-                ),
-            );
-        }
-
-        // Execute query
-        $loop = new \WP_Query($args);
-        $personas = [];
-
-        if ($loop->have_posts()) {
-            while ($loop->have_posts()) {
-                $loop->the_post();
-                $cpt_personal = new Personal_Model(get_the_ID());
-                $personas[] = $cpt_personal->get_all_personal_data();
-            }
-            wp_reset_postdata();
-        }
-
-        if (!empty($personas)) {
-            echo '<div ' . $this->get_render_attribute_string('wrapper') . '>';
-            $template_path = \Personal\PLUGIN_NAME_DIR . 'inc/frontend/views/list-personal-metabox.php';
-            
-            load_template($template_path, false, array(
-                'personas' => $personas,
-                'columns'    => isset($attributes['columns']) ? $attributes['columns'] : 3,
-            ));
-            echo '</div>';
-        } else {
-            echo '<p>' . esc_html__('No hay personal para mostrar', 'personal-block') . '</p>';
-        }
+        echo '<div ' . $this->get_render_attribute_string('wrapper') . '>';
+        echo (new Render_Personal())->render([
+            'layout' => $settings['layout'] ?? 'carta',
+            'columns' => $settings['columns'] ?? 3,
+            // Widgets guardados antes de este control no lo tienen: se usa el default
+            'campos' => array_key_exists('campos', $settings) ? $settings['campos'] : null,
+            'categories' => $settings['categories'] ?? [],
+            'orderBy' => $settings['orderBy'] ?? 'date-desc',
+        ]);
+        echo '</div>';
     }
 }
