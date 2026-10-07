@@ -87,6 +87,8 @@ El importador **no necesita que le indiques un ID** de post a actualizar. Por ca
 2. Si no hay match por email, se busca por **`nombre_apellido`** exacto (por si el email cambió entre una importación y otra).
 3. Si no hay match por ninguno de los dos, se **crea** un personal nuevo.
 
+Si el mismo email aparece en más de una fila del CSV (sin distinguir mayúsculas, por ejemplo alguien que respondió dos veces el form), **se usa solo la última fila** y las anteriores se descartan, así no se crean dos personales con el mismo email.
+
 Esto permite el flujo típico de un formulario de Google: la respuesta cae a un CSV que siempre exportás/reimportás completo (no solo las filas nuevas), y cada vez que se reimporta:
 
 - las filas que ya estaban cargadas **actualizan** su registro en vez de duplicarlo,

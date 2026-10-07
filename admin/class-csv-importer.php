@@ -378,10 +378,16 @@ class Csv_Importer
                 $personal = $this->map_csv_fields_to_cpt_fields($row, $headers, $row_result['existing_id']);
                 $personal = $this->sanitize_cpt_fields_before_save($personal);
 
+                // Los pendientes se indexan por email: si el mismo email aparece en una fila anterior
+                // de este CSV (p. ej. alguien respondió dos veces el form), la fila más nueva reemplaza
+                // a la anterior en vez de crear otro personal con el mismo email.
+                $email_key = strtolower($personal['meta_input']['email']);
+                unset($this->cpts_to_create[$email_key], $this->cpts_to_update[$email_key]);
+
                 if ($row_result['create_new_cpt'])
-                    array_push($this->cpts_to_create, $personal);
+                    $this->cpts_to_create[$email_key] = $personal;
                 else
-                    array_push($this->cpts_to_update, $personal);
+                    $this->cpts_to_update[$email_key] = $personal;
             }
 
             $row_number++;
