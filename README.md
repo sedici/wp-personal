@@ -36,9 +36,10 @@ También puedes listar los perfiles de personal utilizando el bloque de Gutenber
 1.  En el editor de WordPress, haz clic en el botón '+' para añadir un nuevo bloque.
 2.  Busca "Bloque de Personal" y selecciónalo.
 3.  Una vez añadido, puedes configurar las siguientes opciones en el panel lateral de ajustes del bloque:
+    *   **Visualización**: Elige la vista del listado (**Cartas**, **Lista** o **Tabla**) y, para las cartas, el número de columnas (entre 1 y 4).
+    *   **Datos a mostrar**: Marca qué datos del perfil aparecen además del nombre (foto, rol, grado, unidad, email, teléfono, afiliaciones y redes/CV). Si no marcas ninguno, se muestra solo el nombre.
     *   **Opciones de ordenamiento**: Permite ordenar la lista de personal de forma manual (el número más bajo aparece primero), por nombre (A-Z, Z-A), fecha de publicación (más nuevos/antiguos primero) o fecha de modificación (más nuevos/antiguos primero).
     *   **Seleccionar categoría**: Elige una o varias categorías para filtrar los perfiles de personal.
-    *   **Cantidad de columnas**: Define el número de columnas (entre 1 y 4) en las que se mostrarán los perfiles.
 
 ### Widget de Elementor
 
@@ -49,7 +50,10 @@ El plugin también incluye un widget compatible con el constructor de páginas *
 3.  Utiliza los controles del panel izquierdo (pestaña Contenido) para:
     *   Seleccionar categorías.
     *   Configurar el ordenamiento.
-    *   Definir el número de columnas.
+    *   Elegir la vista (**Cartas**, **Lista** o **Tabla**) y, para las cartas, el número de columnas.
+    *   Elegir los datos del perfil a mostrar además del nombre. Si no eliges ninguno, se muestra solo el nombre.
+
+Los widgets y bloques que ya estaban cargados antes de estas opciones se siguen viendo como cartas.
 
 ## Importador de CSV
 
