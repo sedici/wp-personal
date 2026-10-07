@@ -6,7 +6,7 @@
   "title": "Bloque de Personal",
   "category": "widgets",
   "icon": "businessperson",
-  "description": "Bloque para listar el personal.",
+  "description": "Lista el personal en Cartas, Lista o Tabla.",
   "example": {},
   "supports": {
     "html": false
@@ -23,6 +23,26 @@
     "columns": {
       "type": "number",
       "default": 3
+    },
+    "layout": {
+      "type": "string",
+      "enum": [
+        "carta",
+        "lista",
+        "tabla"
+      ],
+      "default": "carta"
+    },
+    "campos": {
+      "type": "array",
+      "default": [
+        "foto",
+        "rol",
+        "grado",
+        "unidad",
+        "afiliaciones",
+        "redes"
+      ]
     }
   },
   "textdomain": "personal-block",

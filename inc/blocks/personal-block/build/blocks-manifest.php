@@ -9,7 +9,7 @@ return array(
 		'title' => 'Bloque de Personal',
 		'category' => 'widgets',
 		'icon' => 'businessperson',
-		'description' => 'Bloque para listar el personal.',
+		'description' => 'Lista el personal en Cartas, Lista o Tabla.',
 		'example' => array(
 			
 		),
@@ -30,6 +30,26 @@ return array(
 			'columns' => array(
 				'type' => 'number',
 				'default' => 3
+			),
+			'layout' => array(
+				'type' => 'string',
+				'enum' => array(
+					'carta',
+					'lista',
+					'tabla'
+				),
+				'default' => 'carta'
+			),
+			'campos' => array(
+				'type' => 'array',
+				'default' => array(
+					'foto',
+					'rol',
+					'grado',
+					'unidad',
+					'afiliaciones',
+					'redes'
+				)
 			)
 		),
 		'textdomain' => 'personal-block',
