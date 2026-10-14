@@ -49,7 +49,6 @@ if ($loop->have_posts()) {
 
 // Check if there are posts to display.
 if (!empty($personas)) {
-    echo '<div ' . get_block_wrapper_attributes() . '>';
     $template_path = \Personal\PLUGIN_NAME_DIR . 'inc/frontend/views/list-personal-metabox.php';
     
     // Inyectamos de forma segura usando load_template
@@ -57,8 +56,7 @@ if (!empty($personas)) {
         'personas' => $personas,
         'columns'  => isset($attributes['columns']) ? $attributes['columns'] : 3,
     ));
-    echo '</div>';
 } else {
     // No posts found, display a fallback message.
-    echo '<p ' . get_block_wrapper_attributes() . '>' . __('No hay personal para mostrar', 'personal-block') . '</p>';
+    echo '<p>' . __('No hay personal para mostrar', 'personal-block') . '</p>';
 }
