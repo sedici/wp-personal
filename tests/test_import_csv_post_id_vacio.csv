@@ -1,0 +1,2 @@
+post_id,email,nombre_apellido,telefono,unidad_de_investigacion,rol_unidad_de_investigacion,grado_alcanzado,google_scholar,biografia,orcid,researchgate,linkedin,facebook,twitter,sedici,cic,conicet
+,hola@gmail.com,Tomas Perez,2216598,LIFIA,Inv,Doc,https://scholar.google.com,Bio,https://orcid.org,https://researchgate.net,https://linkedin.com,https://facebook.com,https://twitter.com,Falla Telefono,Falla Telefono,Falla Telefono
