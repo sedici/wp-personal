@@ -205,14 +205,12 @@ class Widget_Personal extends \Elementor\Widget_Base
         }
 
         if (!empty($personas)) {
-            echo '<div ' . $this->get_render_attribute_string('wrapper') . '>';
             $template_path = \Personal\PLUGIN_NAME_DIR . 'inc/frontend/views/list-personal-metabox.php';
             
             load_template($template_path, false, array(
                 'personas' => $personas,
                 'columns'    => isset($attributes['columns']) ? $attributes['columns'] : 3,
             ));
-            echo '</div>';
         } else {
             echo '<p>' . esc_html__('No hay personal para mostrar', 'personal-block') . '</p>';
         }
