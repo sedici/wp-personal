@@ -8,7 +8,9 @@
 
 .personal-top-section {
     display: grid;
-    grid-template-columns: 210px 1fr; /* Ancho fijo para el avatar, resto del espacio para el texto */
+    grid-template-columns: 210px minmax(0, 1fr); /* Ancho fijo para el avatar, resto del espacio para el texto */
+    /* La ultima fila (1fr) absorbe la altura sobrante de la biografia para que los botones queden pegados al contacto */
+    grid-template-rows: auto auto auto auto 1fr;
     column-gap: 50px;
     align-items: start;
 }
@@ -51,7 +53,8 @@
 
 .personal-body-info {
     grid-column: 2;
-    grid-row: 2;
+    grid-row: 2 / -1;
+    min-width: 0;
     border-top: 1px solid #cbd5e0; 
     padding-top: 30px; 
 }
@@ -205,6 +208,14 @@
     line-height: 1.6;
 }
 
+.personal-biography-body {
+    font-size: 14px;
+    color: #2d3748;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
 .personal-biography-body h2 {
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 20px;
@@ -280,7 +291,8 @@
 @media (max-width: 768px) {
     
     .personal-top-section {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: none;
         row-gap: 25px;
     }
 
@@ -315,8 +327,12 @@
         box-sizing: border-box;
     }
 
-    .personal-social-row {
+    .personal-affiliations-row {
         justify-content: center;
+    }
+
+    .personal-social-row {
+        justify-content: flex-start;
     }
 
     .personal-cv-download-btn {
