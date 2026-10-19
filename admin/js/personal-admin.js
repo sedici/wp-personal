@@ -183,9 +183,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function validarUrl(input) {
         const value = input.value.trim();
-        const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/i;
-        
-        if (value !== '' && !urlRegex.test(value)) {
+        let esValida = true;
+
+        if (value !== '') {
+            // Exige protocolo http(s) y un host con punto; acepta query string y fragmentos
+            try {
+                const url = new URL(value);
+                esValida = ['http:', 'https:'].includes(url.protocol) && url.hostname.includes('.');
+            } catch (e) {
+                esValida = false;
+            }
+        }
+
+        if (!esValida) {
             showError(input, 'Por favor, ingresa una URL válida (ej: https://ejemplo.com).');
             return false;
         }
